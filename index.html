@@ -20,7 +20,7 @@
     <!-- Global Error Catcher (Temporary for Debugging) -->
     <script>
         window.addEventListener('error', function(e) {
-            alert("JS Error:\n" + e.message + "\nLine: " + e.lineno + "\nFile: " + e.filename);
+            console.error("JS Error:\n" + e.message + "\nLine: " + e.lineno + "\nFile: " + e.filename);
         });
     </script>
 </head>
@@ -3000,6 +3000,92 @@
               }
           });
       }
+
+      // --- AUTO SYNC LOGIC ---
+      let syncTimeout = null;
+      let disableAutoSync = false; // Flag to prevent sync loop during pull
+      
+      window.autoSyncToCloud = function(silent = true) {
+          if(disableAutoSync) return;
+          const url = localStorage.getItem('webapp_url');
+          if(!url) return;
+          
+          if(syncTimeout) clearTimeout(syncTimeout);
+          syncTimeout = setTimeout(async () => {
+              try {
+                  const payload = {
+                      action: 'sync',
+                      data: {
+                          pemasukan: JSON.parse(localStorage.getItem('db_pemasukan') || '[]'),
+                          pengeluaran: JSON.parse(localStorage.getItem('db_pengeluaran') || '[]'),
+                          pelanggan: JSON.parse(localStorage.getItem('db_pelanggan') || '[]'),
+                          inventory: JSON.parse(localStorage.getItem('db_inventory') || '[]'),
+                          Layanan: JSON.parse(localStorage.getItem('db_layanan') || '[]'),
+                          user: JSON.parse(localStorage.getItem('db_user') || '[]'),
+                          Bank: JSON.parse(localStorage.getItem('db_bank') || '[]')
+                      }
+                  };
+                  fetch(url, {
+                      method: 'POST',
+                      body: JSON.stringify(payload)
+                  }).then(res => res.json()).then(result => {
+                      if(result.status === 'success' && !silent) {
+                          console.log('Auto-sync sukses');
+                      }
+                  }).catch(e => console.error('Auto-sync error:', e));
+              } catch(e) {}
+          }, 2000); // Debounce 2 seconds
+      };
+
+      window.autoPullFromCloud = async function() {
+          const url = localStorage.getItem('webapp_url');
+          if(!url) return;
+          
+          try {
+              const response = await fetch(url);
+              const result = await response.json();
+              
+              if(result.status === 'success') {
+                  disableAutoSync = true; // Disable push trigger
+                  
+                  localStorage.setItem('db_pemasukan', JSON.stringify(result.data.pemasukan || []));
+                  localStorage.setItem('db_pengeluaran', JSON.stringify(result.data.pengeluaran || []));
+                  localStorage.setItem('db_pelanggan', JSON.stringify(result.data.pelanggan || []));
+                  localStorage.setItem('db_inventory', JSON.stringify(result.data.inventory || []));
+                  localStorage.setItem('db_layanan', JSON.stringify(result.data.Layanan || []));
+                  localStorage.setItem('db_user', JSON.stringify(result.data.user || []));
+                  localStorage.setItem('db_bank', JSON.stringify(result.data.Bank || []));
+                  
+                  disableAutoSync = false; // Re-enable
+                  
+                  // Reload UI if needed
+                  if(typeof renderOrders === 'function') renderOrders();
+                  if(typeof renderCustomers === 'function') renderCustomers();
+                  if(typeof renderInventory === 'function') renderInventory();
+                  if(typeof updateDashboardStats === 'function') updateDashboardStats();
+                  
+                  console.log('Auto-pull sukses');
+              }
+          } catch(e) {
+              console.error('Auto-pull error:', e);
+              disableAutoSync = false;
+          }
+      };
+
+      // Intercept localStorage.setItem to auto-trigger sync when db changes
+      const originalSetItem = localStorage.setItem;
+      localStorage.setItem = function(key, value) {
+          originalSetItem.apply(this, arguments);
+          // Hanya trigger sync untuk kunci data utama
+          if(key.startsWith('db_') && !disableAutoSync) {
+              window.autoSyncToCloud();
+          }
+      };
+
+      // Panggil autoPull saat aplikasi dimuat
+      window.addEventListener('load', () => {
+          window.autoPullFromCloud();
+      });
 
       // --- SYNC LOGIC ---
       const btnSyncDown = document.getElementById('btn-sync-down');
