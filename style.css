@@ -2524,7 +2524,7 @@ body {
         padding: 0;
     }
     /* Sembunyikan elemen background dan navigasi saat print */
-    .app-container, .bottom-nav, .app-header, .layout {
+    .app-container, .bottom-nav, .app-header {
         display: none !important;
     }
 }

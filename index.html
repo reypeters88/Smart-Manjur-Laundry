@@ -194,17 +194,17 @@
                     </div>
                     <div class="stat-item clickable-menu" data-title="TopUp Paket">
                         <div class="stat-icon"><i class="fa-solid fa-box-open"></i></div>
-                        <span class="stat-value">0</span>
+                        <span class="stat-value" id="count-topup-paket">0</span>
                         <span class="stat-label">TopUp Paket</span>
                     </div>
                     <div class="stat-item clickable-menu" data-title="TopUp Deposit">
                         <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
-                        <span class="stat-value">0</span>
+                        <span class="stat-value" id="count-topup-deposit">0</span>
                         <span class="stat-label">TopUp Deposit</span>
                     </div>
                     <div class="stat-item clickable-menu" data-title="Penjualan Lainnya">
                         <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-                        <span class="stat-value">0</span>
+                        <span class="stat-value" id="count-penjualan">0</span>
                         <span class="stat-label">Penjualan</span>
                     </div>
                 </div>
@@ -2234,6 +2234,13 @@
                     <!-- Items here -->
                 </div>
             </div>
+            
+            <!-- Tambahan tombol cetak besar di bawah detail pesanan -->
+            <div style="padding: 20px;">
+                <button class="btn-pos btn-pos-cetak" style="width: 100%; border-radius: 12px; margin-bottom: 20px;" id="btn-dp-cetak-nota-besar">
+                    <i class="fa-solid fa-print"></i> CETAK NOTA SEKARANG
+                </button>
+            </div>
         </div>
 
         <!-- LAYOUT NOTA DIGITAL (THERMAL) -->
@@ -3058,10 +3065,14 @@
                   disableAutoSync = false; // Re-enable
                   
                   // Reload UI if needed
-                  if(typeof renderOrders === 'function') renderOrders();
-                  if(typeof renderCustomers === 'function') renderCustomers();
-                  if(typeof renderInventory === 'function') renderInventory();
-                  if(typeof updateDashboardStats === 'function') updateDashboardStats();
+                  if(typeof window.reloadKasirData === 'function') {
+                      window.reloadKasirData();
+                  } else {
+                      if(typeof renderOrders === 'function') renderOrders();
+                      if(typeof renderCustomers === 'function') renderCustomers();
+                      if(typeof renderInventory === 'function') renderInventory();
+                      if(typeof updateDashboardStats === 'function') updateDashboardStats();
+                  }
                   
                   console.log('Auto-pull sukses');
               }
@@ -3085,6 +3096,7 @@
       window.addEventListener('load', () => {
           window.autoPullFromCloud();
       });
+
 
       // --- SYNC LOGIC ---
       const btnSyncDown = document.getElementById('btn-sync-down');
@@ -3119,6 +3131,8 @@
                       localStorage.setItem('db_layanan', JSON.stringify(result.data.Layanan || []));
                       localStorage.setItem('db_user', JSON.stringify(result.data.user || []));
                       localStorage.setItem('db_bank', JSON.stringify(result.data.Bank || []));
+                      
+                      if(typeof window.reloadKasirData === 'function') window.reloadKasirData();
                       
                       if(window.Swal) Swal.fire('Berhasil!', 'Data berhasil ditarik dari Google Sheets.', 'success');
                   } else {
@@ -5337,6 +5351,14 @@
     // --- KASIR POS LOGIC (2-STEP REDESIGN) ---
     let orderHistory = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
     let globalCustomers = JSON.parse(localStorage.getItem('db_pelanggan') || '[]');
+    
+    window.reloadKasirData = function() {
+        orderHistory = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+        globalCustomers = JSON.parse(localStorage.getItem('db_pelanggan') || '[]');
+        if (typeof renderDashboardPesanan === 'function') renderDashboardPesanan();
+        if (typeof renderCustomerSelect === 'function') renderCustomerSelect();
+    };
+    
     let cartData = [];
     let selectedService = null;
     const posCustomerSelect = document.getElementById('pos-customer-select');
@@ -5653,30 +5675,45 @@
             if(posNotaBadgeId) posNotaBadgeId.innerText = generateNota();
             
             renderDashboardPesanan();
-            showDetailPesanan(newOrder);
-
             if (shouldPrint) {
+                currentActiveOrder = newOrder;
+                if(typeof hideAllLayouts === 'function') hideAllLayouts();
+                if(typeof renderNota === 'function') renderNota(newOrder);
+                
+                const layoutNotaEl = document.getElementById('layout-nota');
+                if(layoutNotaEl) {
+                    layoutNotaEl.style.display = 'block';
+                    layoutNotaEl.classList.add('active');
+                }
+
+                // Jangan pakai setTimeout terlalu lama agar tidak diblokir browser popup blocker
                 setTimeout(() => {
                     if (typeof window.printReceiptBrowser === 'function') {
                         window.printReceiptBrowser(newOrder);
                     } else if (typeof btPrinter !== 'undefined') {
                         btPrinter.print(newOrder);
                     }
-                }, 500);
+                }, 50);
+            } else {
+                showDetailPesanan(newOrder);
             }
         };
 
-        if(window.Swal) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Pesanan Tersimpan!',
-                text: shouldPrint ? 'Menyimpan dan mencetak struk...' : 'Dialihkan ke detail pesanan...',
-                timer: 1500,
-                showConfirmButton: false
-            }).then(onSaved);
-        } else {
-            alert('Pesanan Tersimpan!');
+        if (shouldPrint) {
             onSaved();
+        } else {
+            if(window.Swal) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pesanan Tersimpan!',
+                    text: 'Dialihkan ke detail pesanan...',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(onSaved);
+            } else {
+                alert('Pesanan Tersimpan!');
+                onSaved();
+            }
         }
     }
 
@@ -5711,6 +5748,16 @@
             layoutMain.classList.add('active');
         }, 300);
     });
+
+    const goToNotaFromDetail = () => {
+        hideAllLayouts();
+        renderNota(currentActiveOrder);
+        layoutNota.style.display = 'block';
+        setTimeout(() => layoutNota.classList.add('active'), 10);
+    };
+    
+    document.getElementById('btn-detail-to-nota')?.addEventListener('click', goToNotaFromDetail);
+    document.getElementById('btn-dp-cetak-nota-besar')?.addEventListener('click', goToNotaFromDetail);
 
     document.getElementById('btn-back-detail-pesanan')?.addEventListener('click', () => {
         layoutDetailPesanan.classList.remove('active');
@@ -6016,13 +6063,41 @@
         let setrikaCount = orderHistory.filter(o => o.status === 'setrika').length;
         let selesaiCount = orderHistory.filter(o => o.status === 'selesai').length;
 
+        // Hitung Harus Selesai (hari ini) dan Terlambat
+        let harusSelesaiCount = 0;
+        let terlambatCount = 0;
+        let today = new Date();
+        today.setHours(0,0,0,0);
+        
+        orderHistory.forEach(o => {
+            if (o.status !== 'selesai' && o.status !== 'diambil' && o.date) {
+                // Parsing tanggal pesanan untuk estimasi selesai (besoknya)
+                let parts = o.date.split(' ')[0].split('/'); // asumsikan format DD/MM/YY
+                if(parts.length === 3) {
+                    let orderDate = new Date(2000 + parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+                    let estDate = new Date(orderDate);
+                    estDate.setDate(estDate.getDate() + 1); // asumsikan default 1 hari selesai
+                    
+                    if (estDate.getTime() === today.getTime()) {
+                        harusSelesaiCount++;
+                    } else if (estDate.getTime() < today.getTime()) {
+                        terlambatCount++;
+                    }
+                }
+            }
+        });
+
         const updateEl = (id, val) => {
             const el = document.getElementById(id);
             if(el) el.innerText = val;
         };
 
         updateEl('count-masuk', masukCount);
-        // Harus selesai dll bisa diset default 0 atau sesuai logic nantinya
+        updateEl('count-harus-selesai', harusSelesaiCount);
+        updateEl('count-terlambat', terlambatCount);
+        updateEl('count-topup-paket', 0); // Belum diimplementasi
+        updateEl('count-topup-deposit', 0); // Belum diimplementasi
+        updateEl('count-penjualan', 0); // Belum diimplementasi
         
         updateEl('badge-semua', semuaCount);
         updateEl('badge-validasi', validasiCount);
@@ -6292,62 +6367,11 @@
 
     // --- FUNGSI CETAK BROWSER ---
     window.printReceiptBrowser = function(order) {
-        let printArea = document.getElementById('print-area');
-        if (!printArea) {
-            printArea = document.createElement('div');
-            printArea.id = 'print-area';
-            document.body.appendChild(printArea);
-        }
-        
-        const cName = localStorage.getItem('company_name') || 'Manjur Laundry';
-        const cAddr = localStorage.getItem('company_address') || 'Jl. Contoh No. 123';
-        const cPhone = localStorage.getItem('company_phone') || '081234567890';
-        
-        let itemsHtml = '';
-        if(order.items && Array.isArray(order.items)) {
-            order.items.forEach(item => {
-                const qtyStr = `${item.qty}x`;
-                const priceStr = (item.price || 0).toLocaleString('id-ID');
-                const subtotalStr = (item.subtotal || 0).toLocaleString('id-ID');
-                itemsHtml += `
-                    <div style="display:flex; justify-content:space-between; font-size: 12px; margin-bottom: 3px;">
-                        <div style="flex:2;">${item.name}</div>
-                        <div style="flex:1; text-align:right;">${qtyStr}</div>
-                        <div style="flex:1; text-align:right;">${priceStr}</div>
-                        <div style="flex:1.5; text-align:right;">${subtotalStr}</div>
-                    </div>
-                `;
-            });
-        }
-    
-        printArea.innerHTML = `
-            <div style="width: 58mm; padding: 10px; font-family: monospace; color: #000; background: #fff;">
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <h3 style="margin: 0; font-size: 16px;">${cName}</h3>
-                    <p style="margin: 2px 0; font-size: 12px;">${cAddr}</p>
-                    <p style="margin: 2px 0; font-size: 12px;">Telp: ${cPhone}</p>
-                </div>
-                <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 5px 0; margin-bottom: 10px; font-size: 12px;">
-                    <div style="display:flex; justify-content:space-between;"><span>No:</span><span>${order.id}</span></div>
-                    <div style="display:flex; justify-content:space-between;"><span>Tgl:</span><span>${order.date || '-'}</span></div>
-                    <div style="display:flex; justify-content:space-between;"><span>Plg:</span><span>${order.customer || '-'}</span></div>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    ${itemsHtml}
-                </div>
-                <div style="border-top: 1px dashed #000; padding-top: 5px; font-size: 12px; font-weight: bold;">
-                    <div style="display:flex; justify-content:space-between;"><span>TOTAL:</span><span>Rp ${order.total.toLocaleString('id-ID')}</span></div>
-                </div>
-                <div style="text-align: center; margin-top: 15px; font-size: 12px;">
-                    <p style="margin: 0;">Terima Kasih!</p>
-                </div>
-            </div>
-        `;
-        
-        // Timeout sedikit untuk memastikan DOM dirender sebelum print dipanggil
+        // Tampilan struk (Nota) sudah disiapkan oleh fungsi renderNota() di dalam #print-area.
+        // Timeout sedikit (50ms) untuk memastikan DOM dirender sebelum print dipanggil
         setTimeout(() => {
             window.print();
-        }, 300);
+        }, 50);
     };
 
     document.getElementById('btn-kirim-nota')?.addEventListener('click', () => {
@@ -6358,18 +6382,7 @@
         }
     });
 
-    // --- PWA SERVICE WORKER REGISTRATION ---
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(registration => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                })
-                .catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-        });
-    }
+    // PWA Service Worker telah dinonaktifkan untuk mendukung mode Online-Only
     
     // --- KELOLA PELANGGAN LAYOUT SCRIPT ---
     const btnBackKelolaPelanggan = document.getElementById('btn-back-kelola-pelanggan');
