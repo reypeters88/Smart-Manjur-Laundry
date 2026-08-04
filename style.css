@@ -1691,25 +1691,7 @@ body {
     color: #64748b;
     margin-top: 2px;
 }
-.btn-select-service {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #cbd5e1;
-    border-radius: 20px;
-    padding: 6px 15px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.btn-select-service.selected {
-    background: #e0f2fe;
-    color: #0284c7;
-    border-color: #bae6fd;
-}
-.btn-select-service.selected::before {
-    content: '? ';
-}
+/* CSS btn-select-service lama telah dihapus untuk mendukung desain baris layanan yang baru */
 
 /* Modal Input Pesanan */
 .modal-overlay {
@@ -2098,26 +2080,24 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px dashed #e2e8f0;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+.service-option-row:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+.service-option-row.selected {
+    background: #f0f9ff !important;
+    border-color: #7dd3fc;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
 }
 .service-option-row:last-child {
-    border-bottom: none;
-}
-.btn-select-service {
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: #f1f5f9;
-    color: #64748b;
-    border: 1px solid #cbd5e1;
-}
-.btn-select-service.selected {
-    background: #e0f2fe;
-    color: #0ea5e9;
-    border-color: #7dd3fc;
+    margin-bottom: 0;
 }
 
 .btn-add-nota {
@@ -2527,3 +2507,24 @@ body {
     cursor: pointer;
 }
 
+/* --- PRINT MEDIA QUERY (Cetak Nota) --- */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #print-area, #print-area * {
+        visibility: visible;
+    }
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    /* Sembunyikan elemen background dan navigasi saat print */
+    .app-container, .bottom-nav, .app-header, .layout {
+        display: none !important;
+    }
+}

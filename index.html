@@ -1108,10 +1108,10 @@
             </div>
             
             <div class="bs-option" id="btn-kontak-hp">
-                <div class="bs-icon dark">
-                    <i class="fa-solid fa-address-book"></i>
+                <div class="bs-icon dark" style="background: #16a34a; color: white;">
+                    <i class="fa-solid fa-file-excel"></i>
                 </div>
-                <div class="bs-text">Ambil dari Kontak HP</div>
+                <div class="bs-text">Import Pelanggan Xls</div>
             </div>
         </div>
 
@@ -1126,8 +1126,8 @@
             
             <div class="tp-title-container" style="display:flex; justify-content:space-between; align-items:center;">
                 <h2 class="tp-title" style="margin-bottom:0;">Tambah Pelanggan</h2>
-                <button id="btn-import-kontak-form" style="background:#0ea5e9; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer;">
-                    <i class="fa-solid fa-address-book"></i> Import Kontak
+                <button id="btn-import-kontak-form" style="background:#16a34a; color:#fff; border:none; padding:8px 12px; border-radius:6px; font-weight:600; font-size:0.85rem; cursor:pointer;">
+                    <i class="fa-solid fa-file-excel"></i> Import Pelanggan Xls
                 </button>
             </div>
             
@@ -3027,13 +3027,12 @@
                   };
                   fetch(url, {
                       method: 'POST',
+                      mode: 'no-cors',
                       body: JSON.stringify(payload)
-                  }).then(res => res.json()).then(result => {
-                      if(result.status === 'success' && !silent) {
-                          console.log('Auto-sync sukses');
-                      }
+                  }).then(() => {
+                      if(!silent) console.log('Auto-sync sent (no-cors mode)');
                   }).catch(e => console.error('Auto-sync error:', e));
-              } catch(e) {}
+              } catch(e) { console.error(e); }
           }, 2000); // Debounce 2 seconds
       };
 
@@ -5414,26 +5413,7 @@
     const inputQty = document.getElementById('input-qty');
     const lblUnit = document.getElementById('lbl-unit');
     
-    btnSelectServices.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            // Remove previous selections
-            btnSelectServices.forEach(b => {
-                b.classList.remove('selected');
-                b.innerText = 'Pilih';
-            });
-            btn.classList.add('selected');
-            btn.innerText = '? Dipilih';
-
-            selectedService = {
-                name: btn.dataset.name,
-                price: parseInt(btn.dataset.price),
-                unit: btn.dataset.unit
-            };
-            
-            lblUnit.innerText = selectedService.unit;
-            inputQty.focus();
-        });
-    });
+    // (Logic btn-select-service lama telah dipindah dan diadaptasi di fungsi renderPOSServices)
 
     // Add to Cart
     document.getElementById('btn-add-to-cart')?.addEventListener('click', () => {
@@ -5675,8 +5655,14 @@
             renderDashboardPesanan();
             showDetailPesanan(newOrder);
 
-            if (shouldPrint && typeof btPrinter !== 'undefined') {
-                setTimeout(() => btPrinter.print(newOrder), 500);
+            if (shouldPrint) {
+                setTimeout(() => {
+                    if (typeof window.printReceiptBrowser === 'function') {
+                        window.printReceiptBrowser(newOrder);
+                    } else if (typeof btPrinter !== 'undefined') {
+                        btPrinter.print(newOrder);
+                    }
+                }, 500);
             }
         };
 
@@ -6296,9 +6282,73 @@
 
     document.getElementById('btn-cetak-nota')?.addEventListener('click', () => {
         if (currentActiveOrder) {
-            btPrinter.print(currentActiveOrder);
+            if (typeof window.printReceiptBrowser === 'function') {
+                window.printReceiptBrowser(currentActiveOrder);
+            } else {
+                btPrinter.print(currentActiveOrder);
+            }
         }
     });
+
+    // --- FUNGSI CETAK BROWSER ---
+    window.printReceiptBrowser = function(order) {
+        let printArea = document.getElementById('print-area');
+        if (!printArea) {
+            printArea = document.createElement('div');
+            printArea.id = 'print-area';
+            document.body.appendChild(printArea);
+        }
+        
+        const cName = localStorage.getItem('company_name') || 'Manjur Laundry';
+        const cAddr = localStorage.getItem('company_address') || 'Jl. Contoh No. 123';
+        const cPhone = localStorage.getItem('company_phone') || '081234567890';
+        
+        let itemsHtml = '';
+        if(order.items && Array.isArray(order.items)) {
+            order.items.forEach(item => {
+                const qtyStr = `${item.qty}x`;
+                const priceStr = (item.price || 0).toLocaleString('id-ID');
+                const subtotalStr = (item.subtotal || 0).toLocaleString('id-ID');
+                itemsHtml += `
+                    <div style="display:flex; justify-content:space-between; font-size: 12px; margin-bottom: 3px;">
+                        <div style="flex:2;">${item.name}</div>
+                        <div style="flex:1; text-align:right;">${qtyStr}</div>
+                        <div style="flex:1; text-align:right;">${priceStr}</div>
+                        <div style="flex:1.5; text-align:right;">${subtotalStr}</div>
+                    </div>
+                `;
+            });
+        }
+    
+        printArea.innerHTML = `
+            <div style="width: 58mm; padding: 10px; font-family: monospace; color: #000; background: #fff;">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <h3 style="margin: 0; font-size: 16px;">${cName}</h3>
+                    <p style="margin: 2px 0; font-size: 12px;">${cAddr}</p>
+                    <p style="margin: 2px 0; font-size: 12px;">Telp: ${cPhone}</p>
+                </div>
+                <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 5px 0; margin-bottom: 10px; font-size: 12px;">
+                    <div style="display:flex; justify-content:space-between;"><span>No:</span><span>${order.id}</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Tgl:</span><span>${order.date || '-'}</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Plg:</span><span>${order.customer || '-'}</span></div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    ${itemsHtml}
+                </div>
+                <div style="border-top: 1px dashed #000; padding-top: 5px; font-size: 12px; font-weight: bold;">
+                    <div style="display:flex; justify-content:space-between;"><span>TOTAL:</span><span>Rp ${order.total.toLocaleString('id-ID')}</span></div>
+                </div>
+                <div style="text-align: center; margin-top: 15px; font-size: 12px;">
+                    <p style="margin: 0;">Terima Kasih!</p>
+                </div>
+            </div>
+        `;
+        
+        // Timeout sedikit untuk memastikan DOM dirender sebelum print dipanggil
+        setTimeout(() => {
+            window.print();
+        }, 300);
+    };
 
     document.getElementById('btn-kirim-nota')?.addEventListener('click', () => {
         if(currentActiveOrder) {
@@ -7375,12 +7425,14 @@
                       const name = svc.NamaLayanan || svc.name || 'Layanan';
                       const price = parseInt(svc.Harga || svc.harga || 0);
                       const unit = svc.Satuan || svc.satuan || 'Kg';
-                      html += `<div class="service-option-row">
-                          <div>
-                              <div style="font-weight:600; font-size:0.9rem; color:#1e293b;">${name}</div>
-                              <div style="font-size:0.75rem; color:#64748b;">Rp ${price.toLocaleString('id-ID')} / ${unit}</div>
+                      html += `<div class="service-option-row btn-select-service" data-name="${name}" data-price="${price}" data-unit="${unit}" style="cursor: pointer; transition: all 0.2s;">
+                          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                              <div>
+                                  <div style="font-weight:600; font-size:0.9rem; color:#1e293b;">${name}</div>
+                                  <div style="font-size:0.75rem; color:#64748b;">Rp ${price.toLocaleString('id-ID')} / ${unit}</div>
+                              </div>
+                              <i class="fa-solid fa-check check-icon" style="color: #0ea5e9; display: none;"></i>
                           </div>
-                          <button class="btn-select-service" data-name="${name}" data-price="${price}" data-unit="${unit}">Pilih</button>
                       </div>`;
                   });
               }
@@ -7403,12 +7455,21 @@
           
           btnSelectServices.forEach(btn => {
               btn.addEventListener('click', (e) => {
-                  btnSelectServices.forEach(b => b.classList.remove('selected'));
-                  e.target.classList.add('selected');
+                  btnSelectServices.forEach(b => {
+                      b.classList.remove('selected');
+                      b.style.background = '';
+                      const icon = b.querySelector('.check-icon');
+                      if(icon) icon.style.display = 'none';
+                  });
+                  const currentBtn = e.currentTarget;
+                  currentBtn.classList.add('selected');
+                  currentBtn.style.background = '#f0f9ff';
+                  const activeIcon = currentBtn.querySelector('.check-icon');
+                  if(activeIcon) activeIcon.style.display = 'block';
                   
-                  const name = e.target.dataset.name;
-                  const price = parseInt(e.target.dataset.price);
-                  const unit = e.target.dataset.unit;
+                  const name = currentBtn.dataset.name;
+                  const price = parseInt(currentBtn.dataset.price);
+                  const unit = currentBtn.dataset.unit;
                   
                   selectedService = { name, price, unit };
                   lblUnit.innerText = unit;
