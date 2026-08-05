@@ -1366,11 +1366,8 @@
                 <div class="pos-step-card">
                     <h3 class="pos-step-title"><span>1. PILIH PELANGGAN <span style="color:#ef4444">*</span></span></h3>
                     <div style="display:flex; gap:10px; margin-bottom: 10px;">
-                        <select class="form-select" id="pos-customer-select" style="flex:1;">
-                            <option value="">Pilih Pelanggan...</option>
-                            <option value="Budi Santoso">Budi Santoso (081234567890)</option>
-                            <option value="Siti Aminah">Siti Aminah (081987654321)</option>
-                        </select>
+                        <input type="text" class="form-select" id="pos-customer-select" style="flex:1;" list="pos-customer-datalist" placeholder="Ketik/Pilih Pelanggan..." autocomplete="off">
+                        <datalist id="pos-customer-datalist"></datalist>
                         <button class="btn-icon" id="btn-pos-new-cust" style="background:#0ea5e9; color:#fff; border-radius:8px; padding:0 15px;">
                             <i class="fa-solid fa-user-plus"></i> Pelanggan Baru
                         </button>
@@ -2253,6 +2250,12 @@
                 <div style="width: 40px;"></div>
             </header>
             
+            <div style="background: #e0f2fe; padding: 10px; text-align: center; font-size: 0.85rem; border-bottom: 1px solid #bae6fd;">
+                <label style="margin-right: 15px; font-weight: bold; color: #0284c7;">Ukuran Kertas Printer:</label>
+                <label style="margin-right: 10px; cursor: pointer;"><input type="radio" name="printerSize" value="58" checked onchange="document.body.classList.remove('print-80mm')"> 58mm</label>
+                <label style="cursor: pointer;"><input type="radio" name="printerSize" value="80" onchange="document.body.classList.add('print-80mm')"> 80mm</label>
+            </div>
+
             <div class="nota-container">
                 <div class="nota-paper" id="print-area">
                     <div class="nota-qr">
@@ -5364,12 +5367,18 @@
     const posCustomerSelect = document.getElementById('pos-customer-select');
     function renderCustomerSelect() {
         if(!posCustomerSelect) return;
-        let html = '<option value="">Pilih Pelanggan...</option>';
-        globalCustomers.forEach(c => {
+        const datalist = document.getElementById('pos-customer-datalist');
+        if(!datalist) return;
+        
+        let html = '';
+        // Urutkan pelanggan secara alfabetis (A-Z)
+        let sortedCustomers = [...globalCustomers].sort((a, b) => a.nama.localeCompare(b.nama));
+        
+        sortedCustomers.forEach(c => {
             let phoneStr = c.telepon ? ' (' + c.telepon + ')' : '';
             html += '<option value="' + c.nama + '">' + c.nama + phoneStr + '</option>';
         });
-        posCustomerSelect.innerHTML = html;
+        datalist.innerHTML = html;
     }
     renderCustomerSelect();
     renderCariPelanggan();
@@ -5381,7 +5390,8 @@
     const lblDiskon = document.getElementById('lbl-diskon');
 
     // Customer selection logic
-    posCustomerSelect?.addEventListener('change', (e) => {
+    // Customer selection logic
+    posCustomerSelect?.addEventListener('input', (e) => {
         let val = e.target.value;
         let cust = globalCustomers.find(c => c.nama === val);
         if(cust) {
@@ -5648,7 +5658,7 @@
 
         let newOrder = {
             id: posNotaBadgeId ? posNotaBadgeId.innerText : 'TRX/123',
-            customerName: posCustomerSelect.options[posCustomerSelect.selectedIndex].text,
+            customerName: posCustomerSelect.value,
             date: dateStr,
             estDate: formatDate(estDate),
             items: JSON.parse(JSON.stringify(cartData)), // clone
@@ -5667,7 +5677,7 @@
         const onSaved = () => {
             cartData = [];
             updateCartUI();
-            posCustomerSelect.selectedIndex = 0;
+            posCustomerSelect.value = '';
             if(memberNameDisp) memberNameDisp.innerText = '-';
             if(memberPhoneDisp) memberPhoneDisp.innerText = '-';
             if(memberBadgeDisp) memberBadgeDisp.style.display = 'none';

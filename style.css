@@ -28,7 +28,7 @@ body {
 
 #app {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -2509,6 +2509,14 @@ body {
 
 /* --- PRINT MEDIA QUERY (Cetak Nota) --- */
 @media print {
+    @page {
+        margin: 0;
+    }
+    body, html {
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
     body * {
         visibility: hidden;
     }
@@ -2519,12 +2527,23 @@ body {
         position: absolute;
         left: 0;
         top: 0;
-        width: 100%;
+        width: 58mm;
         margin: 0;
         padding: 0;
     }
+    
+    /* Support 80mm via a class toggled in JS */
+    body.print-80mm #print-area {
+        width: 80mm;
+    }
+
     /* Sembunyikan elemen background dan navigasi saat print */
     .app-container, .bottom-nav, .app-header {
         display: none !important;
     }
+}
+
+@media (min-width: 768px) {
+    .app-header { padding: 25px 30px 15px; }
+    .top-nav-card { margin: 20px auto; padding: 20px 0; border-radius: 24px; }
 }
