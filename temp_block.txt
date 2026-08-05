@@ -1,0 +1,46 @@
+<!-- LAYOUT KELOLA OUTLET -->
+                <div id="layout-kelola-outlet" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+                    <header class="tp-header">
+                        <button class="btn-icon" id="btn-back-kelola-outlet" style="margin-right: 15px; color: var(--text-dark);">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Kelola Outlet</h2>
+                    </header>
+                    <div style="padding: 20px;">
+                        <div id="outlet-list-container" style="display: flex; flex-direction: column; gap: 15px;">
+                            <!-- Outlet cards will be rendered here -->
+                        </div>
+                    </div>
+                    <button class="fab" id="btn-tambah-outlet" style="bottom: 90px; right: 20px; z-index: 1000;">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- LAYOUT TAMBAH/EDIT OUTLET -->
+                <div id="layout-tambah-outlet" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+                    <header class="tp-header">
+                        <button class="btn-icon" id="btn-back-tambah-outlet" style="margin-right: 15px; color: var(--text-dark);">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h2 class="tp-title" id="tambah-outlet-title" style="margin-bottom:0; font-size:1.2rem;">Tambah Outlet</h2>
+                    </header>
+                    <div class="tp-form">
+                        <div class="form-group">
+                            <label>Nama Outlet</label>
+                            <input type="text" id="input-outlet-nama" class="form-control" placeholder="Nama Outlet (Contoh: Cabang Selatan)">
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="tel" id="input-outlet-telepon" class="form-control" placeholder="Nomor WA Outlet">
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat Outlet</label>
+                            <textarea class="form-control" id="input-outlet-alamat" rows="3" placeholder="Alamat lengkap"></textarea>
+                        </div>
+                        <button id="btn-simpan-outlet" style="width: 100%; background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;">
+                            Simpan Outlet
+                        </button>
+                    </div>
+                </div>
+
+            

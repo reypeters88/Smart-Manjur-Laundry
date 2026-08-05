@@ -19,6 +19,47 @@
     <meta name="theme-color" content="#0284c7">
     <!-- Global Error Catcher (Temporary for Debugging) -->
     <script>
+        // --- MULTI-OUTLET LOCALSTORAGE INTERCEPTOR ---
+        const originalGetItem = localStorage.getItem.bind(localStorage);
+        const originalSetItem = localStorage.setItem.bind(localStorage);
+        
+        const prefixKeys = ['db_pemasukan', 'db_pengeluaran', 'db_pelanggan'];
+        
+        localStorage.getItem = function(key) {
+            const activeOutlet = originalGetItem('active_outlet_id') || 'PUSAT';
+            
+            if (prefixKeys.includes(key)) {
+                if (activeOutlet !== 'PUSAT') {
+                    return originalGetItem(key + '_' + activeOutlet);
+                }
+            }
+            
+            if (activeOutlet !== 'PUSAT') {
+                if (key === 'company_name' || key === 'company_address' || key === 'company_phone') {
+                    const dbOutlets = JSON.parse(originalGetItem('db_outlets') || '[]');
+                    const outlet = dbOutlets.find(o => o.id === activeOutlet);
+                    if (outlet) {
+                        if (key === 'company_name' && outlet.nama) return outlet.nama;
+                        if (key === 'company_address' && outlet.alamat) return outlet.alamat;
+                        if (key === 'company_phone' && outlet.telepon) return outlet.telepon;
+                    }
+                }
+            }
+            
+            return originalGetItem(key);
+        };
+        
+        localStorage.setItem = function(key, value) {
+            const activeOutlet = originalGetItem('active_outlet_id') || 'PUSAT';
+            if (prefixKeys.includes(key)) {
+                if (activeOutlet !== 'PUSAT') {
+                    return originalSetItem(key + '_' + activeOutlet, value);
+                }
+            }
+            return originalSetItem(key, value);
+        };
+        // ---------------------------------------------
+        
         window.addEventListener('error', function(e) {
             console.error("JS Error:\n" + e.message + "\nLine: " + e.lineno + "\nFile: " + e.filename);
         });
@@ -828,11 +869,11 @@
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                                 </div>
-                                <div style="padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                                <div id="btn-menu-kelola-outlet" style="padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
                                     <div style="width: 35px; height: 35px; background: #f0f9ff; border-radius: 8px; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-store" style="color: #3b82f6;"></i></div>
                                     <div style="flex-grow: 1;">
                                         <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">Kelola Outlet</div>
-                                        <div style="font-size: 0.75rem; color: #64748b;">Cabang, rak & pegawai</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;" id="active-outlet-label">Cabang Utama (Pusat)</div>
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                                 </div>
@@ -844,7 +885,7 @@
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                                 </div>
-                                <div style="padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+                                <div id="btn-menu-kelola-keuangan" style="padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
                                     <div style="width: 35px; height: 35px; background: #f0f9ff; border-radius: 8px; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-wallet" style="color: #3b82f6;"></i></div>
                                     <div style="flex-grow: 1;">
                                         <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">Kelola Keuangan</div>
@@ -943,7 +984,7 @@
 
                     <!-- SEARCH BAR -->
                     <div class="kp-search-bar">
-                        <div class="kp-search-title">Pelanggan (1570)</div>
+                        <div class="kp-search-title" id="kelola-pelanggan-title">Pelanggan (0)</div>
                         <div class="kp-search-input-wrap">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
@@ -963,85 +1004,11 @@
                     </div>
 
                     <!-- CUSTOMER LIST -->
-                    <div class="kp-list">
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f59e0b;">Ga</div>
-                            <div class="kp-info">
-                                <div class="kp-name">Garin</div>
-                                <div class="kp-phone">Tanpa nomor</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f97316;">re</div>
-                            <div class="kp-info">
-                                <div class="kp-name">revi</div>
-                                <div class="kp-phone">Tanpa nomor</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f59e0b;">so</div>
-                            <div class="kp-info">
-                                <div class="kp-name">sonia</div>
-                                <div class="kp-phone">Tanpa nomor</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f97316;">No</div>
-                            <div class="kp-info">
-                                <div class="kp-name">Novizal</div>
-                                <div class="kp-phone">Tanpa nomor</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
-
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f59e0b;">Ad</div>
-                            <div class="kp-info">
-                                <div class="kp-name">Adib Rifky</div>
-                                <div class="kp-phone">Tanpa nomor</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
-
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f97316;">Da</div>
-                            <div class="kp-info">
-                                <div class="kp-name">Dave</div>
-                                <div class="kp-phone">Tanpa nomor</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="kp-list-item">
-                            <div class="kp-avatar" style="background: #f59e0b;">Il</div>
-                            <div class="kp-info">
-                                <div class="kp-name">Ilham Dilfal</div>
-                                <div class="kp-phone">+6283189255595</div>
-                            </div>
-                            <div class="kp-action">
-                                <i class="fa-solid fa-ellipsis" style="color: #f59e0b;"></i>
-                            </div>
-                        </div>
+                    <div class="kp-list" id="kelola-pelanggan-list">
+                        <!-- Dynamic list rendered here -->
                     </div>
                 </div>
+
 
             <!-- BOTTOM NAVIGATION -->
             <nav class="bottom-nav">
@@ -1276,6 +1243,377 @@
                 </button>
             </div>
         </div>
+
+                <!-- LAYOUT KELOLA OUTLET -->
+                <div id="layout-kelola-outlet" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+                    <header class="tp-header">
+                        <button class="btn-icon" id="btn-back-kelola-outlet" style="margin-right: 15px; color: var(--text-dark);">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Kelola Outlet</h2>
+                    </header>
+                    <div style="padding: 20px;">
+                        <div id="outlet-list-container" style="display: flex; flex-direction: column; gap: 15px;">
+                            <!-- Outlet cards will be rendered here -->
+                        </div>
+                    </div>
+                    <button class="fab" id="btn-tambah-outlet" style="bottom: 90px; right: 20px; z-index: 1000;">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- LAYOUT TAMBAH/EDIT OUTLET -->
+                <div id="layout-tambah-outlet" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+                    <header class="tp-header">
+                        <button class="btn-icon" id="btn-back-tambah-outlet" style="margin-right: 15px; color: var(--text-dark);">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h2 class="tp-title" id="tambah-outlet-title" style="margin-bottom:0; font-size:1.2rem;">Tambah Outlet</h2>
+                    </header>
+                    <div class="tp-form">
+                        <div class="form-group">
+                            <label>Nama Outlet</label>
+                            <input type="text" id="input-outlet-nama" class="form-control" placeholder="Nama Outlet (Contoh: Cabang Selatan)">
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="tel" id="input-outlet-telepon" class="form-control" placeholder="Nomor WA Outlet">
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat Outlet</label>
+                            <textarea class="form-control" id="input-outlet-alamat" rows="3" placeholder="Alamat lengkap"></textarea>
+                        </div>
+                        <button id="btn-simpan-outlet" style="width: 100%; background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;">
+                            Simpan Outlet
+                        </button>
+                    </div>
+                </div>
+
+            
+
+                <!-- LAYOUT KELOLA KEUANGAN -->
+<div id="layout-kelola-keuangan" class="layout" style="display: none; background: #f8fafc; min-height: 100vh;">
+    <header class="tp-header" style="background: #ffffff; border-bottom: 1px solid #f1f5f9; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+        <button class="btn-icon" id="btn-back-kelola-keuangan" style="color: var(--text-dark); background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <img src="logo_manjur.png" alt="Logo" class="dynamic-logo" style="height: 25px; object-fit: contain;">
+        <div style="width: 24px;"></div> <!-- Spacer -->
+    </header>
+    <div style="padding: 15px 20px; background: #ffffff;">
+        <h2 style="font-size: 1.1rem; color: #1e293b; margin: 0; font-weight: 600;">Kelola Keuangan</h2>
+    </div>
+    <div style="background: #ffffff; margin-top: 5px;">
+        
+        <!-- Atur Cashbox -->
+        <div class="kk-menu-item" id="btn-kk-atur-cashbox" style="padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-wallet"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Atur Cashbox</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+
+        <!-- Atur Kategori -->
+        <div class="kk-menu-item" id="btn-kk-atur-kategori" style="padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-tags"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Atur Kategori</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+
+        <!-- Tambah Pendapatan -->
+        <div class="kk-menu-item" id="btn-kk-tambah-pendapatan" style="padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-arrow-down-to-line" style="color: #10b981;"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Tambah Pendapatan</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+
+        <!-- Tambah Pengeluaran -->
+        <div class="kk-menu-item" id="btn-kk-tambah-pengeluaran" style="padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-arrow-up-from-bracket" style="color: #ef4444;"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Tambah Pengeluaran</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+
+        <!-- Pemindahan Saldo -->
+        <div class="kk-menu-item" id="btn-kk-pemindahan-saldo" style="padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Pemindahan Saldo</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+
+        <!-- Koreksi Keuangan -->
+        <div class="kk-menu-item" id="btn-kk-koreksi-keuangan" style="padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-scale-balanced" style="color: #3b82f6;"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Koreksi Keuangan</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+
+        <!-- Koreksi Pembayaran -->
+        <div class="kk-menu-item" id="btn-kk-koreksi-pembayaran" style="padding: 15px 20px; display: flex; align-items: center; cursor: pointer;">
+            <div style="width: 30px; color: #64748b; font-size: 1.1rem;"><i class="fa-solid fa-file-invoice-dollar" style="color: #3b82f6;"></i></div>
+            <div style="flex-grow: 1; font-size: 0.95rem; color: #334155; font-weight: 500;">Koreksi Pembayaran</div>
+            <i class="fa-regular fa-circle-info" style="color: #64748b;"></i>
+        </div>
+    </div>
+</div>
+
+
+                <!-- 1. ATUR CASHBOX -->
+<div id="layout-atur-cashbox" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-atur-cashbox" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Atur Cashbox</h2>
+    </header>
+    <div style="padding: 20px;">
+        <div id="cashbox-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Rendered via JS -->
+        </div>
+    </div>
+    <button class="fab" id="btn-tambah-cashbox" style="bottom: 20px; right: 20px; z-index: 1000;">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+</div>
+
+<!-- Modal Tambah/Edit Cashbox -->
+<div class="modal-overlay" id="modal-tambah-cashbox" style="display:none;">
+    <div class="modal-content" style="max-width: 400px; padding: 20px;">
+        <h3 id="modal-cashbox-title" style="margin-top:0; color:#1e293b;">Tambah Cashbox</h3>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>Nama Cashbox / Bank</label>
+            <input type="text" id="input-cashbox-nama" class="form-control" placeholder="Contoh: BCA, Mandiri, Laci Kasir">
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button id="btn-batal-cashbox" style="flex:1; padding:12px; background:#f1f5f9; color:#475569; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Batal</button>
+            <button id="btn-simpan-cashbox" style="flex:1; padding:12px; background:#3b82f6; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Simpan</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 2. ATUR KATEGORI -->
+<div id="layout-atur-kategori" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-atur-kategori" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Atur Kategori</h2>
+    </header>
+    <div style="padding: 20px;">
+        <!-- Tabs Pemasukan vs Pengeluaran -->
+        <div style="display: flex; background: #e2e8f0; border-radius: 8px; padding: 4px; margin-bottom: 15px;">
+            <button id="tab-kat-pemasukan" style="flex: 1; padding: 8px; border: none; background: #fff; border-radius: 6px; font-weight: 600; color: #1e293b; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Pemasukan</button>
+            <button id="tab-kat-pengeluaran" style="flex: 1; padding: 8px; border: none; background: transparent; border-radius: 6px; font-weight: 600; color: #64748b; cursor: pointer;">Pengeluaran</button>
+        </div>
+        
+        <div id="kategori-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Rendered via JS -->
+        </div>
+    </div>
+    <button class="fab" id="btn-tambah-kategori" style="bottom: 20px; right: 20px; z-index: 1000;">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+</div>
+
+<!-- Modal Tambah/Edit Kategori -->
+<div class="modal-overlay" id="modal-tambah-kategori" style="display:none;">
+    <div class="modal-content" style="max-width: 400px; padding: 20px;">
+        <h3 id="modal-kategori-title" style="margin-top:0; color:#1e293b;">Tambah Kategori</h3>
+        <div class="form-group" style="margin-top: 15px;">
+            <label>Nama Kategori</label>
+            <input type="text" id="input-kategori-nama" class="form-control" placeholder="Contoh: Pembelian Inventory">
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button id="btn-batal-kategori" style="flex:1; padding:12px; background:#f1f5f9; color:#475569; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Batal</button>
+            <button id="btn-simpan-kategori" style="flex:1; padding:12px; background:#3b82f6; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Simpan</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 3. TAMBAH PENDAPATAN -->
+<div id="layout-tambah-pendapatan" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-tambah-pendapatan" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Tambah Pendapatan</h2>
+    </header>
+    <div class="tp-form">
+        <div class="form-group">
+            <label>Tanggal</label>
+            <input type="date" id="input-pdk-tanggal" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Nominal (Rp)</label>
+            <input type="number" id="input-pdk-nominal" class="form-control" placeholder="0">
+        </div>
+        <div class="form-group">
+            <label>Cashbox Tujuan</label>
+            <select id="input-pdk-cashbox" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Kategori</label>
+            <select id="input-pdk-kategori" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Keterangan</label>
+            <textarea id="input-pdk-keterangan" class="form-control" rows="3" placeholder="Catatan opsional..."></textarea>
+        </div>
+        <button id="btn-simpan-pendapatan" style="width: 100%; background: #10b981; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;">
+            Simpan Pendapatan
+        </button>
+    </div>
+</div>
+
+
+<!-- 4. TAMBAH PENGELUARAN -->
+<div id="layout-tambah-pengeluaran" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-tambah-pengeluaran" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Tambah Pengeluaran</h2>
+    </header>
+    <div class="tp-form">
+        <div class="form-group">
+            <label>Tanggal</label>
+            <input type="date" id="input-pgk-tanggal" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Nominal (Rp)</label>
+            <input type="number" id="input-pgk-nominal" class="form-control" placeholder="0">
+        </div>
+        <div class="form-group">
+            <label>Dari Cashbox</label>
+            <select id="input-pgk-cashbox" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Kategori</label>
+            <select id="input-pgk-kategori" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Keterangan</label>
+            <textarea id="input-pgk-keterangan" class="form-control" rows="3" placeholder="Catatan opsional..."></textarea>
+        </div>
+        <button id="btn-simpan-pengeluaran" style="width: 100%; background: #ef4444; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;">
+            Simpan Pengeluaran
+        </button>
+    </div>
+</div>
+
+
+<!-- 5. PEMINDAHAN SALDO -->
+<div id="layout-pemindahan-saldo" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-pemindahan-saldo" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Pemindahan Saldo</h2>
+    </header>
+    <div class="tp-form">
+        <div class="form-group">
+            <label>Tanggal</label>
+            <input type="date" id="input-ps-tanggal" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Nominal (Rp)</label>
+            <input type="number" id="input-ps-nominal" class="form-control" placeholder="0">
+        </div>
+        <div class="form-group">
+            <label>Dari Cashbox (Sumber)</label>
+            <select id="input-ps-dari" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Ke Cashbox (Tujuan)</label>
+            <select id="input-ps-ke" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Keterangan Tambahan</label>
+            <textarea id="input-ps-keterangan" class="form-control" rows="3" placeholder="Contoh: Setor tunai ke BCA"></textarea>
+        </div>
+        <button id="btn-simpan-pemindahan" style="width: 100%; background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;">
+            Pindahkan Saldo
+        </button>
+    </div>
+</div>
+
+
+<!-- 6. KOREKSI KEUANGAN -->
+<div id="layout-koreksi-keuangan" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-koreksi-keuangan" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Koreksi Keuangan</h2>
+    </header>
+    <div class="tp-form">
+        <div class="form-group">
+            <label>Pilih Cashbox</label>
+            <select id="input-kk-cashbox" class="form-control"></select>
+        </div>
+        
+        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px; text-align:center;">
+            <div style="color:#64748b; font-size:0.85rem; margin-bottom:5px;">Saldo Sistem Saat Ini:</div>
+            <div id="kk-saldo-sistem" style="font-weight:700; font-size:1.5rem; color:#1e293b;">Rp 0</div>
+        </div>
+
+        <div class="form-group">
+            <label>Saldo Aktual (Uang Fisik / Mutasi Bank)</label>
+            <input type="number" id="input-kk-aktual" class="form-control" placeholder="Masukkan saldo riil">
+        </div>
+        
+        <div id="kk-selisih-container" style="display:none; padding:15px; border-radius:8px; margin-bottom:15px; text-align:center;">
+            <div style="font-size:0.85rem; margin-bottom:5px;">Selisih:</div>
+            <div id="kk-selisih-nominal" style="font-weight:700; font-size:1.2rem;">Rp 0</div>
+            <div id="kk-selisih-info" style="font-size:0.75rem; margin-top:5px;">Sistem akan mencatat penyesuaian.</div>
+        </div>
+
+        <div class="form-group">
+            <label>Keterangan Penyesuaian</label>
+            <textarea id="input-kk-keterangan" class="form-control" rows="2" placeholder="Contoh: Selisih uang kasir"></textarea>
+        </div>
+        <button id="btn-simpan-koreksi" style="width: 100%; background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer;">
+            Simpan Koreksi
+        </button>
+    </div>
+</div>
+
+
+<!-- 7. KOREKSI PEMBAYARAN -->
+<div id="layout-koreksi-pembayaran" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; padding-bottom: 80px;">
+    <header class="tp-header">
+        <button class="btn-icon" id="btn-back-koreksi-pembayaran" style="margin-right: 15px; color: var(--text-dark);">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="tp-title" style="margin-bottom:0; font-size:1.2rem;">Koreksi Pembayaran</h2>
+    </header>
+    <div style="padding: 20px;">
+        <div style="color:#64748b; font-size:0.85rem; margin-bottom:15px;">
+            Pilih transaksi terakhir untuk mengubah metode pembayaran (Cashbox).
+        </div>
+        <div id="koreksi-pembayaran-list" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Riwayat transaksi (Pendapatan/Pengeluaran/Laundry) -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ubah Pembayaran -->
+<div class="modal-overlay" id="modal-ubah-pembayaran" style="display:none;">
+    <div class="modal-content" style="max-width: 400px; padding: 20px;">
+        <h3 style="margin-top:0; color:#1e293b;">Ubah Cashbox</h3>
+        <p id="modal-up-info" style="font-size:0.85rem; color:#64748b; margin-bottom:15px;"></p>
+        <div class="form-group">
+            <label>Ubah menjadi Cashbox:</label>
+            <select id="modal-up-cashbox" class="form-control"></select>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button id="btn-batal-up" style="flex:1; padding:12px; background:#f1f5f9; color:#475569; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Batal</button>
+            <button id="btn-simpan-up" style="flex:1; padding:12px; background:#3b82f6; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer;">Simpan</button>
+        </div>
+    </div>
+</div>
+
 
                 <!-- LAYOUT MANAJEMEN LAYANAN -->
         <div id="layout-layanan" class="layout" style="display: none; background: #f8fafc; min-height: 100vh;">
@@ -2264,8 +2602,8 @@
                     
                     <div class="nota-header-text">
                         <span class="dynamic-company-name">Manjur Laundry</span><br>
-                        Jalan tanjung lobam, Tlk<br>
-                        HP. 082377178107
+                        <span class="dynamic-company-address">Jalan tanjung lobam, Tlk</span><br>
+                        HP. <span class="dynamic-company-phone">082377178107</span>
                     </div>
                     
                     <table class="nota-info-table">
@@ -2298,6 +2636,9 @@
                     </button>
                     <button class="nota-btn nota-btn-secondary" id="btn-cetak-nota">
                         <i class="fa-solid fa-print"></i> CETAK NOTA (BLUETOOTH)
+                    </button>
+                    <button class="nota-btn nota-btn-secondary" id="btn-cetak-browser" style="margin-top:10px; background: #94a3b8; color: #fff;">
+                        <i class="fa-solid fa-print"></i> CETAK NOTA (BROWSER)
                     </button>
                 </div>
             </div>
@@ -3588,7 +3929,7 @@
         const colors = ['#f59e0b', '#f97316', '#3b82f6', '#10b981', '#8b5cf6'];
         globalCustomers.forEach((cust, idx) => {
             const initial = cust.nama.substring(0, 2).charAt(0).toUpperCase() + (cust.nama.substring(1, 2) || '');
-            const phone = cust.hp || 'Tanpa nomor';
+            const phone = cust.telepon || cust.hp || 'Tanpa nomor';
             const color = colors[idx % colors.length];
             
             listContainer.innerHTML += `
@@ -3598,12 +3939,67 @@
                         <div class="kp-name">${cust.nama}</div>
                         <div class="kp-phone">${phone}</div>
                     </div>
-                    <div class="kp-action">
-                        <i class="fa-solid fa-chevron-right"></i>
+                    <div class="kp-action" onclick="window.editCustomer(${idx})" style="cursor: pointer; padding: 10px;">
+                        <i class="fa-solid fa-ellipsis" style="color: #f59e0b; font-size: 1.2rem;"></i>
                     </div>
                 </div>
             `;
         });
+    };
+
+    window.editCustomer = function(idx) {
+        let c = globalCustomers[idx];
+        if(!c) return;
+
+        window.editingCustomerIndex = idx;
+        
+        const inputNama = document.getElementById('tp-input-nama');
+        const inputTelepon = document.getElementById('tp-input-telepon');
+        const cbTanpaTelepon = document.getElementById('tanpa-telepon');
+        const inputEmail = document.getElementById('tp-input-email');
+        const inputAlamat = document.getElementById('tp-input-alamat');
+        
+        if (inputNama) inputNama.value = c.nama || '';
+        let phoneStr = c.telepon || c.hp || '';
+        if (inputTelepon) inputTelepon.value = phoneStr;
+        if (cbTanpaTelepon) cbTanpaTelepon.checked = (!phoneStr);
+        if (inputEmail) inputEmail.value = c.email || '';
+        if (inputAlamat) inputAlamat.value = c.alamat || '';
+
+        const title = document.querySelector('.tp-title');
+        if (title) title.innerText = 'Edit Pelanggan';
+
+        const layoutKelolaPelanggan = document.getElementById('tab-kelola-pelanggan');
+        const layoutTambahPelanggan = document.getElementById('layout-tambah-pelanggan');
+        if (layoutKelolaPelanggan && layoutTambahPelanggan) {
+            layoutKelolaPelanggan.classList.remove('active');
+            layoutKelolaPelanggan.style.display = 'none';
+            layoutTambahPelanggan.style.display = 'block';
+            setTimeout(() => layoutTambahPelanggan.classList.add('active'), 10);
+            
+            // Override back button behavior temporarily for this session
+            const btnBackTp = document.getElementById('btn-back-tp');
+            if (btnBackTp) {
+                const oldBackTp = btnBackTp.onclick;
+                btnBackTp.onclick = (e) => {
+                    if (e) { e.preventDefault(); e.stopPropagation(); }
+                    layoutTambahPelanggan.classList.remove('active');
+                    setTimeout(() => {
+                        layoutTambahPelanggan.style.display = 'none';
+                        layoutKelolaPelanggan.style.display = 'block';
+                        setTimeout(() => layoutKelolaPelanggan.classList.add('active'), 10);
+                    }, 300);
+                    // reset title & editing state
+                    if (title) title.innerText = 'Tambah Pelanggan';
+                    window.editingCustomerIndex = null;
+                    if (inputNama) inputNama.value = '';
+                    if (inputTelepon) inputTelepon.value = '';
+                    if (inputEmail) inputEmail.value = '';
+                    if (inputAlamat) inputAlamat.value = '';
+                    btnBackTp.onclick = oldBackTp; // restore
+                };
+            }
+        }
     };
 
     function renderCariPelanggan() {
@@ -3686,6 +4082,16 @@
 
     if (btnBackPos) {
         btnBackPos.addEventListener('click', () => {
+            // CLEAR EDIT STATE if user cancels
+            window.editingOrderId = null;
+            window.editingOrderOriginalDate = null;
+            window.editingOrderStatus = null;
+            
+            cartData = [];
+            updateCartUI();
+            const posCustomerSelect = document.getElementById('pos-customer-select');
+            if(posCustomerSelect) posCustomerSelect.value = '';
+            
             layoutPos.classList.remove('active');
             layoutPos.style.display = 'none';
             layoutMain.style.display = 'flex';
@@ -3705,6 +4111,18 @@
         layoutMain.classList.remove('active');
         layoutMain.style.display = 'none';
         
+        window.editingCustomerIndex = null;
+        const title = document.querySelector('.tp-title');
+        if (title) title.innerText = 'Tambah Pelanggan';
+        const inputNama = document.getElementById('tp-input-nama');
+        const inputTelepon = document.getElementById('tp-input-telepon');
+        const inputEmail = document.getElementById('tp-input-email');
+        const inputAlamat = document.getElementById('tp-input-alamat');
+        if (inputNama) inputNama.value = '';
+        if (inputTelepon) inputTelepon.value = '';
+        if (inputEmail) inputEmail.value = '';
+        if (inputAlamat) inputAlamat.value = '';
+
         layoutTambahPelanggan.style.display = 'block';
         setTimeout(() => layoutTambahPelanggan.classList.add('active'), 10);
     });
@@ -3817,41 +4235,63 @@
             const telepon = inputTelepon ? inputTelepon.value.trim() : '';
 
             if (!nama) {
-                if(window.Swal) {
-                    Swal.fire('Oops...', 'Nama pelanggan tidak boleh kosong!', 'error');
-                } else {
-                    alert('Nama pelanggan tidak boleh kosong!');
-                }
+                if(window.Swal) Swal.fire('Oops...', 'Nama pelanggan tidak boleh kosong!', 'error');
+                else alert('Nama pelanggan tidak boleh kosong!');
                 return;
             }
 
             if (!tanpaTelepon && !telepon) {
-                if(window.Swal) {
-                    Swal.fire('Oops...', 'Nomor telepon harus diisi, atau centang "Tanpa nomor telepon"!', 'error');
-                } else {
-                    alert('Nomor telepon harus diisi, atau centang "Tanpa nomor telepon"!');
-                }
+                if(window.Swal) Swal.fire('Oops...', 'Nomor telepon harus diisi, atau centang "Tanpa nomor telepon"!', 'error');
+                else alert('Nomor telepon harus diisi, atau centang "Tanpa nomor telepon"!');
                 return;
             }
 
-                        // Simpan ke DB Pelanggan Lokal
-            const newCust = {
-                id: 'CUST-' + Date.now(),
-                nama: nama,
-                telepon: telepon,
-                alamat: inputAlamat ? inputAlamat.value.trim() : '',
-                email: inputEmail ? inputEmail.value.trim() : '',
-                create_date: new Date().toISOString()
-            };
-            globalCustomers.push(newCust);
-            localStorage.setItem('db_pelanggan', JSON.stringify(globalCustomers));
-            
-            // Perbarui UI kasir
-            if(typeof renderCustomerSelect === 'function') {    renderCustomerSelect();
-    renderCariPelanggan();
+            let oldName = null;
+            if (window.editingCustomerIndex !== undefined && window.editingCustomerIndex !== null) {
+                oldName = globalCustomers[window.editingCustomerIndex].nama;
+                globalCustomers[window.editingCustomerIndex].nama = nama;
+                globalCustomers[window.editingCustomerIndex].telepon = telepon;
+                globalCustomers[window.editingCustomerIndex].hp = telepon;
+                globalCustomers[window.editingCustomerIndex].alamat = inputAlamat ? inputAlamat.value.trim() : '';
+                globalCustomers[window.editingCustomerIndex].email = inputEmail ? inputEmail.value.trim() : '';
+                
+                // Update history with new name
+                if (oldName && oldName !== nama) {
+                    orderHistory.forEach(order => {
+                        if (order.customerName === oldName) order.customerName = nama;
+                        // Also check for "(08...)" format in order names if used
+                        if (order.customerName.startsWith(oldName + ' (')) {
+                            order.customerName = order.customerName.replace(oldName, nama);
+                        }
+                    });
+                    localStorage.setItem('db_pemasukan', JSON.stringify(orderHistory));
+                    if (typeof renderDashboardPesanan === 'function') renderDashboardPesanan();
+                }
+            } else {
+                const newCust = {
+                    id: 'CUST-' + Date.now(),
+                    nama: nama,
+                    telepon: telepon,
+                    hp: telepon,
+                    alamat: inputAlamat ? inputAlamat.value.trim() : '',
+                    email: inputEmail ? inputEmail.value.trim() : '',
+                    create_date: new Date().toISOString()
+                };
+                globalCustomers.push(newCust);
             }
+            
+            localStorage.setItem('db_pelanggan', JSON.stringify(globalCustomers));
+            window.editingCustomerIndex = null;
+            
+            const title = document.querySelector('.tp-title');
+            if (title) title.innerText = 'Tambah Pelanggan';
+            
+            // Perbarui UI kasir & Kelola Pelanggan
+            if (typeof renderCustomerSelect === 'function') renderCustomerSelect();
+            if (typeof renderCariPelanggan === 'function') renderCariPelanggan();
+            if (typeof window.renderKelolaPelanggan === 'function') window.renderKelolaPelanggan();
 
-            if(window.Swal) {
+            if (window.Swal) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
@@ -5657,21 +6097,29 @@
         estDate.setDate(estDate.getDate() + 1);
 
         let newOrder = {
-            id: posNotaBadgeId ? posNotaBadgeId.innerText : 'TRX/123',
+            id: window.editingOrderId ? window.editingOrderId : (posNotaBadgeId ? posNotaBadgeId.innerText : 'TRX/123'),
             customerName: posCustomerSelect.value,
-            date: dateStr,
+            date: window.editingOrderId ? window.editingOrderOriginalDate : dateStr,
             estDate: formatDate(estDate),
             items: JSON.parse(JSON.stringify(cartData)), // clone
             total: finalTotal,
+            cashbox: document.querySelector('.btn-pay-method.active') ? document.querySelector('.btn-pay-method.active').getAttribute('data-method') : 'Tunai',
             dibayar: parseFloat(inputUang.value) || 0,
-            status: 'validasi'
+            status: window.editingOrderId ? window.editingOrderStatus : 'validasi'
         };
 
         // Hindari double-click bug
         cartData = [];
         updateCartUI();
 
-                orderHistory.unshift(newOrder);
+        if (window.editingOrderId) {
+            let index = orderHistory.findIndex(o => o.id === window.editingOrderId);
+            if (index !== -1) orderHistory[index] = newOrder;
+            else orderHistory.unshift(newOrder); // Fallback
+        } else {
+            orderHistory.unshift(newOrder);
+        }
+        
         localStorage.setItem('db_pemasukan', JSON.stringify(orderHistory));
 
         const onSaved = () => {
@@ -5682,6 +6130,12 @@
             if(memberPhoneDisp) memberPhoneDisp.innerText = '-';
             if(memberBadgeDisp) memberBadgeDisp.style.display = 'none';
             inputUang.value = '';
+            
+            // CLEAR EDIT STATE
+            window.editingOrderId = null;
+            window.editingOrderOriginalDate = null;
+            window.editingOrderStatus = null;
+
             if(posNotaBadgeId) posNotaBadgeId.innerText = generateNota();
             
             renderDashboardPesanan();
@@ -5696,14 +6150,12 @@
                     layoutNotaEl.classList.add('active');
                 }
 
-                // Jangan pakai setTimeout terlalu lama agar tidak diblokir browser popup blocker
-                setTimeout(() => {
-                    if (typeof window.printReceiptBrowser === 'function') {
-                        window.printReceiptBrowser(newOrder);
-                    } else if (typeof btPrinter !== 'undefined') {
-                        btPrinter.print(newOrder);
-                    }
-                }, 50);
+                // Prioritaskan Bluetooth Printer
+                if (typeof btPrinter !== 'undefined') {
+                    btPrinter.print(newOrder);
+                } else if (typeof window.printReceiptBrowser === 'function') {
+                    window.printReceiptBrowser(newOrder);
+                }
             } else {
                 showDetailPesanan(newOrder);
             }
@@ -5931,8 +6383,47 @@
     };
 
     window.editTransaction = function(orderId) {
-        alert('Fitur edit detail transaksi akan segera hadir. ID: ' + orderId);
-        // Bisa dikembangkan untuk reload ke form order
+        let order = orderHistory.find(o => o.id === orderId);
+        if(!order) {
+            if(window.Swal) Swal.fire('Error', 'Pesanan tidak ditemukan!', 'error');
+            else alert('Pesanan tidak ditemukan!');
+            return;
+        }
+
+        // Set global edit state
+        window.editingOrderId = order.id;
+        window.editingOrderOriginalDate = order.date;
+        window.editingOrderStatus = order.status;
+
+        // Populate cart
+        cartData = JSON.parse(JSON.stringify(order.items));
+        updateCartUI();
+
+        // Populate customer
+        if(posCustomerSelect) {
+            posCustomerSelect.value = order.customerName;
+            // Trigger input event to update display
+            posCustomerSelect.dispatchEvent(new Event('input'));
+        }
+
+        // Populate dibayar
+        const inputUang = document.getElementById('input-uang');
+        if(inputUang) {
+            inputUang.value = order.dibayar || '';
+        }
+
+        // Keep ID Nota
+        const posNotaBadgeId = document.getElementById('pos-nota-badge-id');
+        if(posNotaBadgeId) posNotaBadgeId.innerText = order.id;
+
+        // Open POS layout
+        if(typeof hideAllLayouts === 'function') hideAllLayouts();
+        const layoutPos = document.getElementById('layout-pos');
+        if(layoutPos) {
+            layoutPos.style.display = 'block';
+            setTimeout(() => layoutPos.classList.add('active'), 10);
+            if(typeof calcTotal === 'function') calcTotal();
+        }
     };
     function renderDashboardPesanan() {
         const dashContainer = document.getElementById('dashboard-pesanan-list');
@@ -6280,67 +6771,88 @@
                 const boldOff = () => commands.push(new Uint8Array([0x1B, 0x45, 0]));
                 const feed = (lines = 1) => commands.push(new Uint8Array([0x1B, 0x64, lines]));
                 const line = () => text('-'.repeat(32));
+                // Helper for left-right text
+                const row = (leftText, rightText) => {
+                    let strLeft = String(leftText);
+                    let strRight = String(rightText);
+                    let spaces = 32 - strLeft.length - strRight.length;
+                    if(spaces < 1) spaces = 1;
+                    text(strLeft + ' '.repeat(spaces) + strRight);
+                };
 
-                // BUild receipt
+                // Build receipt
                 center();
+                
+                // QR Code (GS ( k)
+                try {
+                    let qrData = encoder.encode(orderData.id);
+                    let len = qrData.length + 3;
+                    let pL = len % 256;
+                    let pH = Math.floor(len / 256);
+                    commands.push(new Uint8Array([0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 6])); // Size
+                    commands.push(new Uint8Array([0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, 48])); // Error correction L
+                    let storeCmd = new Uint8Array(8 + qrData.length);
+                    storeCmd.set([0x1D, 0x28, 0x6B, pL, pH, 0x31, 0x50, 0x30], 0);
+                    storeCmd.set(qrData, 8);
+                    commands.push(storeCmd); // Store data
+                    commands.push(new Uint8Array([0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30])); // Print
+                } catch(e) {
+                    console.error('QR Print error', e);
+                }
+                feed(1);
+
                 boldOn();
-                const companyNameStr = localStorage.getItem('company_name') || 'MANJUR LAUNDRY'; text(companyNameStr.toUpperCase());
+                const companyNameStr = localStorage.getItem('company_name') || 'MANJUR LAUNDRY'; 
+                text(companyNameStr.toUpperCase());
                 boldOff();
-                text('Jalan tanjung lobam, Tlk');
-                text('HP. 082377178107');
+                text(localStorage.getItem('company_address') || 'Jalan tanjung lobam, Tlk');
+                text('HP. ' + (localStorage.getItem('company_phone') || '082377178107'));
                 feed(1);
                 
                 left();
-                text(`Order ID : ${orderData.id}`);
+                line();
                 
                 let cName = orderData.customerName;
-                let cPhone = '';
-                if(cName.includes(' (')) {
-                    let parts = cName.split(' (');
-                    cName = parts[0];
-                    cPhone = parts[1].replace(')', '');
-                }
-                text(`Pelanggan: ${cName}`);
-                if(cPhone) text(`HP       : ${cPhone}`);
+                if (cName.includes(' (')) { cName = cName.split(' (')[0]; }
                 
-                text(`Tanggal  : ${orderData.date.split(' ')[0]}`);
+                row('Order ID', orderData.id);
+                row('Pelanggan', cName);
+                row('Kasir', localStorage.getItem('owner_name') || 'Admin');
+                row('Tgl Pesan', orderData.date.split(' ')[0]);
                 line();
                 
                 orderData.items.forEach(item => {
+                    boldOn();
                     text(`${item.name}`);
+                    boldOff();
                     let qtyPrice = `${item.qty} ${item.satuan} x ${item.price.toLocaleString('id-ID')}`;
                     let subtotal = item.total.toLocaleString('id-ID');
                     
                     if (item.spotting) {
                         text(qtyPrice);
-                        let spot = '+ Spotting';
-                        let spaces = 32 - spot.length - subtotal.length;
-                        text(spot + ' '.repeat(Math.max(1, spaces)) + subtotal);
+                        row('+ Spotting', subtotal);
                     } else {
-                        let spaces = 32 - qtyPrice.length - subtotal.length;
-                        text(qtyPrice + ' '.repeat(Math.max(1, spaces)) + subtotal);
+                        row(qtyPrice, subtotal);
                     }
                 });
                 line();
                 
                 boldOn();
-                let totalStr = `TOTAL`;
-                let totalVal = orderData.total.toLocaleString('id-ID');
-                let tSpace = 32 - totalStr.length - totalVal.length;
-                text(totalStr + ' '.repeat(Math.max(1, tSpace)) + totalVal);
+                row('Total Harga', orderData.total.toLocaleString('id-ID'));
                 boldOff();
-                feed(1);
-
-                // Print Barcode (CODE39)
-                center();
-                commands.push(new Uint8Array([0x1D, 0x77, 2])); // Width 2
-                commands.push(new Uint8Array([0x1D, 0x68, 60])); // Height 60
-                commands.push(new Uint8Array([0x1D, 0x48, 2])); // Text below
-                // ID length might have letters and slashes. CODE39 supports uppercase A-Z, 0-9, -, ., $, /, +, %
-                // Replace any non-supported chars
-                let bcText = orderData.id.toUpperCase().replace(/[^A-Z0-9\-\.\$\/\+%]/g, '');
-                let cmdBc = new Uint8Array([0x1D, 0x6B, 4].concat(Array.from(encoder.encode(bcText)), [0]));
-                commands.push(cmdBc);
+                
+                let dibayar = orderData.dibayar || 0;
+                row('Dibayar', dibayar.toLocaleString('id-ID'));
+                
+                let kurang = orderData.total - dibayar;
+                if (kurang < 0) kurang = 0;
+                row('Kurang', kurang.toLocaleString('id-ID'));
+                
+                boldOn();
+                row('Status', kurang > 0 ? 'BELUM DIBAYAR' : 'LUNAS');
+                boldOff();
+                
+                line();
                 
                 feed(1);
                 center();
@@ -6366,12 +6878,14 @@
     const btPrinter = new ThermalPrinter();
 
     document.getElementById('btn-cetak-nota')?.addEventListener('click', () => {
-        if (currentActiveOrder) {
-            if (typeof window.printReceiptBrowser === 'function') {
-                window.printReceiptBrowser(currentActiveOrder);
-            } else {
-                btPrinter.print(currentActiveOrder);
-            }
+        if (currentActiveOrder && typeof btPrinter !== 'undefined') {
+            btPrinter.print(currentActiveOrder);
+        }
+    });
+
+    document.getElementById('btn-cetak-browser')?.addEventListener('click', () => {
+        if (currentActiveOrder && typeof window.printReceiptBrowser === 'function') {
+            window.printReceiptBrowser(currentActiveOrder);
         }
     });
 
@@ -6409,6 +6923,18 @@
         btnAddKelolaPelanggan.addEventListener('click', () => {
             const layoutTambahPelanggan = document.getElementById('layout-tambah-pelanggan');
             if (layoutTambahPelanggan) {
+                window.editingCustomerIndex = null;
+                const title = document.querySelector('.tp-title');
+                if (title) title.innerText = 'Tambah Pelanggan';
+                const inputNama = document.getElementById('tp-input-nama');
+                const inputTelepon = document.getElementById('tp-input-telepon');
+                const inputEmail = document.getElementById('tp-input-email');
+                const inputAlamat = document.getElementById('tp-input-alamat');
+                if (inputNama) inputNama.value = '';
+                if (inputTelepon) inputTelepon.value = '';
+                if (inputEmail) inputEmail.value = '';
+                if (inputAlamat) inputAlamat.value = '';
+
                 layoutKelolaPelanggan.classList.remove('active');
                 layoutKelolaPelanggan.style.display = 'none';
                 layoutTambahPelanggan.style.display = 'block';
@@ -6508,13 +7034,17 @@
         const btnExportPengeluaran = document.getElementById('btn-export-pengeluaran');
     if(btnExportPengeluaran) {
         btnExportPengeluaran.addEventListener('click', () => {
-            window.showToast('Mengekspor data Pengeluaran...');
-            const data = [
-                { Tanggal: '13-07-2026', Deskripsi: '1 gas yg 3kg', Kategori: 'Biaya Operasional', Metode: 'Tunai', Nominal: 23000 },
-                { Tanggal: '10-07-2026', Deskripsi: '2 tbg gas yg 3kg, 1 pack tissu jolly, 3 pack downy', Kategori: 'Biaya Operasional', Metode: 'Tunai', Nominal: 184000 },
-                { Tanggal: '08-07-2026', Deskripsi: '2 bks sabun ekonomi, 1 tbg gas yg 5,5kg', Kategori: 'Biaya Operasional', Metode: 'Tunai', Nominal: 147000 },
-                { Tanggal: '08-07-2026', Deskripsi: '2 tbg gas yg 3kg', Kategori: 'Biaya Operasional', Metode: 'Tunai', Nominal: 46000 }
-            ];
+                        window.showToast('Mengekspor data Pengeluaran...');
+            const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+            const key = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+            const db = JSON.parse(localStorage.getItem(key) || '[]');
+            const data = db.map(p => ({
+                Tanggal: p.date,
+                Keterangan: p.keterangan || '-',
+                Kategori: p.category || 'Biaya Operasional',
+                Cashbox: p.cashbox || 'Tunai',
+                Nominal: parseFloat(p.nominal) || 0
+            }));
             window.exportToExcel(data, 'Laporan_Pengeluaran_Manjur');
         });
     }
@@ -6529,28 +7059,7 @@
     window.renderPengeluaranAccordion = function(cashboxFilter = 'Semua') {
         if(!pengeluaranAccordionContainer) return;
         
-        // Dummy data for Pengeluaran matching screenshot
-        const groupedDataRaw = [
-            {
-                dateText: '13-07-2026',
-                items: [
-                    { title: 'pengeluaran tgl 13 07 2026', itemsDesc: '1 gas yg 3kg ( 23.000 )', code: 'UK/260713/002', cashbox: 'Tunai', category: 'Biaya Operasional', total: 23000 }
-                ]
-            },
-            {
-                dateText: '10-07-2026',
-                items: [
-                    { title: 'pengeluaran 10 07 2026', itemsDesc: '2 tbg gas yg 3kg ( 46.000 )<br>1 pack tissu jolly ( 18.000 )<br>3 pack downy ( 120.000 )', code: 'UK/260713/001', cashbox: 'Tunai', category: 'Biaya Operasional', total: 184000 }
-                ]
-            },
-            {
-                dateText: '08-07-2026',
-                items: [
-                    { title: 'pengeluaran tgl 08 07 2026', itemsDesc: '2 bks sabun ekonomi ( 12.000 )<br>1 tbg gas yg 5,5kg ( 135.000 )', code: 'UK/260708/002', cashbox: 'Tunai', category: 'Biaya Operasional', total: 147000 },
-                    { title: 'pengeluaran tgl 08 07 2026', itemsDesc: '2 tbg gas yg 3kg ( 46.000 )', code: 'UK/260708/001', cashbox: 'Tunai', category: 'Biaya Operasional', total: 46000 }
-                ]
-            }
-        ];
+        const groupedDataRaw = getPengeluaranGroupedData();
 
         let html = '';
         let globalTotal = 0;
@@ -6725,11 +7234,17 @@
         const btnExporthutang = document.getElementById('btn-export-hutang');
     if(btnExporthutang) {
         btnExporthutang.addEventListener('click', () => {
-            window.showToast('Mengekspor data Biaya Usaha...');
-            const data = [
-                { Tanggal: '13-07-2026', Deskripsi: '1 gas yg 3kg', Kategori: 'Biaya Operasional', Metode: 'Tunai', Nominal: 23000 },
-                { Tanggal: '10-07-2026', Deskripsi: '2 tbg gas yg 3kg, 1 pack tissu jolly, 3 pack downy', Kategori: 'Biaya Operasional', Metode: 'Tunai', Nominal: 184000 }
-            ];
+                        window.showToast('Mengekspor data Biaya Usaha...');
+            const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+            const key = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+            const db = JSON.parse(localStorage.getItem(key) || '[]');
+            const data = db.map(p => ({
+                Tanggal: p.date,
+                Keterangan: p.keterangan || '-',
+                Kategori: p.category || 'Biaya Operasional',
+                Cashbox: p.cashbox || 'Tunai',
+                Nominal: parseFloat(p.nominal) || 0
+            }));
             window.exportToExcel(data, 'Laporan_Biaya_Usaha_Manjur');
         });
     }
@@ -6741,31 +7256,46 @@
     const hutangDataState = document.getElementById('hutang-data-state');
     const hutangAccordionContainer = document.getElementById('hutang-accordion-container');
 
+    function formatAppDate(isoDate) {
+    if(!isoDate) return '1970-01-01';
+    let p = isoDate.split('-');
+    if(p.length === 3) return p[2] + '-' + p[1] + '-' + p[0];
+    return isoDate;
+}
+
+function getPengeluaranGroupedData() {
+    const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+    const key = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+    const db = JSON.parse(localStorage.getItem(key) || '[]');
+    
+    let grouped = {};
+    db.forEach(p => {
+        let d = formatAppDate(p.date);
+        if(!grouped[d]) grouped[d] = [];
+        grouped[d].push({
+            title: p.category || 'Biaya Usaha',
+            itemsDesc: p.keterangan || '-',
+            code: p.id || '-',
+            cashbox: p.cashbox || 'Tunai',
+            category: p.category || 'Biaya Operasional',
+            total: parseFloat(p.nominal) || 0,
+            originalDateStr: p.date
+        });
+    });
+    
+    return Object.keys(grouped).map(k => {
+        return {
+            dateText: k,
+            originalDateStr: grouped[k][0].originalDateStr,
+            items: grouped[k]
+        };
+    }).sort((a,b) => b.originalDateStr.localeCompare(a.originalDateStr));
+}
+
     window.renderHutangAccordion = function(cashboxFilter = 'Semua') {
         if(!hutangAccordionContainer) return;
         
-        // Dummy data for hutang matching screenshot
-        const groupedDataRaw = [
-            {
-                dateText: '13-07-2026',
-                items: [
-                    { title: 'hutang tgl 13 07 2026', itemsDesc: '1 gas yg 3kg ( 23.000 )', code: 'UK/260713/002', cashbox: 'Tunai', category: 'Biaya Operasional', total: 23000 }
-                ]
-            },
-            {
-                dateText: '10-07-2026',
-                items: [
-                    { title: 'hutang 10 07 2026', itemsDesc: '2 tbg gas yg 3kg ( 46.000 )<br>1 pack tissu jolly ( 18.000 )<br>3 pack downy ( 120.000 )', code: 'UK/260713/001', cashbox: 'Tunai', category: 'Biaya Operasional', total: 184000 }
-                ]
-            },
-            {
-                dateText: '08-07-2026',
-                items: [
-                    { title: 'hutang tgl 08 07 2026', itemsDesc: '2 bks sabun ekonomi ( 12.000 )<br>1 tbg gas yg 5,5kg ( 135.000 )', code: 'UK/260708/002', cashbox: 'Tunai', category: 'Biaya Operasional', total: 147000 },
-                    { title: 'hutang tgl 08 07 2026', itemsDesc: '2 tbg gas yg 3kg ( 46.000 )', code: 'UK/260708/001', cashbox: 'Tunai', category: 'Biaya Operasional', total: 46000 }
-                ]
-            }
-        ];
+        const groupedDataRaw = getPengeluaranGroupedData();
 
         let html = '';
         let globalTotal = 0;
@@ -7577,12 +8107,19 @@
     function applyCompanyProfile() {
         const savedName = localStorage.getItem('company_name');
         const savedLogo = localStorage.getItem('company_logo');
+        const savedAddress = localStorage.getItem('company_address') || 'Jalan tanjung lobam, Tlk';
+        const savedPhone = localStorage.getItem('company_phone') || '082377178107';
         
         if(savedName) {
             document.querySelectorAll('.dynamic-company-name').forEach(el => el.innerText = savedName);
             document.title = savedName;
         }
+        document.querySelectorAll('.dynamic-company-address').forEach(el => el.innerText = savedAddress);
+        document.querySelectorAll('.dynamic-company-phone').forEach(el => el.innerText = savedPhone);
+        
         if(savedLogo) {
+            const sidebarLogo = document.getElementById('sidebar-logo');
+            if(sidebarLogo) sidebarLogo.src = savedLogo;
             document.querySelectorAll('.dynamic-logo').forEach(el => el.src = savedLogo);
         }
     }
@@ -7610,6 +8147,981 @@
 
     // Initialize Dashboard Pesanan
     renderDashboardPesanan();
+    
+        // --- KELOLA KEUANGAN MAIN LOGIC ---
+    const btnMenuKelolaKeuangan = document.getElementById('btn-menu-kelola-keuangan');
+    const layoutKelolaKeuangan = document.getElementById('layout-kelola-keuangan');
+    const btnBackKelolaKeuangan = document.getElementById('btn-back-kelola-keuangan');
+
+    if (btnMenuKelolaKeuangan && layoutKelolaKeuangan) {
+        btnMenuKelolaKeuangan.addEventListener('click', () => {
+            const layoutMain = document.getElementById('layout-main');
+            if (layoutMain) {
+                layoutMain.classList.remove('active');
+                layoutMain.style.display = 'none';
+            }
+            layoutKelolaKeuangan.classList.add('active');
+            layoutKelolaKeuangan.style.display = 'block';
+        });
+    }
+
+    if (btnBackKelolaKeuangan) {
+        btnBackKelolaKeuangan.addEventListener('click', () => {
+            layoutKelolaKeuangan.classList.remove('active');
+            layoutKelolaKeuangan.style.display = 'none';
+            const layoutMain = document.getElementById('layout-main');
+            if (layoutMain) {
+                layoutMain.classList.add('active');
+                layoutMain.style.display = 'block';
+            }
+        });
+    }
+
+        // --- KELOLA KEUANGAN 7 SUBMENUS NAVIGATION ---
+    const layoutKelolaKeuanganList = [
+        'layout-atur-cashbox', 'layout-atur-kategori', 'layout-tambah-pendapatan',
+        'layout-tambah-pengeluaran', 'layout-pemindahan-saldo', 'layout-koreksi-keuangan', 'layout-koreksi-pembayaran'
+    ];
+    
+    function showKkSubmenu(layoutId) {
+        layoutKelolaKeuangan.classList.remove('active');
+        layoutKelolaKeuangan.style.display = 'none';
+        
+        const target = document.getElementById(layoutId);
+        if(target) {
+            target.classList.add('active');
+            target.style.display = 'block';
+        }
+    }
+    
+    function hideKkSubmenu(layoutId) {
+        const target = document.getElementById(layoutId);
+        if(target) {
+            target.classList.remove('active');
+            target.style.display = 'none';
+        }
+        
+        layoutKelolaKeuangan.classList.add('active');
+        layoutKelolaKeuangan.style.display = 'block';
+    }
+
+    // Attach click listeners to menu buttons
+    document.getElementById('btn-kk-atur-cashbox')?.addEventListener('click', () => { showKkSubmenu('layout-atur-cashbox'); renderAturCashbox(); });
+    document.getElementById('btn-kk-atur-kategori')?.addEventListener('click', () => { showKkSubmenu('layout-atur-kategori'); renderAturKategori(); });
+    document.getElementById('btn-kk-tambah-pendapatan')?.addEventListener('click', () => { showKkSubmenu('layout-tambah-pendapatan'); initFormPendapatan(); });
+    document.getElementById('btn-kk-tambah-pengeluaran')?.addEventListener('click', () => { showKkSubmenu('layout-tambah-pengeluaran'); initFormPengeluaran(); });
+    document.getElementById('btn-kk-pemindahan-saldo')?.addEventListener('click', () => { showKkSubmenu('layout-pemindahan-saldo'); initFormPemindahan(); });
+    document.getElementById('btn-kk-koreksi-keuangan')?.addEventListener('click', () => { showKkSubmenu('layout-koreksi-keuangan'); initFormKoreksiKeuangan(); });
+    document.getElementById('btn-kk-koreksi-pembayaran')?.addEventListener('click', () => { showKkSubmenu('layout-koreksi-pembayaran'); renderKoreksiPembayaran(); });
+
+    // Attach click listeners to back buttons
+    document.getElementById('btn-back-atur-cashbox')?.addEventListener('click', () => hideKkSubmenu('layout-atur-cashbox'));
+    document.getElementById('btn-back-atur-kategori')?.addEventListener('click', () => hideKkSubmenu('layout-atur-kategori'));
+    document.getElementById('btn-back-tambah-pendapatan')?.addEventListener('click', () => hideKkSubmenu('layout-tambah-pendapatan'));
+    document.getElementById('btn-back-tambah-pengeluaran')?.addEventListener('click', () => hideKkSubmenu('layout-tambah-pengeluaran'));
+    document.getElementById('btn-back-pemindahan-saldo')?.addEventListener('click', () => hideKkSubmenu('layout-pemindahan-saldo'));
+    document.getElementById('btn-back-koreksi-keuangan')?.addEventListener('click', () => hideKkSubmenu('layout-koreksi-keuangan'));
+    document.getElementById('btn-back-koreksi-pembayaran')?.addEventListener('click', () => hideKkSubmenu('layout-koreksi-pembayaran'));
+
+    // DB Helpers for Finance
+    // LocalStorage keys: db_cashbox, db_kategori_pemasukan, db_kategori_pengeluaran
+    
+    function getDbCashbox() {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_cashbox' : 'db_cashbox_' + activeOutlet;
+        let data = localStorage.getItem(key);
+        if(!data) {
+            // Default cashbox
+            data = JSON.stringify(['Tunai', 'BCA', 'Mandiri', 'Kasir Utama']);
+            localStorage.setItem(key, data);
+        }
+        return JSON.parse(data);
+    }
+    
+    function saveDbCashbox(arr) {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_cashbox' : 'db_cashbox_' + activeOutlet;
+        localStorage.setItem(key, JSON.stringify(arr));
+    }
+
+    function getDbKategoriPemasukan() {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_kategori_pemasukan' : 'db_kategori_pemasukan_' + activeOutlet;
+        let data = localStorage.getItem(key);
+        if(!data) {
+            data = JSON.stringify(['Pendapatan Usaha', 'Pemasukan Lainnya']);
+            localStorage.setItem(key, data);
+        }
+        return JSON.parse(data);
+    }
+    
+    function saveDbKategoriPemasukan(arr) {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_kategori_pemasukan' : 'db_kategori_pemasukan_' + activeOutlet;
+        localStorage.setItem(key, JSON.stringify(arr));
+    }
+
+    function getDbKategoriPengeluaran() {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_kategori_pengeluaran' : 'db_kategori_pengeluaran_' + activeOutlet;
+        let data = localStorage.getItem(key);
+        if(!data) {
+            data = JSON.stringify(['Biaya Operasional', 'Gaji Karyawan', 'Kas Bon', 'Pembelian Inventory']);
+            localStorage.setItem(key, data);
+        }
+        return JSON.parse(data);
+    }
+    
+    function saveDbKategoriPengeluaran(arr) {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_kategori_pengeluaran' : 'db_kategori_pengeluaran_' + activeOutlet;
+        localStorage.setItem(key, JSON.stringify(arr));
+    }
+
+
+        // --- 1. ATUR CASHBOX LOGIC ---
+    let cashboxList = [];
+    let editCashboxIndex = -1;
+
+    function renderAturCashbox() {
+        cashboxList = getDbCashbox();
+        const container = document.getElementById('cashbox-list-container');
+        if(!container) return;
+        
+        container.innerHTML = '';
+        cashboxList.forEach((c, index) => {
+            const div = document.createElement('div');
+            div.style.padding = '15px';
+            div.style.background = '#ffffff';
+            div.style.borderRadius = '8px';
+            div.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
+            div.style.display = 'flex';
+            div.style.justifyContent = 'space-between';
+            div.style.alignItems = 'center';
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.innerText = c;
+            nameDiv.style.fontWeight = '600';
+            nameDiv.style.color = '#334155';
+            
+            const actionDiv = document.createElement('div');
+            actionDiv.style.display = 'flex';
+            actionDiv.style.gap = '15px';
+            
+            const editBtn = document.createElement('i');
+            editBtn.className = 'fa-solid fa-pen';
+            editBtn.style.color = '#3b82f6';
+            editBtn.style.cursor = 'pointer';
+            editBtn.onclick = () => { editCashboxIndex = index; openModalCashbox(c); };
+            
+            const delBtn = document.createElement('i');
+            delBtn.className = 'fa-solid fa-trash';
+            delBtn.style.color = '#ef4444';
+            delBtn.style.cursor = 'pointer';
+            delBtn.onclick = () => { deleteCashbox(index); };
+            
+            actionDiv.appendChild(editBtn);
+            actionDiv.appendChild(delBtn);
+            
+            div.appendChild(nameDiv);
+            div.appendChild(actionDiv);
+            container.appendChild(div);
+        });
+    }
+
+    const modalCashbox = document.getElementById('modal-tambah-cashbox');
+    const inputCashboxName = document.getElementById('input-cashbox-nama');
+    
+    function openModalCashbox(existingName = '') {
+        inputCashboxName.value = existingName;
+        document.getElementById('modal-cashbox-title').innerText = existingName ? 'Edit Cashbox' : 'Tambah Cashbox';
+        modalCashbox.style.display = 'flex';
+    }
+
+    document.getElementById('btn-tambah-cashbox')?.addEventListener('click', () => {
+        editCashboxIndex = -1;
+        openModalCashbox();
+    });
+
+    document.getElementById('btn-batal-cashbox')?.addEventListener('click', () => {
+        modalCashbox.style.display = 'none';
+    });
+
+    document.getElementById('btn-simpan-cashbox')?.addEventListener('click', () => {
+        const val = inputCashboxName.value.trim();
+        if(!val) return alert('Nama Cashbox tidak boleh kosong');
+        
+        if(editCashboxIndex === -1) {
+            cashboxList.push(val);
+        } else {
+            cashboxList[editCashboxIndex] = val;
+        }
+        saveDbCashbox(cashboxList);
+        modalCashbox.style.display = 'none';
+        renderAturCashbox();
+    });
+
+    function deleteCashbox(index) {
+        if(confirm('Hapus cashbox ini?')) {
+            cashboxList.splice(index, 1);
+            saveDbCashbox(cashboxList);
+            renderAturCashbox();
+        }
+    }
+
+
+    // --- 2. ATUR KATEGORI LOGIC ---
+    let kategoriTabActive = 'Pemasukan';
+    let kategoriList = [];
+    let editKategoriIndex = -1;
+
+    function renderAturKategori() {
+        if(kategoriTabActive === 'Pemasukan') {
+            kategoriList = getDbKategoriPemasukan();
+            document.getElementById('tab-kat-pemasukan').style.background = '#ffffff';
+            document.getElementById('tab-kat-pemasukan').style.color = '#1e293b';
+            document.getElementById('tab-kat-pemasukan').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            document.getElementById('tab-kat-pengeluaran').style.background = 'transparent';
+            document.getElementById('tab-kat-pengeluaran').style.color = '#64748b';
+            document.getElementById('tab-kat-pengeluaran').style.boxShadow = 'none';
+        } else {
+            kategoriList = getDbKategoriPengeluaran();
+            document.getElementById('tab-kat-pengeluaran').style.background = '#ffffff';
+            document.getElementById('tab-kat-pengeluaran').style.color = '#1e293b';
+            document.getElementById('tab-kat-pengeluaran').style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            document.getElementById('tab-kat-pemasukan').style.background = 'transparent';
+            document.getElementById('tab-kat-pemasukan').style.color = '#64748b';
+            document.getElementById('tab-kat-pemasukan').style.boxShadow = 'none';
+        }
+        
+        const container = document.getElementById('kategori-list-container');
+        if(!container) return;
+        
+        container.innerHTML = '';
+        kategoriList.forEach((k, index) => {
+            const div = document.createElement('div');
+            div.style.padding = '15px';
+            div.style.background = '#ffffff';
+            div.style.borderRadius = '8px';
+            div.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
+            div.style.display = 'flex';
+            div.style.justifyContent = 'space-between';
+            div.style.alignItems = 'center';
+            
+            const nameDiv = document.createElement('div');
+            nameDiv.innerText = k;
+            nameDiv.style.fontWeight = '600';
+            nameDiv.style.color = '#334155';
+            
+            const actionDiv = document.createElement('div');
+            actionDiv.style.display = 'flex';
+            actionDiv.style.gap = '15px';
+            
+            const editBtn = document.createElement('i');
+            editBtn.className = 'fa-solid fa-pen';
+            editBtn.style.color = '#3b82f6';
+            editBtn.style.cursor = 'pointer';
+            editBtn.onclick = () => { editKategoriIndex = index; openModalKategori(k); };
+            
+            const delBtn = document.createElement('i');
+            delBtn.className = 'fa-solid fa-trash';
+            delBtn.style.color = '#ef4444';
+            delBtn.style.cursor = 'pointer';
+            delBtn.onclick = () => { deleteKategori(index); };
+            
+            actionDiv.appendChild(editBtn);
+            actionDiv.appendChild(delBtn);
+            
+            div.appendChild(nameDiv);
+            div.appendChild(actionDiv);
+            container.appendChild(div);
+        });
+    }
+
+    document.getElementById('tab-kat-pemasukan')?.addEventListener('click', () => { kategoriTabActive = 'Pemasukan'; renderAturKategori(); });
+    document.getElementById('tab-kat-pengeluaran')?.addEventListener('click', () => { kategoriTabActive = 'Pengeluaran'; renderAturKategori(); });
+
+    const modalKategori = document.getElementById('modal-tambah-kategori');
+    const inputKategoriName = document.getElementById('input-kategori-nama');
+
+    function openModalKategori(existingName = '') {
+        inputKategoriName.value = existingName;
+        document.getElementById('modal-kategori-title').innerText = existingName ? 'Edit Kategori' : 'Tambah Kategori';
+        modalKategori.style.display = 'flex';
+    }
+
+    document.getElementById('btn-tambah-kategori')?.addEventListener('click', () => {
+        editKategoriIndex = -1;
+        openModalKategori();
+    });
+
+    document.getElementById('btn-batal-kategori')?.addEventListener('click', () => {
+        modalKategori.style.display = 'none';
+    });
+
+    document.getElementById('btn-simpan-kategori')?.addEventListener('click', () => {
+        const val = inputKategoriName.value.trim();
+        if(!val) return alert('Nama Kategori tidak boleh kosong');
+        
+        if(editKategoriIndex === -1) {
+            kategoriList.push(val);
+        } else {
+            kategoriList[editKategoriIndex] = val;
+        }
+        
+        if(kategoriTabActive === 'Pemasukan') {
+            saveDbKategoriPemasukan(kategoriList);
+        } else {
+            saveDbKategoriPengeluaran(kategoriList);
+        }
+        
+        modalKategori.style.display = 'none';
+        renderAturKategori();
+    });
+
+    function deleteKategori(index) {
+        if(confirm('Hapus kategori ini?')) {
+            kategoriList.splice(index, 1);
+            if(kategoriTabActive === 'Pemasukan') saveDbKategoriPemasukan(kategoriList);
+            else saveDbKategoriPengeluaran(kategoriList);
+            renderAturKategori();
+        }
+    }
+
+
+        // --- 3. TAMBAH PENDAPATAN LOGIC ---
+    function initFormPendapatan() {
+        const cashboxSelect = document.getElementById('input-pdk-cashbox');
+        const katSelect = document.getElementById('input-pdk-kategori');
+        
+        cashboxSelect.innerHTML = '';
+        getDbCashbox().forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            cashboxSelect.appendChild(opt);
+        });
+        
+        katSelect.innerHTML = '';
+        getDbKategoriPemasukan().forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; opt.innerText = k;
+            katSelect.appendChild(opt);
+        });
+
+        document.getElementById('input-pdk-tanggal').value = new Date().toISOString().split('T')[0];
+        document.getElementById('input-pdk-nominal').value = '';
+        document.getElementById('input-pdk-keterangan').value = '';
+    }
+
+    document.getElementById('btn-simpan-pendapatan')?.addEventListener('click', () => {
+        const tgl = document.getElementById('input-pdk-tanggal').value;
+        const nom = parseFloat(document.getElementById('input-pdk-nominal').value);
+        const cb = document.getElementById('input-pdk-cashbox').value;
+        const kat = document.getElementById('input-pdk-kategori').value;
+        const ket = document.getElementById('input-pdk-keterangan').value;
+        
+        if(!tgl || isNaN(nom) || nom <= 0 || !cb || !kat) {
+            return alert('Harap lengkapi form dengan benar.');
+        }
+
+        const data = {
+            id: 'INC-' + Date.now(),
+            type: 'pendapatan_lain',
+            date: tgl,
+            nominal: nom,
+            cashbox: cb,
+            category: kat,
+            keterangan: ket,
+            timestamp: Date.now()
+        };
+
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet;
+        const history = JSON.parse(localStorage.getItem(key) || '[]');
+        history.unshift(data);
+        localStorage.setItem(key, JSON.stringify(history));
+
+        if(window.Swal) Swal.fire('Berhasil', 'Pendapatan berhasil disimpan', 'success');
+        else alert('Berhasil disimpan');
+        
+        hideKkSubmenu('layout-tambah-pendapatan');
+    });
+
+
+    // --- 4. TAMBAH PENGELUARAN LOGIC ---
+    function initFormPengeluaran() {
+        const cashboxSelect = document.getElementById('input-pgk-cashbox');
+        const katSelect = document.getElementById('input-pgk-kategori');
+        
+        cashboxSelect.innerHTML = '';
+        getDbCashbox().forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            cashboxSelect.appendChild(opt);
+        });
+        
+        katSelect.innerHTML = '';
+        getDbKategoriPengeluaran().forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; opt.innerText = k;
+            katSelect.appendChild(opt);
+        });
+
+        document.getElementById('input-pgk-tanggal').value = new Date().toISOString().split('T')[0];
+        document.getElementById('input-pgk-nominal').value = '';
+        document.getElementById('input-pgk-keterangan').value = '';
+    }
+
+    document.getElementById('btn-simpan-pengeluaran')?.addEventListener('click', () => {
+        const tgl = document.getElementById('input-pgk-tanggal').value;
+        const nom = parseFloat(document.getElementById('input-pgk-nominal').value);
+        const cb = document.getElementById('input-pgk-cashbox').value;
+        const kat = document.getElementById('input-pgk-kategori').value;
+        const ket = document.getElementById('input-pgk-keterangan').value;
+        
+        if(!tgl || isNaN(nom) || nom <= 0 || !cb || !kat) {
+            return alert('Harap lengkapi form dengan benar.');
+        }
+
+        const data = {
+            id: 'EXP-' + Date.now(),
+            type: 'pengeluaran',
+            date: tgl,
+            nominal: nom,
+            cashbox: cb,
+            category: kat,
+            keterangan: ket,
+            timestamp: Date.now()
+        };
+
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+        const history = JSON.parse(localStorage.getItem(key) || '[]');
+        history.unshift(data);
+        localStorage.setItem(key, JSON.stringify(history));
+
+        if(window.Swal) Swal.fire('Berhasil', 'Pengeluaran berhasil disimpan', 'success');
+        else alert('Berhasil disimpan');
+        
+        hideKkSubmenu('layout-tambah-pengeluaran');
+    });
+
+
+    // --- 5. PEMINDAHAN SALDO LOGIC ---
+    function initFormPemindahan() {
+        const dariSelect = document.getElementById('input-ps-dari');
+        const keSelect = document.getElementById('input-ps-ke');
+        
+        const cashboxList = getDbCashbox();
+        dariSelect.innerHTML = ''; keSelect.innerHTML = '';
+        cashboxList.forEach(c => {
+            const opt1 = document.createElement('option'); opt1.value = c; opt1.innerText = c;
+            const opt2 = document.createElement('option'); opt2.value = c; opt2.innerText = c;
+            dariSelect.appendChild(opt1);
+            keSelect.appendChild(opt2);
+        });
+
+        document.getElementById('input-ps-tanggal').value = new Date().toISOString().split('T')[0];
+        document.getElementById('input-ps-nominal').value = '';
+        document.getElementById('input-ps-keterangan').value = '';
+    }
+
+    document.getElementById('btn-simpan-pemindahan')?.addEventListener('click', () => {
+        const tgl = document.getElementById('input-ps-tanggal').value;
+        const nom = parseFloat(document.getElementById('input-ps-nominal').value);
+        const dari = document.getElementById('input-ps-dari').value;
+        const ke = document.getElementById('input-ps-ke').value;
+        const ket = document.getElementById('input-ps-keterangan').value || `Transfer dari ${dari} ke ${ke}`;
+        
+        if(!tgl || isNaN(nom) || nom <= 0 || !dari || !ke) {
+            return alert('Harap lengkapi form dengan benar.');
+        }
+        if(dari === ke) {
+            return alert('Cashbox sumber dan tujuan tidak boleh sama.');
+        }
+
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const keyIn = activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet;
+        const keyOut = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+        
+        const pengeluaranArr = JSON.parse(localStorage.getItem(keyOut) || '[]');
+        pengeluaranArr.unshift({
+            id: 'TRF-OUT-' + Date.now(), type: 'pengeluaran', date: tgl,
+            nominal: nom, cashbox: dari, category: 'Pemindahan Saldo', keterangan: ket, timestamp: Date.now()
+        });
+        localStorage.setItem(keyOut, JSON.stringify(pengeluaranArr));
+
+        const pemasukanArr = JSON.parse(localStorage.getItem(keyIn) || '[]');
+        pemasukanArr.unshift({
+            id: 'TRF-IN-' + Date.now(), type: 'pendapatan_lain', date: tgl,
+            nominal: nom, cashbox: ke, category: 'Pemindahan Saldo', keterangan: ket, timestamp: Date.now()
+        });
+        localStorage.setItem(keyIn, JSON.stringify(pemasukanArr));
+
+        if(window.Swal) Swal.fire('Berhasil', 'Saldo berhasil dipindahkan', 'success');
+        else alert('Berhasil dipindahkan');
+        
+        hideKkSubmenu('layout-pemindahan-saldo');
+    });
+
+
+        // --- 6. KOREKSI KEUANGAN LOGIC ---
+    function hitungSaldoSistem(cashboxName) {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const keyIn = activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet;
+        const keyOut = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+        
+        let inData = JSON.parse(localStorage.getItem(keyIn) || '[]');
+        let outData = JSON.parse(localStorage.getItem(keyOut) || '[]');
+        
+        let total = 0;
+        
+        // Tambah Pemasukan
+        inData.forEach(p => {
+            // Jika transaksi laundry (tidak ada p.type) atau pendapatan_lain
+            // Catatan: Transaksi lama yang belum punya cashbox akan dianggap 'Tunai'
+            let cb = p.cashbox || 'Tunai'; 
+            if (cb === cashboxName) {
+                if (p.type === 'pendapatan_lain' || p.type === 'koreksi') {
+                    total += parseFloat(p.nominal || 0);
+                } else if (!p.type) {
+                    // Transaksi laundry
+                    total += parseFloat(p.dibayar || 0);
+                }
+            }
+        });
+        
+        // Kurangi Pengeluaran
+        outData.forEach(p => {
+            let cb = p.cashbox || 'Tunai';
+            if (cb === cashboxName) {
+                total -= parseFloat(p.nominal || 0);
+            }
+        });
+        
+        return total;
+    }
+
+    function initFormKoreksiKeuangan() {
+        const cbSelect = document.getElementById('input-kk-cashbox');
+        cbSelect.innerHTML = '';
+        getDbCashbox().forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            cbSelect.appendChild(opt);
+        });
+        
+        document.getElementById('input-kk-aktual').value = '';
+        document.getElementById('input-kk-keterangan').value = '';
+        document.getElementById('kk-selisih-container').style.display = 'none';
+        
+        function updateDisplay() {
+            let cb = cbSelect.value;
+            let currentSaldo = hitungSaldoSistem(cb);
+            document.getElementById('kk-saldo-sistem').innerText = 'Rp ' + currentSaldo.toLocaleString('id-ID');
+            
+            let valAktual = document.getElementById('input-kk-aktual').value;
+            if (valAktual !== '') {
+                let aktual = parseFloat(valAktual);
+                let diff = aktual - currentSaldo;
+                document.getElementById('kk-selisih-container').style.display = 'block';
+                let elDiff = document.getElementById('kk-selisih-nominal');
+                elDiff.innerText = 'Rp ' + diff.toLocaleString('id-ID');
+                if (diff > 0) {
+                    elDiff.style.color = '#10b981'; // Plus
+                    document.getElementById('kk-selisih-info').innerText = 'Sistem akan mencatat Penambahan Saldo.';
+                } else if (diff < 0) {
+                    elDiff.style.color = '#ef4444'; // Minus
+                    document.getElementById('kk-selisih-info').innerText = 'Sistem akan mencatat Pengurangan Saldo.';
+                } else {
+                    elDiff.style.color = '#64748b'; // Sama
+                    document.getElementById('kk-selisih-info').innerText = 'Saldo sudah balance.';
+                }
+            } else {
+                document.getElementById('kk-selisih-container').style.display = 'none';
+            }
+        }
+        
+        cbSelect.addEventListener('change', updateDisplay);
+        document.getElementById('input-kk-aktual').addEventListener('input', updateDisplay);
+        
+        // Init trigger
+        if (cbSelect.options.length > 0) updateDisplay();
+    }
+
+    document.getElementById('btn-simpan-koreksi')?.addEventListener('click', () => {
+        let cb = document.getElementById('input-kk-cashbox').value;
+        let valAktual = document.getElementById('input-kk-aktual').value;
+        let ket = document.getElementById('input-kk-keterangan').value || 'Koreksi Saldo Manual';
+        
+        if (valAktual === '') return alert('Masukkan saldo aktual');
+        let aktual = parseFloat(valAktual);
+        let current = hitungSaldoSistem(cb);
+        let diff = aktual - current;
+        
+        if (diff === 0) return alert('Saldo sudah sesuai, tidak ada selisih yang perlu dikoreksi.');
+        
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const tgl = new Date().toISOString().split('T')[0];
+        
+        if (diff > 0) {
+            // Penambahan -> Masuk ke db_pemasukan
+            const keyIn = activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet;
+            let arr = JSON.parse(localStorage.getItem(keyIn) || '[]');
+            arr.unshift({
+                id: 'KOR-IN-' + Date.now(), type: 'koreksi', date: tgl,
+                nominal: diff, cashbox: cb, category: 'Koreksi Keuangan', keterangan: ket, timestamp: Date.now()
+            });
+            localStorage.setItem(keyIn, JSON.stringify(arr));
+        } else {
+            // Pengurangan -> Masuk ke db_pengeluaran
+            const keyOut = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+            let arr = JSON.parse(localStorage.getItem(keyOut) || '[]');
+            arr.unshift({
+                id: 'KOR-OUT-' + Date.now(), type: 'pengeluaran', date: tgl,
+                nominal: Math.abs(diff), cashbox: cb, category: 'Koreksi Keuangan', keterangan: ket, timestamp: Date.now()
+            });
+            localStorage.setItem(keyOut, JSON.stringify(arr));
+        }
+        
+        if(window.Swal) Swal.fire('Berhasil', 'Koreksi Keuangan berhasil dicatat', 'success');
+        else alert('Koreksi berhasil');
+        
+        hideKkSubmenu('layout-koreksi-keuangan');
+    });
+
+
+    // --- 7. KOREKSI PEMBAYARAN LOGIC ---
+    let riwayatKoreksiList = []; // store combined list of in/out/laundry
+    let riwayatKoreksiActiveItem = null;
+
+    function renderKoreksiPembayaran() {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const keyIn = activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet;
+        const keyOut = activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet;
+        
+        let inData = JSON.parse(localStorage.getItem(keyIn) || '[]');
+        let outData = JSON.parse(localStorage.getItem(keyOut) || '[]');
+        
+        riwayatKoreksiList = [];
+        
+        inData.forEach((p, idx) => {
+            if (!p.type) {
+                // Laundry
+                riwayatKoreksiList.push({
+                    originalType: 'pemasukan', originalIndex: idx,
+                    id: p.id, desc: p.customerName ? `Pesanan: ${p.customerName}` : 'Transaksi Laundry',
+                    date: p.date || '-', nominal: p.dibayar || p.total || 0,
+                    cashbox: p.cashbox || 'Tunai', timestamp: p.timestamp || Date.now(),
+                    keterangan: 'Laundry', dataRef: p
+                });
+            } else {
+                riwayatKoreksiList.push({
+                    originalType: 'pemasukan', originalIndex: idx,
+                    id: p.id, desc: p.keterangan || p.category || 'Pemasukan Lain',
+                    date: p.date || '-', nominal: p.nominal || 0,
+                    cashbox: p.cashbox || 'Tunai', timestamp: p.timestamp || Date.now(),
+                    keterangan: p.type, dataRef: p
+                });
+            }
+        });
+        
+        outData.forEach((p, idx) => {
+            riwayatKoreksiList.push({
+                originalType: 'pengeluaran', originalIndex: idx,
+                id: p.id, desc: p.keterangan || p.category || 'Pengeluaran',
+                date: p.date || '-', nominal: p.nominal || 0,
+                cashbox: p.cashbox || 'Tunai', timestamp: p.timestamp || Date.now(),
+                keterangan: 'pengeluaran', dataRef: p
+            });
+        });
+        
+        // Sort newest first
+        riwayatKoreksiList.sort((a, b) => b.timestamp - a.timestamp);
+        
+        // Tampilkan 30 terakhir
+        const container = document.getElementById('koreksi-pembayaran-list');
+        container.innerHTML = '';
+        
+        riwayatKoreksiList.slice(0, 30).forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.style.padding = '15px';
+            div.style.background = '#ffffff';
+            div.style.borderRadius = '8px';
+            div.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
+            div.style.display = 'flex';
+            div.style.justifyContent = 'space-between';
+            div.style.alignItems = 'center';
+            
+            const left = document.createElement('div');
+            left.innerHTML = `
+                <div style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">${item.date} | ${item.id}</div>
+                <div style="font-weight:600; color:#1e293b;">${item.desc}</div>
+                <div style="font-size:0.85rem; color:#3b82f6; font-weight:500; margin-top:4px;">Rp ${parseFloat(item.nominal).toLocaleString('id-ID')} <span style="color:#64748b;">( ${item.cashbox} )</span></div>
+            `;
+            
+            const right = document.createElement('button');
+            right.innerText = 'Ubah';
+            right.style.padding = '6px 12px';
+            right.style.background = '#f0f9ff';
+            right.style.color = '#0ea5e9';
+            right.style.border = 'none';
+            right.style.borderRadius = '6px';
+            right.style.fontWeight = '600';
+            right.style.cursor = 'pointer';
+            
+            right.onclick = () => { openModalUbahPembayaran(item); };
+            
+            div.appendChild(left);
+            div.appendChild(right);
+            container.appendChild(div);
+        });
+    }
+
+    const modalUbahPembayaran = document.getElementById('modal-ubah-pembayaran');
+    
+    function openModalUbahPembayaran(item) {
+        riwayatKoreksiActiveItem = item;
+        document.getElementById('modal-up-info').innerHTML = `Ubah metode bayar (cashbox) untuk transaksi <b>${item.id}</b> senilai <b>Rp ${parseFloat(item.nominal).toLocaleString('id-ID')}</b>.`;
+        
+        const sel = document.getElementById('modal-up-cashbox');
+        sel.innerHTML = '';
+        getDbCashbox().forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.innerText = c;
+            if(c === item.cashbox) opt.selected = true;
+            sel.appendChild(opt);
+        });
+        
+        modalUbahPembayaran.style.display = 'flex';
+    }
+
+    document.getElementById('btn-batal-up')?.addEventListener('click', () => {
+        modalUbahPembayaran.style.display = 'none';
+    });
+    
+    document.getElementById('btn-simpan-up')?.addEventListener('click', () => {
+        if (!riwayatKoreksiActiveItem) return;
+        const newCb = document.getElementById('modal-up-cashbox').value;
+        const item = riwayatKoreksiActiveItem;
+        
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const key = item.originalType === 'pemasukan' ? (activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet) : (activeOutlet === 'PUSAT' ? 'db_pengeluaran' : 'db_pengeluaran_' + activeOutlet);
+        
+        let db = JSON.parse(localStorage.getItem(key) || '[]');
+        if (db[item.originalIndex]) {
+            db[item.originalIndex].cashbox = newCb;
+            localStorage.setItem(key, JSON.stringify(db));
+            
+            if (window.Swal) Swal.fire('Berhasil', 'Cashbox transaksi berhasil diubah.', 'success');
+            else alert('Berhasil diubah');
+            
+            modalUbahPembayaran.style.display = 'none';
+            renderKoreksiPembayaran();
+        } else {
+            alert('Gagal menemukan data transaksi.');
+        }
+    });
+
+
+    // --- FITUR KELOLA OUTLET ---
+    const btnMenuKelolaOutlet = document.getElementById('btn-menu-kelola-outlet');
+    const layoutKelolaOutlet = document.getElementById('layout-kelola-outlet');
+    const layoutTambahOutlet = document.getElementById('layout-tambah-outlet');
+    const btnBackKelolaOutlet = document.getElementById('btn-back-kelola-outlet');
+    const btnBackTambahOutlet = document.getElementById('btn-back-tambah-outlet');
+    const btnTambahOutlet = document.getElementById('btn-tambah-outlet');
+    const btnSimpanOutlet = document.getElementById('btn-simpan-outlet');
+    const outletListContainer = document.getElementById('outlet-list-container');
+    
+    let currentEditOutletId = null;
+
+    if (btnMenuKelolaOutlet) {
+        btnMenuKelolaOutlet.addEventListener('click', () => {
+            const layoutMain = document.getElementById('layout-main');
+            if(layoutMain) {
+                layoutMain.classList.remove('active');
+                layoutMain.style.display = 'none';
+            }
+            layoutKelolaOutlet.classList.add('active');
+            layoutKelolaOutlet.style.display = 'block';
+            renderOutletList();
+        });
+    }
+
+    if (btnBackKelolaOutlet) {
+        btnBackKelolaOutlet.addEventListener('click', () => {
+            layoutKelolaOutlet.classList.remove('active');
+            layoutKelolaOutlet.style.display = 'none';
+            const layoutMain = document.getElementById('layout-main');
+            if(layoutMain) {
+                layoutMain.classList.add('active');
+                layoutMain.style.display = 'block';
+            }
+        });
+    }
+
+    if (btnTambahOutlet) {
+        btnTambahOutlet.addEventListener('click', () => {
+            currentEditOutletId = null;
+            document.getElementById('tambah-outlet-title').innerText = 'Tambah Outlet';
+            document.getElementById('input-outlet-nama').value = '';
+            document.getElementById('input-outlet-telepon').value = '';
+            document.getElementById('input-outlet-alamat').value = '';
+            
+            layoutKelolaOutlet.classList.remove('active');
+            layoutKelolaOutlet.style.display = 'none';
+            layoutTambahOutlet.classList.add('active');
+            layoutTambahOutlet.style.display = 'block';
+        });
+    }
+
+    if (btnBackTambahOutlet) {
+        btnBackTambahOutlet.addEventListener('click', () => {
+            layoutTambahOutlet.classList.remove('active');
+            layoutTambahOutlet.style.display = 'none';
+            layoutKelolaOutlet.classList.add('active');
+            layoutKelolaOutlet.style.display = 'block';
+        });
+    }
+
+    if (btnSimpanOutlet) {
+        btnSimpanOutlet.addEventListener('click', () => {
+            const nama = document.getElementById('input-outlet-nama').value.trim();
+            const telepon = document.getElementById('input-outlet-telepon').value.trim();
+            const alamat = document.getElementById('input-outlet-alamat').value.trim();
+            
+            if (!nama) {
+                alert('Nama Outlet harus diisi!');
+                return;
+            }
+            
+            let dbOutlets = JSON.parse(originalGetItem('db_outlets') || '[]');
+            
+            if (currentEditOutletId) {
+                const idx = dbOutlets.findIndex(o => o.id === currentEditOutletId);
+                if(idx !== -1) {
+                    dbOutlets[idx].nama = nama;
+                    dbOutlets[idx].telepon = telepon;
+                    dbOutlets[idx].alamat = alamat;
+                }
+            } else {
+                dbOutlets.push({
+                    id: 'OUTLET-' + Date.now(),
+                    nama: nama,
+                    telepon: telepon,
+                    alamat: alamat
+                });
+            }
+            
+            originalSetItem('db_outlets', JSON.stringify(dbOutlets));
+            alert('Outlet berhasil disimpan!');
+            
+            layoutTambahOutlet.classList.remove('active');
+            layoutTambahOutlet.style.display = 'none';
+            layoutKelolaOutlet.classList.add('active');
+            layoutKelolaOutlet.style.display = 'block';
+            renderOutletList();
+        });
+    }
+    
+    window.editOutlet = function(id) {
+        let dbOutlets = JSON.parse(originalGetItem('db_outlets') || '[]');
+        let outlet = dbOutlets.find(o => o.id === id);
+        if(!outlet) {
+            if(id === 'PUSAT') {
+                outlet = { id: 'PUSAT', nama: 'Cabang Utama (Pusat)', telepon: '', alamat: '' };
+            } else return;
+        }
+        
+        currentEditOutletId = id;
+        document.getElementById('tambah-outlet-title').innerText = 'Edit Outlet';
+        document.getElementById('input-outlet-nama').value = outlet.nama || '';
+        document.getElementById('input-outlet-telepon').value = outlet.telepon || '';
+        document.getElementById('input-outlet-alamat').value = outlet.alamat || '';
+        
+        layoutKelolaOutlet.classList.remove('active');
+        layoutKelolaOutlet.style.display = 'none';
+        layoutTambahOutlet.classList.add('active');
+        layoutTambahOutlet.style.display = 'block';
+    }
+    
+    window.setAktifOutlet = function(id, namaOutlet) {
+        if(confirm(`Yakin ingin beralih ke cabang: ${namaOutlet}?\nSistem akan memuat ulang data sesuai cabang yang dipilih.`)) {
+            originalSetItem('active_outlet_id', id);
+            alert(`Berhasil beralih ke cabang: ${namaOutlet}`);
+            location.reload();
+        }
+    }
+    
+    window.hapusOutlet = function(id) {
+        if(id === 'PUSAT') {
+            alert('Cabang Pusat tidak dapat dihapus!');
+            return;
+        }
+        if(confirm('Yakin ingin menghapus cabang ini? Data transaksi dan pelanggan untuk cabang ini akan tetap ada di database, namun cabang tidak akan muncul di daftar.')) {
+            let dbOutlets = JSON.parse(originalGetItem('db_outlets') || '[]');
+            dbOutlets = dbOutlets.filter(o => o.id !== id);
+            originalSetItem('db_outlets', JSON.stringify(dbOutlets));
+            
+            // If they deleted the active outlet, switch to PUSAT
+            if(originalGetItem('active_outlet_id') === id) {
+                originalSetItem('active_outlet_id', 'PUSAT');
+                alert('Cabang yang sedang aktif dihapus. Sistem akan kembali ke Cabang Pusat.');
+                location.reload();
+            } else {
+                renderOutletList();
+            }
+        }
+    }
+
+    function renderOutletList() {
+        if(!outletListContainer) return;
+        let dbOutlets = JSON.parse(originalGetItem('db_outlets') || '[]');
+        let activeId = originalGetItem('active_outlet_id') || 'PUSAT';
+        
+        // Selalu tampilkan cabang pusat
+        let html = `
+            <div style="background: white; border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: ${activeId === 'PUSAT' ? '2px solid #3b82f6' : '1px solid #e2e8f0'};">
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">Cabang Utama (Pusat) ${activeId === 'PUSAT' ? '<span style="background: #3b82f6; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 5px;">AKTIF</span>' : ''}</div>
+                    <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Cabang default utama</div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    ${activeId !== 'PUSAT' ? `<button onclick="setAktifOutlet('PUSAT', 'Cabang Utama')" style="background: #f0f9ff; color: #3b82f6; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">Pilih</button>` : ''}
+                </div>
+            </div>
+        `;
+        
+        dbOutlets.forEach(outlet => {
+            let isActive = activeId === outlet.id;
+            html += `
+                <div style="background: white; border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: ${isActive ? '2px solid #3b82f6' : '1px solid #e2e8f0'}; mt-2">
+                    <div style="flex-grow: 1;">
+                        <div style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">${outlet.nama} ${isActive ? '<span style="background: #3b82f6; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 5px;">AKTIF</span>' : ''}</div>
+                        <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">${outlet.alamat || '-'}</div>
+                        <div style="font-size: 0.8rem; color: #64748b;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ${outlet.telepon || '-'}</div>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-direction: column;">
+                        ${!isActive ? `<button onclick="setAktifOutlet('${outlet.id}', '${outlet.nama.replace(/'/g, "\\'")}')" style="background: #f0f9ff; color: #3b82f6; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Pilih</button>` : ''}
+                        <button onclick="editOutlet('${outlet.id}')" style="background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
+                        <button onclick="hapusOutlet('${outlet.id}')" style="background: #fef2f2; color: #ef4444; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Hapus</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        outletListContainer.innerHTML = html;
+        
+        // Update label on menu akun
+        const activeName = activeId === 'PUSAT' ? 'Cabang Utama (Pusat)' : (dbOutlets.find(o => o.id === activeId)?.nama || 'Tidak Diketahui');
+        const outletLabel = document.getElementById('active-outlet-label');
+        if(outletLabel) outletLabel.innerText = activeName;
+    }
+    
+    // Initial call to set the label
+    setTimeout(renderOutletList, 500);
+
 });
 </script>
     <script>
@@ -7630,6 +9142,19 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

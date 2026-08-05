@@ -643,10 +643,12 @@ body {
 
 /* BOTTOM NAVIGATION */
 .bottom-nav {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    max-width: 600px;
     height: 70px;
     background: var(--bg-white);
     display: flex;
@@ -2553,3 +2555,6 @@ body {
     .app-header { padding: 25px 30px 15px; }
     .top-nav-card { margin: 20px auto; padding: 20px 0; border-radius: 24px; }
 }
+
+@media (min-width: 768px) { .bottom-nav { max-width: 900px; } }
+@media (min-width: 1024px) { .bottom-nav { max-width: 1200px; } }
