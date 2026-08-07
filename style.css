@@ -2416,8 +2416,9 @@ body {
     justify-content: center;
 }
 .kp-title-center img {
-    height: 30px;
-    border-radius: 6px;
+    height: 45px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .kp-search-bar {
     padding: 15px 20px 5px 20px;
@@ -2558,3 +2559,132 @@ body {
 
 @media (min-width: 768px) { .bottom-nav { max-width: 900px; } }
 @media (min-width: 1024px) { .bottom-nav { max-width: 1200px; } }
+
+/* --- CUSTOMER DETAIL VIEW --- */
+.cd-header {
+    background: #ffffff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.cd-header-center {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+.cd-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.cd-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #eab308;
+    margin-bottom: 12px;
+}
+.cd-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: #475569;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+.cd-row i {
+    margin-top: 3px;
+    width: 16px;
+    text-align: center;
+}
+.cd-stat-box {
+    padding: 10px 5px;
+    cursor: pointer;
+}
+.cd-stat-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.cd-stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+.cd-tx-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+.cd-tx-label {
+    color: #64748b;
+}
+.cd-tx-val {
+    color: #1e293b;
+    font-weight: 500;
+    text-align: right;
+}
+.cd-btn-lihat-semua {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+}
+.cd-action-bar-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+.cd-action-bar-wrapper > * {
+    pointer-events: auto;
+}
+.cd-btn-buat-transaksi {
+    background: #f59e0b;
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 24px;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: -15px;
+    z-index: 101;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+.cd-action-bar {
+    background: #ffffff;
+    padding: 20px 10px 15px 10px;
+    width: 95%;
+    max-width: 600px;
+    border-radius: 30px 30px 0 0;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+.cd-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #475569;
+    font-weight: 600;
+    cursor: pointer;
+}
