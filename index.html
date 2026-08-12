@@ -22,6 +22,70 @@
     <meta name="theme-color" content="#0284c7">
     <!-- Global Error Catcher (Temporary for Debugging) -->
     <script>
+        // Global Date Parser to handle DD/MM/YYYY
+        window.parseDateString = function(dateStr, notaId) {
+            if (notaId === 'MJL-0826-111') {
+                let debugDiv = document.getElementById('debug-dates');
+                if (!debugDiv) {
+                    debugDiv = document.createElement('div');
+                    debugDiv.id = 'debug-dates';
+                    debugDiv.style = 'position:fixed; top:10px; left:10px; z-index:9999; background:red; color:white; padding:10px; font-size:12px;';
+                    document.body.appendChild(debugDiv);
+                }
+                debugDiv.innerHTML += '<br>called with: ' + dateStr + ' | id: ' + notaId;
+            }
+            if (!dateStr) return new Date();
+            
+            // Smart disambiguation using notaId
+            if (notaId) {
+                if (notaId.startsWith('MJL-')) {
+                    let match = notaId.match(/MJL-(\d{2})(\d{2})-/);
+                    if (match) {
+                        let m = parseInt(match[1], 10) - 1;
+                        let y = 2000 + parseInt(match[2], 10);
+                        
+                        if (dateStr.includes('/')) {
+                            let parts = dateStr.split(' ')[0].split('/');
+                            if (parts.length === 3) {
+                                let p0 = parseInt(parts[0], 10);
+                                let p1 = parseInt(parts[1], 10);
+                                
+                                if (p0 === m + 1) {
+                                    let ret = new Date(y, m, p1);
+                                    if (notaId === 'MJL-0826-111') document.getElementById('debug-dates').innerHTML += '<br>matched p0, ret: ' + ret;
+                                    return ret;
+                                } else if (p1 === m + 1) {
+                                    let ret = new Date(y, m, p0);
+                                    if (notaId === 'MJL-0826-111') document.getElementById('debug-dates').innerHTML += '<br>matched p1, ret: ' + ret;
+                                    return ret;
+                                }
+                            }
+                        }
+                    }
+                } else if (notaId.match(/^(TRF-OUT|TRF-IN|KOR-IN|KOR-OUT)-/)) {
+                    let ts = parseInt(notaId.split('-').pop(), 10);
+                    if (!isNaN(ts) && ts > 1600000000000) {
+                        return new Date(ts);
+                    }
+                }
+            }
+
+            let d = new Date(dateStr);
+            if (notaId === 'MJL-0826-111') document.getElementById('debug-dates').innerHTML += '<br>fallback new Date(): ' + d;
+            if (!isNaN(d)) return d;
+            
+            if (dateStr.includes('/')) {
+                let parts = dateStr.split(' ')[0].split('/');
+                if (parts.length === 3) {
+                    let day = parseInt(parts[0], 10);
+                    let month = parseInt(parts[1], 10) - 1;
+                    let year = parseInt(parts[2], 10);
+                    if (year < 100) year += 2000;
+                    return new Date(year, month, day);
+                }
+            }
+            return new Date();
+        };
         // --- MULTI-OUTLET LOCALSTORAGE INTERCEPTOR ---
         const originalGetItem = localStorage.getItem.bind(localStorage);
         const originalSetItem = localStorage.setItem.bind(localStorage);
@@ -5432,7 +5496,7 @@
                     let pSum = 0;
                     pemasukan.forEach(trx => {
                         let trxDate = null;
-                        if (window.parseDateString) trxDate = window.parseDateString(trx.date);
+                        if (window.parseDateString) trxDate = window.parseDateString(trx.date, trx.id);
                         else if (trx.date) trxDate = new Date(trx.date);
 
                         if (trxDate && trxDate.getDate() === d.getDate() && trxDate.getMonth() === d.getMonth() && trxDate.getFullYear() === d.getFullYear()) {
@@ -5446,7 +5510,7 @@
                     let eSum = 0;
                     pengeluaran.forEach(trx => {
                         let trxDate = null;
-                        if (window.parseDateString) trxDate = window.parseDateString(trx.date);
+                        if (window.parseDateString) trxDate = window.parseDateString(trx.date, trx.id);
                         else if (trx.date) trxDate = new Date(trx.date);
                         
                         if (trxDate && trxDate.getDate() === d.getDate() && trxDate.getMonth() === d.getMonth() && trxDate.getFullYear() === d.getFullYear()) {
@@ -5571,8 +5635,8 @@
                 
                 // Sort by date descending
                 displayData.sort((a, b) => {
-                    let dA = window.parseDateString ? window.parseDateString(a.date) : new Date(a.date);
-                    let dB = window.parseDateString ? window.parseDateString(b.date) : new Date(b.date);
+                    let dA = window.parseDateString ? window.parseDateString(a.date, a.id) : new Date(a.date);
+                    let dB = window.parseDateString ? window.parseDateString(b.date, b.id) : new Date(b.date);
                     return dB - dA;
                 });
                 
@@ -5601,7 +5665,7 @@
                     displayData.forEach(item => {
                         let dateStr = '-';
                         if (item.date) {
-                            let d = window.parseDateString ? window.parseDateString(item.date) : new Date(item.date);
+                            let d = window.parseDateString ? window.parseDateString(item.date, item.id) : new Date(item.date);
                             if (d && !isNaN(d)) {
                                 dateStr = d.toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'});
                             } else {
@@ -5841,15 +5905,15 @@
                     
                     // Sort descending
                     trxPegawai.sort((a,b) => {
-                        let dA = window.parseDateString ? window.parseDateString(a.date) : new Date(a.date);
-                        let dB = window.parseDateString ? window.parseDateString(b.date) : new Date(b.date);
+                        let dA = window.parseDateString ? window.parseDateString(a.date, a.id) : new Date(a.date);
+                        let dB = window.parseDateString ? window.parseDateString(b.date, b.id) : new Date(b.date);
                         return dB - dA;
                     });
                     
                     trxPegawai.forEach(item => {
                         let dateStr = '-';
                         if (item.date) {
-                            let d = window.parseDateString ? window.parseDateString(item.date) : new Date(item.date);
+                            let d = window.parseDateString ? window.parseDateString(item.date, item.id) : new Date(item.date);
                             if (d && !isNaN(d)) dateStr = d.toLocaleDateString('id-ID', {day: '2-digit', month: 'short'});
                             else dateStr = item.date.substring(0, 10);
                         }
