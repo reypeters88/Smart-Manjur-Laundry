@@ -18,7 +18,6 @@
 
     <link rel="stylesheet" href="style.css?v=2">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="logo_manjur.png" type="image/png">
     <meta name="theme-color" content="#0284c7">
     <!-- Global Error Catcher (Temporary for Debugging) -->
     <script>
@@ -307,11 +306,11 @@
                 <div class="keuangan-top-stats" id="keuangan-stats" style="display: none;">
                     <div class="k-stat-item">
                         <span class="k-stat-label">Pendapatan <i class="fa-regular fa-circle-question"></i></span>
-                        <span class="k-stat-val" id="top-pendapatan"><sup>Rp</sup> 0</span>
+                        <span class="k-stat-val"><sup>Rp</sup> 32,000</span>
                     </div>
                     <div class="k-stat-item">
                         <span class="k-stat-label">Omzet <i class="fa-regular fa-circle-question"></i></span>
-                        <span class="k-stat-val" id="top-omzet"><sup>Rp</sup> 0</span>
+                        <span class="k-stat-val"><sup>Rp</sup> 27,000</span>
                     </div>
                 </div>
             </div>
@@ -464,15 +463,15 @@
                                 Ringkasan Keuangan
                             </div>
                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                <div onclick="window.bukaDetailRingkasan('omzet')"
-                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9; cursor:pointer;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Total Omzet</span>
-                                    <span id="summary-omzet" style="font-size:0.85rem; font-weight:700; color:#1e293b;">0</span>
+                                    <span style="font-size:0.85rem; font-weight:700; color:#1e293b;">27,000</span>
                                 </div>
-                                <div onclick="window.bukaDetailRingkasan('pendapatan')"
-                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9; cursor:pointer;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Pendapatan Transaksi</span>
-                                    <span id="summary-pendapatan" style="font-size:0.85rem; font-weight:700; color:#10b981;">0</span>
+                                    <span style="font-size:0.85rem; font-weight:700; color:#10b981;">32,000</span>
                                 </div>
                                 <div
                                     style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
@@ -499,25 +498,25 @@
                                     <span style="font-size:0.75rem; color:#64748b;">Pendapatan Lain</span>
                                     <span style="font-size:0.85rem; font-weight:600; color:#334155;">0</span>
                                 </div>
-                                <div onclick="window.bukaDetailRingkasan('pengeluaran')"
-                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9; cursor:pointer;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Pengeluaran</span>
-                                    <span id="summary-pengeluaran" style="font-size:0.85rem; font-weight:700; color:#ef4444;">0</span>
+                                    <span style="font-size:0.85rem; font-weight:700; color:#ef4444;">0</span>
                                 </div>
                                 <div
                                     style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Kasbon</span>
-                                    <span id="summary-kasbon" style="font-size:0.85rem; font-weight:700; color:#f59e0b;">0</span>
+                                    <span style="font-size:0.85rem; font-weight:700; color:#f59e0b;">27,000</span>
                                 </div>
-                                <div onclick="window.bukaDetailRingkasan('labarugi')"
-                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9; cursor:pointer;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Laba Rugi</span>
-                                    <span id="summary-labarugi" style="font-size:0.85rem; font-weight:700; color:#0ea5e9;">0</span>
+                                    <span style="font-size:0.85rem; font-weight:700; color:#0ea5e9;">32,000</span>
                                 </div>
-                                <div onclick="window.bukaDetailRingkasan('piutang')"
-                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9; cursor:pointer;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Piutang</span>
-                                    <span id="summary-piutang" style="font-size:0.85rem; font-weight:600; color:#334155;">0</span>
+                                    <span style="font-size:0.85rem; font-weight:600; color:#334155;">27,000</span>
                                 </div>
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
                                     <span style="font-size:0.75rem; color:#64748b;">Pembulatan</span>
@@ -541,7 +540,7 @@
                                 <div
                                     style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
                                     <span style="font-size:0.75rem; color:#64748b;">Transaksi Masuk</span>
-                                    <span id="stat-trxmasuk" style="font-size:0.8rem; font-weight:700; color:#1e293b;">0 Transaksi</span>
+                                    <span style="font-size:0.8rem; font-weight:700; color:#1e293b;">2 Transaksi</span>
                                 </div>
                                 <div
                                     style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:1px dashed #f1f5f9;">
@@ -611,9 +610,12 @@
 
                 <!-- TAB: KEPEGAWAIAN -->
                 <div id="tab-kepegawaian" class="tab-content"
-                    style="display: none; background: #f8fafc; min-height: calc(100vh - 70px); color: #1e293b; padding: 0;">
+                    style="display: none; background: #0b141a; min-height: calc(100vh - 70px); color: #e9edef; padding: 0;">
+                    <!-- WA Calls Layout -->
                     <div style="padding: 20px 15px 10px 15px;">
-                        <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 20px;">Kinerja Pegawai</h2>
+                        <h2 style="font-size: 1.5rem; font-weight: 600; color: #e9edef; margin-bottom: 20px;">Kinerja
+                            Pegawai</h2>
+
                         <!-- Search Bar -->
                         <div style="position: relative; margin-bottom: 25px;">
                             <i class="fa-solid fa-magnifying-glass"
@@ -1205,12 +1207,10 @@
                     </div>
                 </header>
 
-                
-<!-- SEARCH BAR -->
-                <div class="kp-search-bar" style="display: flex; align-items: center; justify-content: space-between;">
-                    <div class="kp-search-title" id="kelola-pelanggan-title" style="flex:1;">Pelanggan (0)</div>
-                    <input type="text" id="input-search-kelola-pelanggan" placeholder="Cari pelanggan..." style="display:none; flex:1; padding:6px 12px; border-radius:6px; border:1px solid #ccc; font-size:0.9rem; margin-right:10px; outline:none;">
-                    <div class="kp-search-input-wrap" id="btn-toggle-search-kelola" style="cursor: pointer;">
+                <!-- SEARCH BAR -->
+                <div class="kp-search-bar">
+                    <div class="kp-search-title" id="kelola-pelanggan-title">Pelanggan (0)</div>
+                    <div class="kp-search-input-wrap">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                 </div>
@@ -1223,7 +1223,7 @@
                         <div class="kp-chip">Online</div>
                         <div class="kp-chip">By Grup</div>
                     </div>
-                    <div class="kp-sort" id="btn-sort-kelola" style="cursor: pointer; color: #64748b;">
+                    <div class="kp-sort">
                         A<i class="fa-solid fa-arrow-down-a-z"></i>Z
                     </div>
                 </div>
@@ -2170,13 +2170,6 @@
             <div class="pos-2step-container">
                 <!-- STEP 1: INPUT TRANSAKSI -->
                 <div class="pos-step-card">
-                      <h3 class="pos-step-title"><span>DIKERJAKAN OLEH <span style="color:#ef4444">*</span></span></h3>
-                      <div style="margin-bottom: 25px;">
-                          <select class="form-select" id="pos-pegawai-select" style="width: 100%;">
-                              <option value="">-- Pilih Pegawai --</option>
-                          </select>
-                      </div>
-
                     <h3 class="pos-step-title"><span>1. PILIH PELANGGAN <span style="color:#ef4444">*</span></span></h3>
                     <div style="display:flex; gap:10px; margin-bottom: 10px;">
                         <input type="text" class="form-select" id="pos-customer-select" style="flex:1;"
@@ -2346,12 +2339,14 @@
         <!-- LAYOUT ARUS KEUANGAN -->
         <div id="layout-arus-keuangan" class="layout"
             style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-arus" style="color: #64748b;">
+            <header class="pos-header"
+                style="background: #fff; box-shadow:none; border-bottom: 1px solid #f1f5f9; padding-bottom:10px;">
+                <button class="btn-icon" id="btn-back-arus">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title"
+                    style="color:#1e293b; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-droplet" style="color:#0ea5e9;"></i> Manjur
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-arus" style="color: #0ea5e9;">
@@ -2360,43 +2355,53 @@
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul -->
-                <div style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Arus Keuangan
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
+            <div style="padding: 15px 20px; border-bottom:1px solid #f1f5f9;">
+                <h2 style="font-size:1.1rem; color:#1e293b; font-weight:500; margin-bottom: 15px;">Arus Keuangan</h2>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <div
+                            style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:500; font-size:0.9rem; position:relative;">
+                            <i class="fa-regular fa-calendar" style="color:#0ea5e9;"></i>
                             <select id="arus-date-filter"
                                 style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
                                 <option value="hari-ini">Hari Ini</option>
                                 <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
+                                <option value="7-hari" selected>7 Hari Terakhir</option>
                                 <option value="30-hari">30 Hari Terakhir</option>
                                 <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
+                                <option value="per-bulan">Pilih Bulan</option>
                                 <option value="per-tanggal">Per Tanggal</option>
                             </select>
                             <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
+                                style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
                         </div>
-                        <div id="arus-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+                        <div id="arus-date-text" style="font-size:0.8rem; color:#94a3b8; display:none;">17/07/2026 -
+                            23/07/2026</div>
                     </div>
+                    <button id="btn-refresh-arus"
+                        style="border:1px solid #0ea5e9; background:transparent; padding:5px 15px; border-radius:20px; font-size:0.8rem; color:#0ea5e9; font-weight:500; cursor:pointer; display:none; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-rotate-right" id="arus-refresh-icon"></i> Refresh
+                    </button>
                 </div>
             </div>
 
             <!-- EMPTY STATE -->
-            <div id="arus-empty-state"
-                style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                    style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
+            <div id="arus-empty-state" class="content-area"
+                style="padding: 60px 20px; display: flex; flex-direction:column; justify-content: flex-start; align-items: center; background: #ffffff; flex-grow:1;">
+                <div
+                    style="width: 150px; height: 150px; background: #f0f9ff; border-radius: 50%; display:flex; justify-content:center; align-items:center; position:relative; margin-bottom: 25px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 5rem; color: #f59e0b;"></i>
+                    <i class="fa-solid fa-circle-question"
+                        style="font-size: 2.2rem; color: #fbbf24; position:absolute; top:15px; background:#fff; border-radius:50%;"></i>
+                    <i class="fa-solid fa-user-tie"
+                        style="font-size: 2rem; color: #1e293b; position:absolute; bottom:25px; left:25px;"></i>
+                    <i class="fa-solid fa-user"
+                        style="font-size: 1.8rem; color: #3b82f6; position:absolute; bottom:25px; right:25px;"></i>
                 </div>
+                <p style="color: #94a3b8; font-size: 0.95rem; text-align: center; line-height: 1.5; font-weight:400;">
+                    Pilih Periode untuk menampilkan data laporan.
+                </p>
             </div>
 
             <!-- DATA STATE -->
@@ -2560,39 +2565,18 @@
                 </div>
             </div>
         </div>
-        
-        <!-- LAYOUT DETAIL RINGKASAN -->
-        <div id="layout-detail-ringkasan" class="layout"
-            style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-detail-ringkasan" style="color: #64748b;">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-                <div class="cd-header-center">
-                    <div id="detail-ringkasan-title" style="font-weight: 600; font-size: 1.1rem; color: #1e293b;">Detail Data</div>
-                </div>
-                <div style="width: 40px;"></div>
-            </header>
-            <div style="padding: 15px 20px;">
-                <div id="detail-ringkasan-empty" style="display:none; text-align:center; margin-top:50px; color:#94a3b8; font-size:0.9rem;">
-                    <i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:10px;"></i><br>
-                    Data tidak ditemukan
-                </div>
-                <div id="detail-ringkasan-list" style="display:flex; flex-direction:column; gap:10px;">
-                    <!-- Items rendered here -->
-                </div>
-            </div>
-        </div>
 
         <!-- LAYOUT PENDAPATAN TRANSAKSI -->
         <div id="layout-pendapatan-transaksi" class="layout"
             style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-pendapatan" style="color: #64748b;">
+            <header class="pos-header"
+                style="background: #fff; box-shadow:none; border-bottom: 1px solid #f1f5f9; padding-bottom:10px;">
+                <button class="btn-icon" id="btn-back-pendapatan">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title"
+                    style="color:#1e293b; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-droplet" style="color:#0ea5e9;"></i> Manjur
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-pendapatan" style="color: #0ea5e9;">
@@ -2601,43 +2585,54 @@
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul -->
-                <div style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Pendapatan Transaksi
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
+            <div style="padding: 15px 20px; border-bottom:1px solid #f1f5f9;">
+                <h2 style="font-size:1.1rem; color:#1e293b; font-weight:500; margin-bottom: 15px;">Pendapatan Transaksi
+                </h2>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <div
+                            style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:500; font-size:0.9rem; position:relative;">
+                            <i class="fa-regular fa-calendar" style="color:#0ea5e9;"></i>
                             <select id="pendapatan-date-filter"
                                 style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
                                 <option value="hari-ini">Hari Ini</option>
                                 <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
+                                <option value="7-hari" selected>7 Hari Terakhir</option>
                                 <option value="30-hari">30 Hari Terakhir</option>
                                 <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
+                                <option value="per-bulan">Pilih Bulan</option>
                                 <option value="per-tanggal">Per Tanggal</option>
                             </select>
                             <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
+                                style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
                         </div>
-                        <div id="pendapatan-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+                        <div id="pendapatan-date-text" style="font-size:0.8rem; color:#94a3b8; display:none;">17/07/2026
+                            - 23/07/2026</div>
                     </div>
+                    <button id="btn-refresh-pendapatan"
+                        style="border:1px solid #0ea5e9; background:transparent; padding:5px 15px; border-radius:20px; font-size:0.8rem; color:#0ea5e9; font-weight:500; cursor:pointer; display:none; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-rotate-right" id="pendapatan-refresh-icon"></i> Refresh
+                    </button>
                 </div>
             </div>
 
             <!-- EMPTY STATE -->
-            <div id="pendapatan-empty-state"
-                style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                    style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
+            <div id="pendapatan-empty-state" class="content-area"
+                style="padding: 60px 20px; display: flex; flex-direction:column; justify-content: flex-start; align-items: center; background: #ffffff; flex-grow:1;">
+                <div
+                    style="width: 150px; height: 150px; background: #f0f9ff; border-radius: 50%; display:flex; justify-content:center; align-items:center; position:relative; margin-bottom: 25px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 5rem; color: #f59e0b;"></i>
+                    <i class="fa-solid fa-circle-question"
+                        style="font-size: 2.2rem; color: #fbbf24; position:absolute; top:15px; background:#fff; border-radius:50%;"></i>
+                    <i class="fa-solid fa-user-tie"
+                        style="font-size: 2rem; color: #1e293b; position:absolute; bottom:25px; left:25px;"></i>
+                    <i class="fa-solid fa-user"
+                        style="font-size: 1.8rem; color: #3b82f6; position:absolute; bottom:25px; right:25px;"></i>
                 </div>
+                <p style="color: #94a3b8; font-size: 0.95rem; text-align: center; line-height: 1.5; font-weight:400;">
+                    Pilih Periode untuk menampilkan data laporan.
+                </p>
             </div>
 
             <!-- DATA STATE (GROUPED LIST) -->
@@ -2676,12 +2671,14 @@
         <!-- LAYOUT PENDAPATAN LAINNYA -->
         <div id="layout-pendapatan-lainnya" class="layout"
             style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-lainnya" style="color: #64748b;">
+            <header class="pos-header"
+                style="background: #fff; box-shadow:none; border-bottom: 1px solid #f1f5f9; padding-bottom:10px;">
+                <button class="btn-icon" id="btn-back-lainnya">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title"
+                    style="color:#1e293b; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-droplet" style="color:#0ea5e9;"></i> Manjur
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-lainnya" style="color: #0ea5e9;">
@@ -2690,43 +2687,54 @@
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul -->
-                <div style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Pendapatan Lainnya
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
+            <div style="padding: 15px 20px; border-bottom:1px solid #f1f5f9;">
+                <h2 style="font-size:1.1rem; color:#1e293b; font-weight:500; margin-bottom: 15px;">Pendapatan Lainnya
+                </h2>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <div
+                            style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:500; font-size:0.9rem; position:relative;">
+                            <i class="fa-regular fa-calendar" style="color:#0ea5e9;"></i>
                             <select id="lainnya-date-filter"
                                 style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
                                 <option value="hari-ini">Hari Ini</option>
                                 <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
+                                <option value="7-hari" selected>7 Hari Terakhir</option>
                                 <option value="30-hari">30 Hari Terakhir</option>
                                 <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
+                                <option value="per-bulan">Pilih Bulan</option>
                                 <option value="per-tanggal">Per Tanggal</option>
                             </select>
                             <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
+                                style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
                         </div>
-                        <div id="lainnya-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+                        <div id="lainnya-date-text" style="font-size:0.8rem; color:#94a3b8; display:none;">17/07/2026 -
+                            23/07/2026</div>
                     </div>
+                    <button id="btn-refresh-lainnya"
+                        style="border:1px solid #0ea5e9; background:transparent; padding:5px 15px; border-radius:20px; font-size:0.8rem; color:#0ea5e9; font-weight:500; cursor:pointer; display:none; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-rotate-right" id="lainnya-refresh-icon"></i> Refresh
+                    </button>
                 </div>
             </div>
 
             <!-- EMPTY STATE -->
-            <div id="lainnya-empty-state"
-                style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                    style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
+            <div id="lainnya-empty-state" class="content-area"
+                style="padding: 60px 20px; display: flex; flex-direction:column; justify-content: flex-start; align-items: center; background: #ffffff; flex-grow:1;">
+                <div
+                    style="width: 150px; height: 150px; background: #f0f9ff; border-radius: 50%; display:flex; justify-content:center; align-items:center; position:relative; margin-bottom: 25px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 5rem; color: #f59e0b;"></i>
+                    <i class="fa-solid fa-circle-question"
+                        style="font-size: 2.2rem; color: #fbbf24; position:absolute; top:15px; background:#fff; border-radius:50%;"></i>
+                    <i class="fa-solid fa-user-tie"
+                        style="font-size: 2rem; color: #1e293b; position:absolute; bottom:25px; left:25px;"></i>
+                    <i class="fa-solid fa-user"
+                        style="font-size: 1.8rem; color: #3b82f6; position:absolute; bottom:25px; right:25px;"></i>
                 </div>
+                <p style="color: #94a3b8; font-size: 0.95rem; text-align: center; line-height: 1.5; font-weight:400;">
+                    Pilih Periode untuk menampilkan data laporan.
+                </p>
             </div>
 
             <!-- DATA STATE (GROUPED LIST) -->
@@ -2784,12 +2792,14 @@
         <!-- LAYOUT OMZET -->
         <div id="layout-omzet" class="layout"
             style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-omzet" style="color: #64748b;">
+            <header class="pos-header"
+                style="background: #fff; box-shadow:none; border-bottom: 1px solid #f1f5f9; padding-bottom:10px;">
+                <button class="btn-icon" id="btn-back-omzet">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title"
+                    style="color:#1e293b; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-droplet" style="color:#0ea5e9;"></i> Manjur
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-omzet" style="color: #0ea5e9;">
@@ -2798,48 +2808,35 @@
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul -->
-                <div style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Omzet
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
+            <div style="padding: 15px 20px;">
+                <h2 style="font-size:1.2rem; color:#1e293b; font-weight:600; margin-bottom: 15px;">Omzet</h2>
+
+                <div
+                    style="display:flex; justify-content:space-between; align-items:center; padding-bottom: 15px; border-bottom:1px solid #f1f5f9;">
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <div
+                            style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:500; font-size:0.9rem; position:relative;">
+                            <i class="fa-regular fa-calendar" style="color:#0ea5e9;"></i>
                             <select id="omzet-date-filter"
                                 style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
                                 <option value="hari-ini">Hari Ini</option>
                                 <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
+                                <option value="7-hari" selected>7 Hari Terakhir</option>
                                 <option value="30-hari">30 Hari Terakhir</option>
                                 <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
+                                <option value="per-bulan">Pilih Bulan</option>
                                 <option value="per-tanggal">Per Tanggal</option>
                             </select>
                             <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
+                                style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
                         </div>
-                        <div id="omzet-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+                        <div id="omzet-date-text" style="font-size:0.8rem; color:#94a3b8;">23/07/2026</div>
                     </div>
+                    <button id="btn-refresh-omzet"
+                        style="border:1px solid #cbd5e1; background:transparent; padding:5px 15px; border-radius:20px; font-size:0.8rem; color:#64748b; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-rotate-right" id="omzet-refresh-icon"></i> Refresh
+                    </button>
                 </div>
-            </div>
-
-            <!-- EMPTY STATE -->
-            <div id="omzet-empty-state"
-                style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                    style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
-                </div>
-            </div>
-
-            <!-- DATA STATE -->
-            <div id="omzet-data-state" style="display:none; flex-direction:column; width:100%;">
-                <div style="padding: 15px 20px;">
 
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:20px;">
                     <div>
@@ -2918,64 +2915,75 @@
                     style="background:#f59e0b; color:#fff; border:none; padding:12px 30px; border-radius:30px; font-weight:600; font-size:1rem; box-shadow:0 4px 15px rgba(245,158,11,0.3); pointer-events:auto; cursor:pointer;">Analisa
                     Omzet</button>
             </div>
-            </div>
         </div>
 
         <!-- LAYOUT PENGELUARAN -->
         <div id="layout-pengeluaran" class="layout"
             style="display: none; background: #f8fafc; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-pengeluaran" style="color: #64748b;">
-                    <i class="fa-solid fa-arrow-left"></i>
+            <header class="pos-header"
+                style="background: #f8fafc; box-shadow:none; border-bottom: none; padding-bottom:15px; padding-top:15px;">
+                <button class="btn-icon" id="btn-back-pengeluaran">
+                    <i class="fa-solid fa-arrow-left" style="color:#64748b;"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title"
+                    style="color:#0ea5e9; font-weight:800; font-size:1.5rem; display:flex; align-items:center; justify-content:center; gap:8px; flex:1;">
+                    <i class="fa-solid fa-droplet"></i> bilas
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-pengeluaran" style="color: #0ea5e9;">
-                        <i class="fa-solid fa-file-excel" style="font-size:1.3rem;"></i>
+                        <i class="fa-solid fa-file-excel" style="font-size:1.5rem;"></i>
                     </button>
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul -->
-                <div style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Pengeluaran
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
-                            <select id="pengeluaran-date-filter"
-                                style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
-                                <option value="hari-ini">Hari Ini</option>
-                                <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
-                                <option value="30-hari">30 Hari Terakhir</option>
-                                <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
-                                <option value="per-tanggal">Per Tanggal</option>
-                            </select>
-                            <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
+            <div
+                style="background: #ffffff; border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -4px 10px rgba(0,0,0,0.02); min-height: calc(100vh - 70px);">
+                <div style="padding: 20px 20px 15px; border-bottom:1px solid #f1f5f9;">
+                    <h2 style="font-size:1.4rem; color:#1e293b; font-weight:500; margin-bottom: 25px;">Pengeluaran</h2>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div
+                                style="display:flex; align-items:center; gap:10px; color:#1e293b; font-weight:500; font-size:1.05rem; position:relative;">
+                                <i class="fa-regular fa-calendar" style="color:#0ea5e9; font-size:1.3rem;"></i>
+                                <select id="pengeluaran-date-filter"
+                                    style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
+                                    <option value="hari-ini">Hari Ini</option>
+                                    <option value="kemarin">Kemarin</option>
+                                    <option value="7-hari" selected>7 Hari Terakhir</option>
+                                    <option value="30-hari">30 Hari Terakhir</option>
+                                    <option value="bulan-ini">Bulan Ini</option>
+                                    <option value="per-bulan">Pilih Bulan</option>
+                                    <option value="per-tanggal">Per Tanggal</option>
+                                </select>
+                                <i class="fa-solid fa-caret-down"
+                                    style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
+                            </div>
+                            <div id="pengeluaran-date-text" style="font-size:0.85rem; color:#64748b; display:none;">
+                                01/07/2026 - 15/07/2026</div>
                         </div>
-                        <div id="pengeluaran-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+                        <button id="btn-refresh-pengeluaran"
+                            style="border:1px solid #0ea5e9; background:transparent; padding:6px 20px; border-radius:20px; font-size:0.85rem; color:#0ea5e9; font-weight:500; cursor:pointer; display:none; align-items:center; gap:5px;">
+                            <i class="fa-solid fa-rotate-right" id="pengeluaran-refresh-icon" style="display:none;"></i>
+                            Refresh
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- EMPTY STATE -->
-            <div id="pengeluaran-empty-state"
-                style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                    style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
+                <!-- EMPTY STATE -->
+                <div id="pengeluaran-empty-state" class="content-area"
+                    style="padding: 60px 20px; display: flex; flex-direction:column; justify-content: flex-start; align-items: center; background: #ffffff;">
+                    <div
+                        style="width: 150px; height: 150px; background: #f0f9ff; border-radius: 50%; display:flex; justify-content:center; align-items:center; position:relative; margin-bottom: 25px;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 5rem; color: #0ea5e9;"></i>
+                        <i class="fa-solid fa-circle-question"
+                            style="font-size: 2.2rem; color: #38bdf8; position:absolute; top:15px; background:#fff; border-radius:50%;"></i>
+                    </div>
+                    <p
+                        style="color: #94a3b8; font-size: 0.95rem; text-align: center; line-height: 1.5; font-weight:400;">
+                        Pilih Periode untuk menampilkan data laporan.
+                    </p>
                 </div>
-            </div>
 
                 <!-- DATA STATE (GROUPED LIST) -->
                 <div id="pengeluaran-data-state"
@@ -3030,6 +3038,7 @@
                     </div>
                 </div>
             </div>
+        </div>
 
         <div id="layout-hutang" class="layout"
             style="display: none; background: #f8fafc; min-height: 100vh; position:relative;">
@@ -3309,12 +3318,14 @@
         <!-- LAYOUT LAPORAN TRANSAKSI -->
         <div id="layout-laporan-transaksi" class="layout"
             style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-lap-transaksi" style="color: #64748b;">
+            <header class="pos-header"
+                style="background: #fff; box-shadow:none; border-bottom: 1px solid #f1f5f9; padding-bottom:10px;">
+                <button class="btn-icon" id="btn-back-lap-transaksi">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title" id="lap-transaksi-header-title"
+                    style="color:#1e293b; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    Transaksi Semua
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-lap-transaksi" style="color: #0ea5e9;">
@@ -3323,40 +3334,43 @@
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul Dinamis Transaksi -->
-                <div id="lap-transaksi-header-title" style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Transaksi Reguler
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
-                            <select id="lap-transaksi-date-filter"
-                                style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
-                                <option value="hari-ini">Hari Ini</option>
-                                <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
-                                <option value="30-hari">30 Hari Terakhir</option>
-                                <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
-                                <option value="per-tanggal">Per Tanggal</option>
-                            </select>
-                            <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
-                        </div>
-                        <div id="lap-transaksi-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+            <div style="padding: 15px 20px; border-bottom:1px solid #f1f5f9;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div
+                        style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:500; font-size:0.9rem; position:relative;">
+                        <i class="fa-regular fa-calendar" style="color:#0ea5e9;"></i>
+                        <select id="lap-transaksi-date-filter"
+                            style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
+                            <option value="hari-ini">Hari Ini</option>
+                            <option value="kemarin">Kemarin</option>
+                            <option value="7-hari" selected>7 Hari Terakhir</option>
+                            <option value="30-hari">30 Hari Terakhir</option>
+                            <option value="bulan-ini">Bulan Ini</option>
+                            <option value="per-bulan">Pilih Bulan</option>
+                            <option value="per-tanggal">Per Tanggal</option>
+                        </select>
+                        <i class="fa-solid fa-caret-down"
+                            style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
                     </div>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <button id="btn-lap-transaksi-expand-all" style="background:#e0f2fe; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#0369a1; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-down"></i> Buka Semua</button>
-                        <button id="btn-lap-transaksi-collapse-all" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#475569; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-up"></i> Tutup Semua</button>
-                    </div>
+                    <button id="btn-refresh-lap-transaksi"
+                        style="border:1px solid #cbd5e1; background:transparent; padding:5px 15px; border-radius:20px; font-size:0.8rem; color:#64748b; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                        Refresh
+                    </button>
                 </div>
+                <div id="lap-transaksi-date-text" style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">18/07/2026 -
+                    24/07/2026</div>
             </div>
 
+            <!-- EMPTY STATE -->
+            <div id="lap-transaksi-empty-state"
+                style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 40px 20px; text-align:center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/7486/7486754.png"
+                    style="width: 120px; opacity: 0.5; margin-bottom: 20px;" alt="Empty Data">
+                <div style="font-size:1.1rem; color:#334155; font-weight:600; margin-bottom:5px;">Belum Ada Transaksi
+                </div>
+                <div style="font-size:0.9rem; color:#64748b;">Pilih rentang tanggal lain atau input transaksi baru.
+                </div>
+            </div>
 
             <!-- DATA STATE -->
             <div id="lap-transaksi-data-state"
@@ -3378,20 +3392,10 @@
                             <select id="lap-transaksi-filter-select"
                                 style="position:absolute; left:0; top:0; width:100%; height:100%; opacity:0; cursor:pointer;">
                                 <option value="Semua">Semua</option>
-                                <option value="Lunas">Lunas</option>
-                                <option value="Belum Lunas">Belum Bayar</option>
-                                <option value="Batal">Batal</option>
+                                <option value="Kiloan">Kiloan</option>
+                                <option value="Satuan">Satuan</option>
                             </select>
                         </div>
-                    </div>
-                </div>
-
-                <!-- EMPTY STATE (MOVED HERE) -->
-                <div id="lap-transaksi-empty-state"
-                    style="display:none; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                        style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                    <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
                     </div>
                 </div>
 
@@ -3402,12 +3406,14 @@
         <!-- LAYOUT LABA RUGI -->
         <div id="layout-laba-rugi" class="layout"
             style="display: none; background: #f8fafc; min-height: 100vh; position:relative;">
-            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
-                <button class="btn-icon" id="btn-back-laba-rugi" style="color: #64748b;">
+            <header class="pos-header"
+                style="background: #fff; box-shadow:none; border-bottom: 1px solid #e2e8f0; padding-bottom:10px;">
+                <button class="btn-icon" id="btn-back-laba-rugi">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <div class="cd-header-center">
-                    <img src="logo_manjur.png" alt="Logo Manjur" class="dynamic-logo" style="height: 35px; border-radius: 4px;">
+                <div class="pos-title"
+                    style="color:#1e293b; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    Laporan Laba Rugi
                 </div>
                 <div style="width: 40px; display:flex; justify-content:flex-end;">
                     <button class="btn-icon" id="btn-export-laba-rugi" style="color: #0ea5e9;">
@@ -3416,46 +3422,32 @@
                 </div>
             </header>
 
-            <div style="background: #ffffff; padding: 15px 20px 0 20px;">
-                <!-- Judul -->
-                <div style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                    Laporan Laba Rugi
-                </div>
-                
-                <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
-                    <div style="display:flex; flex-direction:column; gap:3px;">
-                        <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
-                            <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
-                            <select id="laba-rugi-date-filter"
-                                style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
-                                <option value="hari-ini">Hari Ini</option>
-                                <option value="kemarin">Kemarin</option>
-                                <option value="7-hari">7 Hari Terakhir</option>
-                                <option value="30-hari">30 Hari Terakhir</option>
-                                <option value="bulan-ini">Bulan Ini</option>
-                                <option value="per-bulan">Per Bulan</option>
-                                <option value="per-tanggal">Per Tanggal</option>
-                            </select>
-                            <i class="fa-solid fa-caret-down"
-                                style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
-                        </div>
-                        <div id="laba-rugi-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+            <div style="padding: 15px 20px; border-bottom:1px solid #e2e8f0; background: #ffffff;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div
+                        style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:500; font-size:0.9rem; position:relative;">
+                        <i class="fa-regular fa-calendar" style="color:#0ea5e9;"></i>
+                        <select id="laba-rugi-date-filter"
+                            style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
+                            <option value="hari-ini">Hari Ini</option>
+                            <option value="kemarin">Kemarin</option>
+                            <option value="7-hari" selected>7 Hari Terakhir</option>
+                            <option value="30-hari">30 Hari Terakhir</option>
+                            <option value="bulan-ini">Bulan Ini</option>
+                            <option value="per-bulan">Pilih Bulan</option>
+                            <option value="per-tanggal">Per Tanggal</option>
+                        </select>
+                        <i class="fa-solid fa-caret-down"
+                            style="font-size:0.8rem; position:absolute; right:0; pointer-events:none;"></i>
                     </div>
+                    <button id="btn-refresh-laba-rugi"
+                        style="border:1px solid #cbd5e1; background:transparent; padding:5px 15px; border-radius:20px; font-size:0.8rem; color:#64748b; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                        Refresh
+                    </button>
                 </div>
+                <div id="laba-rugi-date-text" style="font-size:0.8rem; color:#94a3b8; margin-top:5px;">18/07/2026 -
+                    24/07/2026</div>
             </div>
-
-            <!-- EMPTY STATE -->
-            <div id="laba-rugi-empty-state"
-                style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 60px 20px; text-align:center;">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-folder-7345173-5999827.png"
-                    style="width: 180px; margin-bottom: 20px;" alt="Empty Data">
-                <div style="font-size:0.9rem; color:#64748b; font-weight: 500;">Pilih Periode untuk menampilkan data laporan.
-                </div>
-            </div>
-            
-            <div id="laba-rugi-data-state" style="display:none; flex-direction:column; width:100%;">
 
             <div style="padding: 20px; display:flex; flex-direction:column; gap:20px; padding-bottom:80px;">
 
@@ -3550,7 +3542,6 @@
                     </div>
                 </div>
 
-            </div>
             </div>
         </div>
 
@@ -3736,13 +3727,13 @@
             <!-- Modal Body (Calendar) -->
             <div style="padding: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <div id="modal-calendar-month-year"
+                    <div
                         style="font-weight: 600; color: #475569; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; cursor: pointer;">
                         JULI 2026 <i class="fa-solid fa-caret-down" style="font-size: 0.8rem;"></i>
                     </div>
                     <div style="display: flex; gap: 20px; color: #64748b;">
-                        <i id="btn-calendar-prev" class="fa-solid fa-chevron-left" style="cursor: pointer;"></i>
-                        <i id="btn-calendar-next" class="fa-solid fa-chevron-right" style="cursor: pointer;"></i>
+                        <i class="fa-solid fa-chevron-left" style="cursor: pointer;"></i>
+                        <i class="fa-solid fa-chevron-right" style="cursor: pointer;"></i>
                     </div>
                 </div>
 
@@ -3767,36 +3758,6 @@
                     style="display: flex; justify-content: flex-end; gap: 20px; margin-top: 30px; font-weight: 600; font-size: 0.9rem;">
                     <div id="btn-modal-batal" style="color: #0ea5e9; cursor: pointer; padding: 5px;">BATAL</div>
                     <div id="btn-modal-oke" style="color: #0ea5e9; cursor: pointer; padding: 5px;">OKE</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CUSTOM MONTH PICKER MODAL -->
-    <div id="custom-month-picker-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
-        <div
-            style="background: #ffffff; width: 90%; max-width: 320px; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Plus Jakarta Sans', sans-serif;">
-            
-            <div style="background: #0ea5e9; padding: 20px; color: #ffffff; text-align:center;">
-                <div style="font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 5px; font-weight: 600;">PILIH BULAN</div>
-                <div id="modal-month-text" style="font-size: 1.5rem; font-weight: 600;">Juli 2026</div>
-            </div>
-
-            <div style="padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <i id="btn-month-prev-year" class="fa-solid fa-chevron-left" style="cursor: pointer; color: #64748b; padding:10px;"></i>
-                    <div id="modal-month-year-display" style="font-weight: 700; color: #334155; font-size: 1.1rem;">2026</div>
-                    <i id="btn-month-next-year" class="fa-solid fa-chevron-right" style="cursor: pointer; color: #64748b; padding:10px;"></i>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
-                    <!-- Months generated by JS -->
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 20px; margin-top: 20px; font-weight: 600; font-size: 0.9rem;">
-                    <div id="btn-month-batal" style="color: #0ea5e9; cursor: pointer; padding: 5px;">BATAL</div>
-                    <div id="btn-month-oke" style="color: #0ea5e9; cursor: pointer; padding: 5px;">OKE</div>
                 </div>
             </div>
         </div>
@@ -4178,7 +4139,7 @@
                                 pelanggan: JSON.parse(localStorage.getItem('db_pelanggan') || '[]'),
                                 inventory: JSON.parse(localStorage.getItem('db_inventory') || '[]'),
                                 Layanan: JSON.parse(localStorage.getItem('db_layanan') || '[]'),
-                                user: JSON.parse(localStorage.getItem('db_users') || '[]'),
+                                user: JSON.parse(localStorage.getItem('db_user') || '[]'),
                                 Bank: JSON.parse(localStorage.getItem('db_bank') || '[]')
                             }
                         };
@@ -4209,12 +4170,8 @@
                         localStorage.setItem('db_pelanggan', JSON.stringify(result.data.pelanggan || []));
                         localStorage.setItem('db_inventory', JSON.stringify(result.data.inventory || []));
                         localStorage.setItem('db_layanan', JSON.stringify(result.data.Layanan || []));
-                        localStorage.setItem('db_users', JSON.stringify(result.data.user || []));
+                        localStorage.setItem('db_user', JSON.stringify(result.data.user || []));
                         localStorage.setItem('db_bank', JSON.stringify(result.data.Bank || []));
-
-                        if (typeof window.renderManajemenPengguna === 'function') window.renderManajemenPengguna();
-                        if (typeof window.renderLoginScreen === 'function') window.renderLoginScreen();
-                        if (typeof window.renderKepegawaian === 'function') window.renderKepegawaian();
 
                         disableAutoSync = false; // Re-enable
 
@@ -4283,12 +4240,8 @@
                             localStorage.setItem('db_pelanggan', JSON.stringify(result.data.pelanggan || []));
                             localStorage.setItem('db_inventory', JSON.stringify(result.data.inventory || []));
                             localStorage.setItem('db_layanan', JSON.stringify(result.data.Layanan || []));
-                            localStorage.setItem('db_users', JSON.stringify(result.data.user || []));
+                            localStorage.setItem('db_user', JSON.stringify(result.data.user || []));
                             localStorage.setItem('db_bank', JSON.stringify(result.data.Bank || []));
-
-                            if (typeof window.renderManajemenPengguna === 'function') window.renderManajemenPengguna();
-                            if (typeof window.renderLoginScreen === 'function') window.renderLoginScreen();
-                            if (typeof window.renderKepegawaian === 'function') window.renderKepegawaian();
 
                             if (typeof window.reloadKasirData === 'function') window.reloadKasirData();
 
@@ -4318,7 +4271,7 @@
                                 pelanggan: JSON.parse(localStorage.getItem('db_pelanggan') || '[]'),
                                 inventory: JSON.parse(localStorage.getItem('db_inventory') || '[]'),
                                 Layanan: JSON.parse(localStorage.getItem('db_layanan') || '[]'),
-                                user: JSON.parse(localStorage.getItem('db_users') || '[]'),
+                                user: JSON.parse(localStorage.getItem('db_user') || '[]'),
                                 Bank: JSON.parse(localStorage.getItem('db_bank') || '[]')
                             }
                         };
@@ -4597,21 +4550,8 @@
             const btnBackPesanan = document.getElementById('btn-back-pesanan');
             if (btnBackPesanan) {
                 btnBackPesanan.addEventListener('click', () => {
-                    if (window.pesananBackTarget === 'customer-detail') {
-                        // Kembali ke halaman profil pelanggan
-                        document.getElementById('layout-main').style.display = 'none';
-                        document.getElementById('layout-detail-pelanggan').style.display = 'block';
-                        window.pesananBackTarget = null; // Reset
-                        
-                        // Update UI bottom nav ke Akun (jika perlu)
-                        document.querySelectorAll('.bottom-nav .b-nav-btn').forEach(btn => btn.classList.remove('active'));
-                        const akunBtn = document.querySelector('.bottom-nav .b-nav-btn[data-bnav="akun"]');
-                        if (akunBtn) akunBtn.classList.add('active');
-                    } else {
-                        // Behavior default (kembali ke beranda transaksi)
-                        const berandaBtn = document.querySelector('.b-nav-btn[data-bnav="transaksi"]');
-                        if (berandaBtn) berandaBtn.click();
-                    }
+                    const berandaBtn = document.querySelector('.b-nav-btn[data-bnav="transaksi"]');
+                    if (berandaBtn) berandaBtn.click();
                 });
             }
 
@@ -4632,14 +4572,9 @@
                 const currentRows = document.querySelectorAll('.pesanan-row');
 
                 currentRows.forEach(row => {
-                    let statusMatch = false;
-                    if (filterValue === 'riwayat_lengkap') {
-                        statusMatch = true;
-                    } else {
-                        statusMatch = (filterValue === 'semua' && row.getAttribute('data-status') !== 'selesai') || 
-                                      (filterValue === 'terlambat' && row.getAttribute('data-terlambat') === 'true') || 
-                                      row.getAttribute('data-status') === filterValue;
-                    }
+                    const statusMatch = (filterValue === 'semua' && row.getAttribute('data-status') !== 'selesai') || 
+                                        (filterValue === 'terlambat' && row.getAttribute('data-terlambat') === 'true') || 
+                                        row.getAttribute('data-status') === filterValue;
                     const textMatch = row.textContent.toLowerCase().includes(keyword);
 
                     if (statusMatch && textMatch) {
@@ -4680,7 +4615,7 @@
             if (inputSearchPesanan) {
                 inputSearchPesanan.addEventListener('input', () => {
                     const activeChip = document.querySelector('.p-tab-btn.active');
-                    filterPesanan(activeChip ? activeChip.getAttribute('data-filter') : 'riwayat_lengkap');
+                    filterPesanan(activeChip ? activeChip.getAttribute('data-filter') : 'semua');
                 });
             }
 
@@ -4747,8 +4682,6 @@
             const layoutPos = document.getElementById('layout-pos');
             const btnBackPos = document.getElementById('btn-back-pos');
 
-            window.kelolaPelangganSortAZ = false;
-
             window.renderKelolaPelanggan = function () {
                 const title = document.getElementById('kelola-pelanggan-title');
                 if (title) title.innerText = 'Pelanggan (' + globalCustomers.length + ')';
@@ -4762,92 +4695,26 @@
                     return;
                 }
 
-                // Add originalIdx
-                let customersToRender = globalCustomers.map((c, idx) => ({ ...c, originalIdx: idx }));
-
-                // Filter by Search
-                const searchInput = document.getElementById('input-search-kelola-pelanggan');
-                if (searchInput && searchInput.value) {
-                    const kw = searchInput.value.toLowerCase();
-                    customersToRender = customersToRender.filter(c => 
-                        (c.nama && typeof c.nama === 'string' ? c.nama.toLowerCase() : '').includes(kw) || 
-                        (c.telepon && c.telepon.includes(kw)) || 
-                        (c.hp && c.hp.includes(kw))
-                    );
-                }
-
-                // Sort
-                if (window.kelolaPelangganSortAZ) {
-                    customersToRender.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
-                }
-
                 const colors = ['#f59e0b', '#f97316', '#3b82f6', '#10b981', '#8b5cf6'];
-                customersToRender.forEach((cust, loopIdx) => {
-                    const namaAman = cust.nama || 'User'; const initial = namaAman.substring(0, 2).charAt(0).toUpperCase() + (namaAman.substring(1, 2) || '');
+                globalCustomers.forEach((cust, idx) => {
+                    const initial = cust.nama.substring(0, 2).charAt(0).toUpperCase() + (cust.nama.substring(1, 2) || '');
                     const phone = cust.telepon || cust.hp || 'Tanpa nomor';
-                    const color = colors[loopIdx % colors.length];
-                    
-                    // Hitung jumlah transaksi
-                    let txCount = 0;
-                    orderHistory.forEach(o => {
-                        if (o.customerName === cust.nama || o.customerName === `${cust.nama} (${phone})` || o.customerName === `${cust.nama} (Tanpa nomor)`) {
-                            txCount++;
-                        }
-                    });
+                    const color = colors[idx % colors.length];
 
                     listContainer.innerHTML += `
                 <div class="kp-list-item">
                     <div class="kp-avatar" style="background: ${color};"><div style="display:flex; justify-content:center; width:100%; height:100%; align-items:center;">${initial}</div></div>
-                    <div class="kp-info" onclick="window.openCustomerDetail(${cust.originalIdx})" style="cursor: pointer;">
+                    <div class="kp-info" onclick="window.openCustomerDetail(${idx})" style="cursor: pointer;">
                         <div class="kp-name">${cust.nama}</div>
-                        <div class="kp-phone">${phone} &bull; <span style="color:#3b82f6; font-weight:500;">${txCount} Transaksi</span></div>
+                        <div class="kp-phone">${phone}</div>
                     </div>
-                    <div class="kp-action" onclick="window.editCustomer(${cust.originalIdx})" style="cursor: pointer; padding: 10px;">
+                    <div class="kp-action" onclick="window.editCustomer(${idx})" style="cursor: pointer; padding: 10px;">
                         <i class="fa-solid fa-ellipsis" style="color: #f59e0b; font-size: 1.2rem;"></i>
                     </div>
                 </div>
             `;
                 });
             };
-
-            // Event Listeners untuk Cari dan Sortir Pelanggan
-            const btnToggleSearchKelola = document.getElementById('btn-toggle-search-kelola');
-            const inputSearchKelola = document.getElementById('input-search-kelola-pelanggan');
-            const titleKelola = document.getElementById('kelola-pelanggan-title');
-            
-            if (btnToggleSearchKelola && inputSearchKelola && titleKelola) {
-                btnToggleSearchKelola.addEventListener('click', () => {
-                    if (inputSearchKelola.style.display === 'none') {
-                        inputSearchKelola.style.display = 'block';
-                        titleKelola.style.display = 'none';
-                        inputSearchKelola.focus();
-                    } else {
-                        inputSearchKelola.style.display = 'none';
-                        titleKelola.style.display = 'block';
-                        inputSearchKelola.value = '';
-                        window.renderKelolaPelanggan();
-                    }
-                });
-
-                inputSearchKelola.addEventListener('input', () => {
-                    window.renderKelolaPelanggan();
-                });
-            }
-
-            const btnSortKelola = document.getElementById('btn-sort-kelola');
-            if (btnSortKelola) {
-                btnSortKelola.addEventListener('click', () => {
-                    window.kelolaPelangganSortAZ = !window.kelolaPelangganSortAZ;
-                    if (window.kelolaPelangganSortAZ) {
-                        btnSortKelola.innerHTML = 'Z<i class="fa-solid fa-arrow-up-z-a" style="margin:0 4px;"></i>A';
-                        btnSortKelola.style.color = '#3b82f6';
-                    } else {
-                        btnSortKelola.innerHTML = 'A<i class="fa-solid fa-arrow-down-a-z" style="margin:0 4px;"></i>Z';
-                        btnSortKelola.style.color = '#64748b';
-                    }
-                    window.renderKelolaPelanggan();
-                });
-            }
 
             window.editCustomer = function (idx) {
                 let c = globalCustomers[idx];
@@ -5014,12 +4881,12 @@
                         // Back override to go back to detail view
                         const btnBackPos = document.getElementById('btn-back-pos');
                         if (btnBackPos) {
-                            const oldBackPos = btnBackPos.onclick;
+                            const oldBack = btnBackPos.onclick;
                             btnBackPos.onclick = (e) => {
                                 if (e) { e.preventDefault(); e.stopPropagation(); }
                                 layoutPos.style.display = 'none';
                                 document.getElementById('layout-detail-pelanggan').style.display = 'block';
-                                btnBackPos.onclick = oldBackPos;
+                                btnBackPos.onclick = oldBack;
                             };
                         }
                     }
@@ -5033,35 +4900,20 @@
                 const btnLihatSemua = document.getElementById('cd-btn-lihat-history');
                 if (btnLihatSemua) {
                     btnLihatSemua.onclick = () => {
-                        // Switch to Pesanan view and auto search for this customer
+                        // Switch to Laporan view and auto search for this customer
                         document.getElementById('layout-detail-pelanggan').style.display = 'none';
-                        const layoutMain = document.getElementById('layout-main');
-                        if (layoutMain) layoutMain.style.display = 'flex';
-                        
-                        // Set the back target for the Pesanan view
-                        window.pesananBackTarget = 'customer-detail';
-
-                        const pesananBtn = document.querySelector('.b-nav-btn[data-bnav="pesanan"]');
-                        if (pesananBtn) {
-                            pesananBtn.click();
+                        const layoutLaporan = document.getElementById('layout-omzet');
+                        if (layoutLaporan) {
+                            layoutLaporan.style.display = 'block';
+                            document.querySelectorAll('.bottom-nav .b-nav-btn').forEach(btn => btn.classList.remove('active'));
+                            const lapBtn = document.querySelector('.bottom-nav .b-nav-btn[data-bnav="laporan"]');
+                            if (lapBtn) lapBtn.classList.add('active');
                             
-                            // Show search container if hidden
-                            const searchContainerPesanan = document.getElementById('pesanan-search-container');
-                            if (searchContainerPesanan && searchContainerPesanan.style.display === 'none') {
-                                searchContainerPesanan.style.display = 'block';
+                            const searchLaporan = document.getElementById('input-search-laporan');
+                            if (searchLaporan) {
+                                searchLaporan.value = c.nama;
+                                searchLaporan.dispatchEvent(new Event('input'));
                             }
-
-                            setTimeout(() => {
-                                // Remove 'active' from all chips to allow 'riwayat_lengkap'
-                                document.querySelectorAll('.p-tab-btn').forEach(btn => btn.classList.remove('active'));
-
-                                // Populate search and trigger input event
-                                const searchPesanan = document.getElementById('input-search-pesanan');
-                                if (searchPesanan) {
-                                    searchPesanan.value = c.nama;
-                                    searchPesanan.dispatchEvent(new Event('input'));
-                                }
-                            }, 50);
                         }
                     };
                 }
@@ -5168,9 +5020,6 @@
                     updateCartUI();
                     const posCustomerSelect = document.getElementById('pos-customer-select');
                     if (posCustomerSelect) posCustomerSelect.value = '';
-                    
-                    const posPegawaiSelect = document.getElementById('pos-pegawai-select');
-                    if (posPegawaiSelect) posPegawaiSelect.value = '';
 
                     layoutPos.classList.remove('active');
                     layoutPos.style.display = 'none';
@@ -5414,337 +5263,66 @@
                 const dataPemasukan = [];
                 const dataPengeluaran = [];
 
-                let globalOmzet = 0;
-                let globalPendapatan = 0;
-                let globalPengeluaran = 0;
-                let globalPiutang = 0;
-                let countTransaksi = 0;
-
                 const today = new Date();
-                today.setHours(23, 59, 59, 999);
-                
                 for (let i = 6; i >= 0; i--) {
                     let d = new Date(today);
                     d.setDate(today.getDate() - i);
                     let dayStr = d.getDate().toString().padStart(2, '0') + '/' + (d.getMonth() + 1).toString().padStart(2, '0');
                     labels.push(dayStr);
 
+                    // Pemasukan sum
                     let pSum = 0;
                     pemasukan.forEach(trx => {
-                        let trxDate = null;
-                        if (window.parseDateString) trxDate = window.parseDateString(trx.date);
-                        else if (trx.date) trxDate = new Date(trx.date);
-
-                        if (trxDate && trxDate.getDate() === d.getDate() && trxDate.getMonth() === d.getMonth() && trxDate.getFullYear() === d.getFullYear()) {
-                            if (trx.status !== 'batal' && trx.status !== 'Batal' && !trx.type) {
-                                pSum += (trx.total || 0);
-                            }
+                        if (trx.date && trx.date.startsWith(dayStr)) {
+                            pSum += (trx.total || 0);
                         }
                     });
                     dataPemasukan.push(pSum);
 
+                    // Pengeluaran sum
                     let eSum = 0;
                     pengeluaran.forEach(trx => {
-                        let trxDate = null;
-                        if (window.parseDateString) trxDate = window.parseDateString(trx.date);
-                        else if (trx.date) trxDate = new Date(trx.date);
-                        
-                        if (trxDate && trxDate.getDate() === d.getDate() && trxDate.getMonth() === d.getMonth() && trxDate.getFullYear() === d.getFullYear()) {
-                            eSum += (trx.amount || trx.nominal || 0);
+                        if (trx.date && trx.date.startsWith(dayStr)) {
+                            eSum += (trx.amount || 0);
                         }
                     });
                     dataPengeluaran.push(eSum);
                 }
 
-                pemasukan.forEach(trx => {
-                    if (trx.status !== 'batal' && trx.status !== 'Batal' && !trx.type) {
-                        let total = parseFloat(trx.total || 0);
-                        let dibayar = trx.dibayar !== undefined && trx.dibayar !== null && trx.dibayar !== '' ? parseFloat(trx.dibayar) : 0;
-                        if (isNaN(dibayar)) dibayar = 0;
-
-                        globalOmzet += total;
-                        globalPendapatan += dibayar;
-                        
-                        let piutang = total - dibayar;
-                        if (piutang > 0) globalPiutang += piutang;
-
-                        countTransaksi++;
-                    }
-                });
-
-                pengeluaran.forEach(trx => {
-                    globalPengeluaran += parseFloat(trx.amount || trx.nominal || 0);
-                });
-
-                let globalLabaRugi = globalPendapatan - globalPengeluaran;
-
-                // Update UI Stats with real data
-                const topPendapatan = document.getElementById('top-pendapatan');
-                const topOmzet = document.getElementById('top-omzet');
-                if (topPendapatan) topPendapatan.innerHTML = `<sup>Rp</sup> ${globalPendapatan.toLocaleString('en-US')}`;
-                if (topOmzet) topOmzet.innerHTML = `<sup>Rp</sup> ${globalOmzet.toLocaleString('en-US')}`;
-
-                const summaryOmzet = document.getElementById('summary-omzet');
-                const summaryPendapatan = document.getElementById('summary-pendapatan');
-                const summaryPengeluaran = document.getElementById('summary-pengeluaran');
-                const summaryLabaRugi = document.getElementById('summary-labarugi');
-                const summaryPiutang = document.getElementById('summary-piutang');
-                const statTrxMasuk = document.getElementById('stat-trxmasuk');
-                
-                if (summaryOmzet) summaryOmzet.innerText = globalOmzet.toLocaleString('en-US');
-                if (summaryPendapatan) summaryPendapatan.innerText = globalPendapatan.toLocaleString('en-US');
-                if (summaryPengeluaran) summaryPengeluaran.innerText = globalPengeluaran.toLocaleString('en-US');
-                if (summaryLabaRugi) summaryLabaRugi.innerText = globalLabaRugi.toLocaleString('en-US');
-                if (summaryPiutang) summaryPiutang.innerText = globalPiutang.toLocaleString('en-US');
-                if (statTrxMasuk) statTrxMasuk.innerText = countTransaksi + ' Transaksi';
-
                 return { labels, dataPemasukan, dataPengeluaran };
             }
 
-            // --- FUNGSI DETAIL RINGKASAN ---
-            window.bukaDetailRingkasan = function(tipe) {
-                const layoutMain = document.getElementById('layout-main');
-                const layoutDetail = document.getElementById('layout-detail-ringkasan');
-                const title = document.getElementById('detail-ringkasan-title');
-                const list = document.getElementById('detail-ringkasan-list');
-                const empty = document.getElementById('detail-ringkasan-empty');
-                
-                if (!layoutMain || !layoutDetail) return;
-                
-                const titles = {
-                    'omzet': 'Detail Total Omzet',
-                    'pendapatan': 'Detail Pendapatan Transaksi',
-                    'pengeluaran': 'Detail Pengeluaran',
-                    'labarugi': 'Detail Laba Rugi',
-                    'piutang': 'Detail Piutang'
-                };
-                if (title) title.innerText = titles[tipe] || 'Detail Data';
-                
-                const pemasukan = JSON.parse(localStorage.getItem('db_pemasukan')) || [];
-                const pengeluaran = JSON.parse(localStorage.getItem('db_pengeluaran')) || [];
-                let displayData = [];
-                
-                if (tipe === 'omzet') {
-                    pemasukan.forEach(trx => {
-                        if (trx.status !== 'batal' && trx.status !== 'Batal' && !trx.type) {
-                            displayData.push({ date: trx.date, desc: trx.customerName || 'Pelanggan', nominal: trx.total || 0, isOut: false, id: trx.id });
-                        }
-                    });
-                } else if (tipe === 'pendapatan') {
-                    pemasukan.forEach(trx => {
-                        if (trx.status !== 'batal' && trx.status !== 'Batal' && !trx.type) {
-                            let dibayar = trx.dibayar !== undefined && trx.dibayar !== null && trx.dibayar !== '' ? parseFloat(trx.dibayar) : 0;
-                            if (!isNaN(dibayar) && dibayar > 0) {
-                                displayData.push({ date: trx.date, desc: trx.customerName || 'Pelanggan', nominal: dibayar, isOut: false, id: trx.id });
-                            }
-                        }
-                    });
-                } else if (tipe === 'piutang') {
-                    pemasukan.forEach(trx => {
-                        if (trx.status !== 'batal' && trx.status !== 'Batal' && !trx.type) {
-                            let total = parseFloat(trx.total || 0);
-                            let dibayar = trx.dibayar !== undefined && trx.dibayar !== null && trx.dibayar !== '' ? parseFloat(trx.dibayar) : 0;
-                            if (isNaN(dibayar)) dibayar = 0;
-                            let piutang = total - dibayar;
-                            if (piutang > 0) {
-                                displayData.push({ date: trx.date, desc: trx.customerName || 'Pelanggan', nominal: piutang, isOut: false, id: trx.id });
-                            }
-                        }
-                    });
-                } else if (tipe === 'pengeluaran') {
-                    pengeluaran.forEach(trx => {
-                        displayData.push({ date: trx.date, desc: trx.category || trx.keterangan || 'Pengeluaran', nominal: trx.amount || trx.nominal || 0, isOut: true, id: trx.id });
-                    });
-                } else if (tipe === 'labarugi') {
-                    pemasukan.forEach(trx => {
-                        if (trx.status !== 'batal' && trx.status !== 'Batal' && !trx.type) {
-                            let dibayar = trx.dibayar !== undefined && trx.dibayar !== null && trx.dibayar !== '' ? parseFloat(trx.dibayar) : 0;
-                            if (!isNaN(dibayar) && dibayar > 0) {
-                                displayData.push({ date: trx.date, desc: trx.customerName || 'Pendapatan', nominal: dibayar, isOut: false, id: trx.id });
-                            }
-                        }
-                    });
-                    pengeluaran.forEach(trx => {
-                        displayData.push({ date: trx.date, desc: trx.category || trx.keterangan || 'Pengeluaran', nominal: trx.amount || trx.nominal || 0, isOut: true, id: trx.id });
-                    });
-                }
-                
-                // Sort by date descending
-                displayData.sort((a, b) => {
-                    let dA = window.parseDateString ? window.parseDateString(a.date) : new Date(a.date);
-                    let dB = window.parseDateString ? window.parseDateString(b.date) : new Date(b.date);
-                    return dB - dA;
-                });
-                
-                list.innerHTML = '';
-                if (displayData.length === 0) {
-                    list.style.display = 'none';
-                    if (empty) empty.style.display = 'block';
-                } else {
-                    if (empty) empty.style.display = 'none';
-                    list.style.display = 'block';
-                    
-                    let tableHTML = `
-                    <div style="overflow-x:auto; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-                        <table style="width:100%; border-collapse:collapse; min-width:600px; text-align:left;">
-                            <thead>
-                                <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600;">Tanggal</th>
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600;">No. Nota</th>
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600;">Nama</th>
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600; text-align:right;">Nominal (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-
-                    displayData.forEach(item => {
-                        let dateStr = '-';
-                        if (item.date) {
-                            let d = window.parseDateString ? window.parseDateString(item.date) : new Date(item.date);
-                            if (d && !isNaN(d)) {
-                                dateStr = d.toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'});
-                            } else {
-                                dateStr = item.date.substring(0, 10);
-                            }
-                        }
-                        
-                        let nominalColor = item.isOut ? '#ef4444' : '#10b981';
-                        
-                        tableHTML += `
-                                <tr style="border-bottom:1px solid #f1f5f9; transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                                    <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;">${dateStr}</td>
-                                    <td style="padding:12px 15px; font-size:0.85rem; color:#3b82f6; font-weight:500;">${item.id || '-'}</td>
-                                    <td style="padding:12px 15px; font-size:0.9rem; color:#1e293b; font-weight:500;">${item.desc}</td>
-                                    <td style="padding:12px 15px; font-size:0.95rem; font-weight:700; color:${nominalColor}; text-align:right;">${parseFloat(item.nominal).toLocaleString('id-ID')}</td>
-                                </tr>
-                        `;
-                    });
-
-                    tableHTML += `
-                            </tbody>
-                        </table>
-                    </div>
-                    `;
-                    list.innerHTML = tableHTML;
-                }
-                
-                layoutMain.classList.remove('active');
-                setTimeout(() => {
-                    layoutMain.style.display = 'none';
-                    layoutDetail.style.display = 'block';
-                    setTimeout(() => layoutDetail.classList.add('active'), 10);
-                }, 300);
-            };
-
-            const btnBackDetailRingkasan = document.getElementById('btn-back-detail-ringkasan');
-            if (btnBackDetailRingkasan) {
-                btnBackDetailRingkasan.addEventListener('click', () => {
-                    const layoutMain = document.getElementById('layout-main');
-                    const layoutDetail = document.getElementById('layout-detail-ringkasan');
-                    layoutDetail.classList.remove('active');
-                    setTimeout(() => {
-                        layoutDetail.style.display = 'none';
-                        layoutMain.style.display = 'flex';
-                        setTimeout(() => layoutMain.classList.add('active'), 10);
-                    }, 300);
-                });
-            }
-
             // --- KEPEGAWAIAN LOGIC ---
+            let dbPegawai = [
+                { id: 1, nama: 'Budi (Cuci)', role: 'Bagian Cuci', totalKg: 45, komisi: 45000, isAktif: true },
+                { id: 2, nama: 'Siti (Setrika)', role: 'Bagian Setrika', totalKg: 30, komisi: 30000, isAktif: false },
+                { id: 3, nama: 'Agus (Kurir)', role: 'Kurir', totalKg: 0, komisi: 20000, isAktif: false },
+                { id: 4, nama: 'Dina (Kasir)', role: 'Kasir', totalKg: 0, komisi: 50000, isAktif: false }
+            ];
 
             window.renderKepegawaian = function () {
                 const ongoingContainer = document.getElementById('ongoing-pegawai-container');
                 const listContainer = document.getElementById('list-pegawai-container');
-                const posPegawaiSelect = document.getElementById('pos-pegawai-select');
-                
-                // Ambil data sebenarnya dari db_users
-                const users = JSON.parse(localStorage.getItem('db_users') || '[]');
-                const activeRole = localStorage.getItem('activeRole');
-                
-                // Format agar sesuai dengan struktur yg sudah dibangun sebelumnya
-                let dbPegawai = users.map(u => ({
-                    id: u.name,
-                    nama: u.name,
-                    role: u.roleDesc,
-                    isAktif: u.name === activeRole
-                }));
-                
-                // Pastikan ada setidaknya 1 pegawai aktif sbg fallback
-                if (dbPegawai.length > 0 && !dbPegawai.find(p => p.isAktif)) {
-                    dbPegawai[0].isAktif = true;
-                }
-
-                if (posPegawaiSelect) {
-                    posPegawaiSelect.innerHTML = '<option value="">-- Pilih Pegawai --</option>';
-                    dbPegawai.forEach(p => {
-                        posPegawaiSelect.innerHTML += `<option value="${p.id}">${p.nama} (${p.role})</option>`;
-                    });
-                }
 
                 if (!ongoingContainer || !listContainer) return;
-                
-                const pemasukan = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
-                
-                // Kalkulasi Dinamis
-                dbPegawai.forEach(p => {
-                    let totalKg = 0;
-                    let totalSatuan = 0;
-                    let komisi = 0;
-                    
-                    pemasukan.forEach(trx => {
-                        if (trx.pegawaiId == p.id && trx.status !== 'batal' && trx.status !== 'Batal') {
-                            if (trx.type === 'satuan' || (trx.layanan && trx.layanan.toLowerCase().includes('satuan'))) {
-                                totalSatuan += 1;
-                                komisi += (parseFloat(trx.total || 0) * 0.1);
-                            } else {
-                                let berat = 0;
-                                if (trx.items && trx.items.length > 0) {
-                                    trx.items.forEach(item => {
-                                        berat += parseFloat(item.qty || 0);
-                                    });
-                                } else if (trx.qty) {
-                                    berat += parseFloat(trx.qty);
-                                }
-                                totalKg += berat;
-                                komisi += (berat * 3000);
-                            }
-                        }
-                    });
-                    
-                    p.totalKg = totalKg;
-                    p.totalSatuan = totalSatuan;
-                    p.komisi = komisi;
-                });
 
                 // Find active employee (for ongoing card)
-                const aktif = dbPegawai.find(p => p.isAktif) || dbPegawai[0];
+                const aktif = dbPegawai.find(p => p.isAktif) || dbPegawai[0]; // fallback to first if none active
 
                 ongoingContainer.innerHTML = `
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #ffffff;">
+                <div style="width: 50px; height: 50px; background: #e9edef; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #18362a;">
                     ${aktif.nama.charAt(0)}
                 </div>
-                <div style="color: #ffffff;">
-                    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 3px;">${aktif.nama}</div>
-                    <div style="font-size: 0.85rem; opacity: 0.9;">Sedang Bekerja</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 3px;">${aktif.nama}</div>
+                    <div style="font-size: 0.85rem; color: #8696a0;">Sedang Bekerja</div>
                 </div>
             </div>
-            <button onclick="window.bukaKinerjaModal('${aktif.id}')" style="background: #ffffff; color: #0ea5e9; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <button onclick="window.bukaKinerjaModal(${aktif.id})" style="background: #00a884; color: #111b21; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-chart-line"></i> Kinerja
             </button>
         `;
-
-                const searchInput = document.getElementById('search-pegawai');
-                if (activeRole !== 'Admin') {
-                    if (searchInput) searchInput.parentElement.style.display = 'none';
-                    if (listContainer.previousElementSibling) listContainer.previousElementSibling.style.display = 'none';
-                    listContainer.style.display = 'none';
-                } else {
-                    if (searchInput) searchInput.parentElement.style.display = 'block';
-                    if (listContainer.previousElementSibling) listContainer.previousElementSibling.style.display = 'flex';
-                    listContainer.style.display = 'flex';
-                }
 
                 // List remaining employees
                 listContainer.innerHTML = '';
@@ -5752,15 +5330,15 @@
                     if (p.id === aktif.id) return; // skip the one in ongoing
 
                     let html = `
-                <div style="display: flex; align-items: center; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 8px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'" onmouseout="this.style.boxShadow='0 1px 2px rgba(0,0,0,0.02)'" onclick="window.bukaKinerjaModal('${p.id}')">
-                    <div style="width: 45px; height: 45px; background: #f1f5f9; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; color: #64748b; margin-right: 15px;">
+                <div style="display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #202c33; cursor: pointer;" onclick="window.bukaKinerjaModal(${p.id})">
+                    <div style="width: 45px; height: 45px; background: #202c33; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; color: #e9edef; margin-right: 15px;">
                         ${p.nama.charAt(0)}
                     </div>
                     <div style="flex: 1;">
-                        <div style="font-weight: 700; font-size: 1rem; margin-bottom: 2px; color: #1e293b;">${p.nama}</div>
-                        <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">${p.role}</div>
+                        <div style="font-weight: 500; font-size: 1rem; margin-bottom: 2px;">${p.nama}</div>
+                        <div style="font-size: 0.85rem; color: #8696a0;">${p.role}</div>
                     </div>
-                    <div style="color: #0ea5e9; font-size: 1.1rem;">
+                    <div style="color: #00a884; font-size: 0.9rem;">
                         <i class="fa-solid fa-chevron-right"></i>
                     </div>
                 </div>
@@ -5770,153 +5348,26 @@
             };
 
             window.bukaKinerjaModal = function (id) {
-                const users = JSON.parse(localStorage.getItem('db_users') || '[]');
-                const pBase = users.find(x => x.name === id);
-                if (!pBase) return;
-                
-                // Get performance stats dynamically
-                const pemasukan = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
-                let totalKg = 0;
-                let totalSatuan = 0;
-                let komisi = 0;
-                
-                pemasukan.forEach(trx => {
-                    if (trx.pegawaiId == id && trx.status !== 'batal' && trx.status !== 'Batal') {
-                        if (trx.type === 'satuan' || (trx.layanan && trx.layanan.toLowerCase().includes('satuan'))) {
-                            totalSatuan += 1;
-                            komisi += (parseFloat(trx.total || 0) * 0.1);
-                        } else {
-                            let berat = 0;
-                            if (trx.items && trx.items.length > 0) {
-                                trx.items.forEach(item => {
-                                    berat += parseFloat(item.qty || 0);
-                                });
-                            } else if (trx.qty) {
-                                berat += parseFloat(trx.qty);
-                            }
-                            totalKg += berat;
-                            komisi += (berat * 3000);
-                        }
-                    }
-                });
+                const p = dbPegawai.find(x => x.id === id);
+                if (!p) return;
 
-                document.getElementById('detail-pegawai-avatar').innerText = pBase.name.charAt(0);
-                document.getElementById('detail-pegawai-nama').innerText = pBase.name;
-                document.getElementById('detail-pegawai-role').innerText = pBase.roleDesc;
+                document.getElementById('modal-pegawai-avatar').innerText = p.nama.charAt(0);
+                document.getElementById('modal-pegawai-nama').innerText = p.nama;
+                document.getElementById('modal-pegawai-role').innerText = p.role;
 
-                let strQty = '';
-                if (totalKg > 0) strQty += totalKg + ' Kg ';
-                if (totalSatuan > 0) strQty += totalSatuan + ' Satuan';
-                if (strQty === '') strQty = '0';
-                
-                document.getElementById('detail-pegawai-qty').innerText = strQty;
-                document.getElementById('detail-pegawai-komisi').innerText = 'Rp ' + (komisi || 0).toLocaleString('id-ID');
+                document.getElementById('modal-pegawai-qty').innerText = p.totalKg + (p.role.includes('Setrika') || p.role.includes('Cuci') ? ' Kg' : ' Trx');
+                document.getElementById('modal-pegawai-komisi').innerText = 'Rp ' + p.komisi.toLocaleString('id-ID');
 
-                // Render detail list
-                const list = document.getElementById('detail-pegawai-list');
-                const empty = document.getElementById('detail-pegawai-empty');
-                
-                const trxPegawai = pemasukan.filter(trx => trx.pegawaiId == id && trx.status !== 'batal' && trx.status !== 'Batal');
-                
-                list.innerHTML = '';
-                if (trxPegawai.length === 0) {
-                    list.style.display = 'none';
-                    if(empty) empty.style.display = 'block';
-                } else {
-                    if(empty) empty.style.display = 'none';
-                    list.style.display = 'block';
-                    
-                    let tableHTML = `
-                    <div style="overflow-x:auto; background:#ffffff; border-radius:8px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-                        <table style="width:100%; border-collapse:collapse; min-width:500px; text-align:left;">
-                            <thead>
-                                <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600;">Tanggal / Nota</th>
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600;">Keterangan</th>
-                                    <th style="padding:12px 15px; font-size:0.85rem; color:#475569; font-weight:600; text-align:right;">Estimasi Komisi (Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-                    
-                    // Sort descending
-                    trxPegawai.sort((a,b) => {
-                        let dA = window.parseDateString ? window.parseDateString(a.date) : new Date(a.date);
-                        let dB = window.parseDateString ? window.parseDateString(b.date) : new Date(b.date);
-                        return dB - dA;
-                    });
-                    
-                    trxPegawai.forEach(item => {
-                        let dateStr = '-';
-                        if (item.date) {
-                            let d = window.parseDateString ? window.parseDateString(item.date) : new Date(item.date);
-                            if (d && !isNaN(d)) dateStr = d.toLocaleDateString('id-ID', {day: '2-digit', month: 'short'});
-                            else dateStr = item.date.substring(0, 10);
-                        }
-                        
-                        let komisi = 0;
-                        let ket = 'Kiloan';
-                        if (item.type === 'satuan' || (item.layanan && item.layanan.toLowerCase().includes('satuan'))) {
-                            komisi = parseFloat(item.total || 0) * 0.1;
-                            ket = 'Satuan (10%)';
-                        } else {
-                            let berat = 0;
-                            if (item.items && item.items.length > 0) {
-                                item.items.forEach(i => berat += parseFloat(i.qty || 0));
-                            } else if (item.qty) {
-                                berat += parseFloat(item.qty);
-                            }
-                            komisi = berat * 3000;
-                            ket = `Kiloan (${berat}Kg x 3000)`;
-                        }
-                        
-                        tableHTML += `
-                            <tr style="border-bottom:1px solid #f1f5f9; transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                                <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;">
-                                    <div style="font-weight:600; color:#1e293b; margin-bottom:2px;">${item.id || '-'}</div>
-                                    ${dateStr}
-                                </td>
-                                <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;">${ket}</td>
-                                <td style="padding:12px 15px; font-size:0.95rem; font-weight:700; color:#10b981; text-align:right;">${parseFloat(komisi).toLocaleString('id-ID')}</td>
-                            </tr>
-                        `;
-                    });
-                    
-                    tableHTML += `
-                            </tbody>
-                        </table>
-                    </div>
-                    `;
-                    list.innerHTML = tableHTML;
-                }
-
-                // Show Layout
-                const layoutMain = document.getElementById('layout-main');
-                const layoutDetail = document.getElementById('layout-detail-pegawai');
-                
-                if (layoutMain && layoutDetail) {
-                    layoutMain.classList.remove('active');
-                    setTimeout(() => {
-                        layoutMain.style.display = 'none';
-                        layoutDetail.style.display = 'block';
-                        setTimeout(() => layoutDetail.classList.add('active'), 10);
-                    }, 300);
-                }
+                document.getElementById('kinerja-modal').style.display = 'flex';
             };
-            
-            const btnBackDetailPegawai = document.getElementById('btn-back-detail-pegawai');
-            if (btnBackDetailPegawai) {
-                btnBackDetailPegawai.addEventListener('click', () => {
-                    const layoutMain = document.getElementById('layout-main');
-                    const layoutDetail = document.getElementById('layout-detail-pegawai');
-                    layoutDetail.classList.remove('active');
-                    setTimeout(() => {
-                        layoutDetail.style.display = 'none';
-                        layoutMain.style.display = 'flex';
-                        setTimeout(() => layoutMain.classList.add('active'), 10);
-                    }, 300);
-                });
-            }
+
+            document.getElementById('btn-close-kinerja')?.addEventListener('click', () => {
+                document.getElementById('kinerja-modal').style.display = 'none';
+            });
+
+            document.getElementById('btn-tutup-kinerja')?.addEventListener('click', () => {
+                document.getElementById('kinerja-modal').style.display = 'none';
+            });
 
             document.getElementById('search-pegawai')?.addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
@@ -6138,20 +5589,16 @@
                                 if (lapTitle) lapTitle.innerText = title === 'Semua Transaksi' ? 'Transaksi Semua' : title;
                                 window.currentLaporanTransaksiType = title;
 
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lLapTransaksi.style.display = 'flex';
                                     setTimeout(() => lLapTransaksi.classList.add('active'), 10);
-                                
+                                }, 300);
 
-                                // Fetch data directly upon opening
-                                setTimeout(() => {
-                                    const filterSel = document.getElementById('lap-transaksi-date-filter');
-                                    if (filterSel && !filterSel.value) filterSel.value = 'hari-ini';
-                                    if (typeof window.renderLaporanTransaksiAccordion === 'function') {
-                                        window.renderLaporanTransaksiAccordion();
-                                    }
-                                }, 350);
-                                
+                                if (typeof window.renderLaporanTransaksiAccordion === 'function') {
+                                    window.renderLaporanTransaksiAccordion();
+                                }
                                 return;
                             }
                         }
@@ -6191,10 +5638,12 @@
                         if (title === 'Laba Rugi') {
                             const lLabaRugi = document.getElementById('layout-laba-rugi');
                             if (lLabaRugi) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lLabaRugi.style.display = 'flex';
                                     setTimeout(() => lLabaRugi.classList.add('active'), 10);
-                                
+                                }, 300);
 
                                 if (typeof window.renderLabaRugi === 'function') {
                                     window.renderLabaRugi();
@@ -6210,10 +5659,12 @@
                                 // Render data pesanan masuk hari ini (kita pakai data semua dulu)
                                 renderPesananMasukHariIni();
 
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lPesananHariIni.style.display = 'flex';
                                     setTimeout(() => lPesananHariIni.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6222,13 +5673,15 @@
                         if (title === 'Omzet') {
                             const lOmzet = document.getElementById('layout-omzet');
                             if (lOmzet) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lOmzet.style.display = 'flex';
                                     setTimeout(() => lOmzet.classList.add('active'), 10);
 
                                     // Initialize chart if needed
                                     if (typeof initOmzetChart === 'function') initOmzetChart();
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6237,10 +5690,12 @@
                         if (title === 'Arus Keuangan') {
                             const lArus = document.getElementById('layout-arus-keuangan');
                             if (lArus) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lArus.style.display = 'flex';
                                     setTimeout(() => lArus.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6249,10 +5704,12 @@
                         if (title === 'Pendapatan Transaksi') {
                             const lPendapatan = document.getElementById('layout-pendapatan-transaksi');
                             if (lPendapatan) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lPendapatan.style.display = 'flex';
                                     setTimeout(() => lPendapatan.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6261,10 +5718,12 @@
                         if (title === 'Pendapatan Lainnya') {
                             const lLainnya = document.getElementById('layout-pendapatan-lainnya');
                             if (lLainnya) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lLainnya.style.display = 'flex';
                                     setTimeout(() => lLainnya.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6273,10 +5732,12 @@
                         if (title === 'Biaya Usaha') {
                             const lHutang = document.getElementById('layout-hutang');
                             if (lHutang) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lHutang.style.display = 'flex';
                                     setTimeout(() => lHutang.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6284,10 +5745,12 @@
                         if (title === 'Pengeluaran') {
                             const lPengeluaran = document.getElementById('layout-pengeluaran');
                             if (lPengeluaran) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lPengeluaran.style.display = 'flex';
                                     setTimeout(() => lPengeluaran.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6296,7 +5759,9 @@
                         if (title === 'Go Online') {
                             const lGoOnline = document.getElementById('layout-go-online');
                             if (lGoOnline) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lGoOnline.style.display = 'block';
                                     setTimeout(() => lGoOnline.classList.add('active'), 10);
 
@@ -6305,7 +5770,7 @@
                                     if (inputUrl) {
                                         inputUrl.value = localStorage.getItem('webapp_url') || '';
                                     }
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6315,9 +5780,6 @@
                             const tabKelolaPelanggan = document.getElementById('tab-kelola-pelanggan');
                             const tabAkun = document.getElementById('tab-akun');
                             if (tabKelolaPelanggan && tabAkun) {
-                                if (typeof window.renderKelolaPelanggan === 'function') {
-                                    window.renderKelolaPelanggan();
-                                }
                                 tabAkun.style.display = 'none';
                                 tabKelolaPelanggan.style.display = 'flex';
                                 window.scrollTo(0, 0);
@@ -6332,10 +5794,12 @@
                         }
 
                         // Animasi transisi masuk
-                        hideAllLayouts();
+                        allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                        setTimeout(() => {
+                            hideAllLayouts();
                             layoutDetail.style.display = 'flex';
                             setTimeout(() => layoutDetail.classList.add('active'), 10);
-                        
+                        }, 300);
                     });
                 });
 
@@ -6503,12 +5967,12 @@
             const btnExportPendapatan = document.getElementById('btn-export-pendapatan');
             if (btnExportPendapatan) {
                 btnExportPendapatan.addEventListener('click', () => {
-                    if (window.currentPendapatanTransaksiExportData && window.currentPendapatanTransaksiExportData.length > 0) {
-                        window.showToast('Mengekspor data Pendapatan Transaksi...');
-                        window.exportToExcel(window.currentPendapatanTransaksiExportData, 'Pendapatan_Transaksi_Manjur');
-                    } else {
-                        window.showToast('Tidak ada data untuk diekspor pada rentang tanggal ini.');
-                    }
+                    window.showToast('Mengekspor data Pendapatan Transaksi...');
+                    const data = [
+                        { Tanggal: '23-07-2026', Nama: 'Indra Fiphayana', Kode: 'TRX/2607/267', Metode: 'QRIS', Nominal: 26400 },
+                        { Tanggal: '23-07-2026', Nama: 'BASRI', Kode: 'TRX/2607/245', Metode: 'Tunai', Nominal: 19500 }
+                    ];
+                    window.exportToExcel(data, 'Pendapatan_Transaksi_Manjur');
                 });
             }
 
@@ -6787,136 +6251,24 @@
             const btnModalBatal = document.getElementById('btn-modal-batal');
             const btnModalOke = document.getElementById('btn-modal-oke');
 
-            // --- CUSTOM MONTH PICKER LOGIC ---
-            const monthPickerModal = document.getElementById('custom-month-picker-modal');
-            const btnMonthBatal = document.getElementById('btn-month-batal');
-            const btnMonthOke = document.getElementById('btn-month-oke');
-            const monthYearDisplay = document.getElementById('modal-month-year-display');
-            const modalMonthText = document.getElementById('modal-month-text');
-            
-            let currentMonthPickerYear = 2026;
-            let selectedMonthIndex = 6; // July
-            let activeMonthFilterSelect = null;
-            
-            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            
-            function renderMonthGrid() {
-                const grid = monthPickerModal.querySelector('div[style*="grid-template-columns: repeat(3, 1fr)"]');
-                if(!grid) return;
-                grid.innerHTML = '';
-                monthYearDisplay.innerText = currentMonthPickerYear;
-                modalMonthText.innerText = `${monthNames[selectedMonthIndex]} ${currentMonthPickerYear}`;
-                
-                monthNames.forEach((m, idx) => {
-                    const div = document.createElement('div');
-                    div.innerText = m;
-                    div.style.padding = '10px';
-                    div.style.borderRadius = '5px';
-                    div.style.cursor = 'pointer';
-                    div.style.fontSize = '0.9rem';
-                    
-                    if (idx === selectedMonthIndex) {
-                        div.style.background = '#0ea5e9';
-                        div.style.color = '#fff';
-                        div.style.fontWeight = 'bold';
-                    } else {
-                        div.style.background = '#f1f5f9';
-                        div.style.color = '#334155';
-                    }
-                    
-                    div.onclick = () => {
-                        selectedMonthIndex = idx;
-                        renderMonthGrid();
-                    };
-                    grid.appendChild(div);
-                });
-            }
-            
-            if (monthPickerModal) {
-                document.getElementById('btn-month-prev-year').onclick = () => { currentMonthPickerYear--; renderMonthGrid(); };
-                document.getElementById('btn-month-next-year').onclick = () => { currentMonthPickerYear++; renderMonthGrid(); };
-                
-                btnMonthBatal.onclick = () => {
-                    monthPickerModal.style.display = 'none';
-                    if(activeMonthFilterSelect) activeMonthFilterSelect.value = '';
-                };
-                
-                btnMonthOke.onclick = () => {
-                    monthPickerModal.style.display = 'none';
-                    if (typeof activeMonthFilterSelect === 'function') {
-                        activeMonthFilterSelect(currentMonthPickerYear, selectedMonthIndex);
-                        return;
-                    }
-
-                    const padMonth = (selectedMonthIndex + 1).toString().padStart(2, '0');
-                    const customVal = `CUSTOM_MONTH_${currentMonthPickerYear}-${padMonth}`;
-                    
-                    if (activeMonthFilterSelect) {
-                        if(![...activeMonthFilterSelect.options].some(o => o.value === customVal)) {
-                            const opt = document.createElement('option');
-                            opt.value = customVal;
-                            opt.text = `Per Bulan (${monthNames[selectedMonthIndex]} ${currentMonthPickerYear})`;
-                            opt.style.display = 'none';
-                            activeMonthFilterSelect.add(opt);
-                        }
-                        activeMonthFilterSelect.value = customVal;
-                        activeMonthFilterSelect.dispatchEvent(new Event('change'));
-                    }
-                };
-            }
-            
-            window.openMonthPicker = function(selectElem, defaultYear = null, defaultMonth = null) {
-                activeMonthFilterSelect = selectElem;
-                const today = new Date();
-                currentMonthPickerYear = defaultYear !== null ? defaultYear : today.getFullYear();
-                selectedMonthIndex = defaultMonth !== null ? defaultMonth : today.getMonth();
-                renderMonthGrid();
-                monthPickerModal.style.display = 'flex';
-            };
-
-            let calCurrentDate = new Date();
-            let calStartDay = calCurrentDate.getDate();
-            let calStartMonth = calCurrentDate.getMonth();
-            let calStartYear = calCurrentDate.getFullYear();
-            let calEndDay = null;
-            let calEndMonth = null;
-            let calEndYear = null;
+            let calStartDay = 1;
+            let calEndDay = 15;
             let calClickState = 0; // 0 = picking start, 1 = picking end
-
-            const calMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
             function renderCalendar() {
                 const grid = document.getElementById('calendar-grid');
                 const textRange = document.getElementById('modal-date-range-text');
-                const monthYearHeader = document.getElementById('modal-calendar-month-year');
                 if (!grid) return;
 
-                const year = calCurrentDate.getFullYear();
-                const month = calCurrentDate.getMonth();
-
-                if (monthYearHeader) {
-                    monthYearHeader.innerHTML = `${calMonthNames[month].toUpperCase()} ${year} <i class="fa-solid fa-caret-down" style="font-size: 0.8rem;"></i>`;
-                }
-
-                // calculate offset
-                const firstDay = new Date(year, month, 1).getDay();
-                // 0 = Sunday, 1 = Monday. We want Monday=0, Sunday=6
-                const offset = firstDay === 0 ? 6 : firstDay - 1;
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-
                 let html = '';
-                for (let i = 0; i < offset; i++) html += '<div></div>'; 
+                for (let i = 0; i < 3; i++) html += '<div></div>'; // June offset
 
-                for (let i = 1; i <= daysInMonth; i++) {
-                    let isStart = (i === calStartDay && month === calStartMonth && year === calStartYear);
-                    let isEnd = (calEndDay !== null && i === calEndDay && month === calEndMonth && year === calEndYear);
-                    
+                for (let i = 1; i <= 31; i++) {
+                    let isStart = (i === calStartDay);
+                    let isEnd = (i === calEndDay && calEndDay !== null);
                     let inRange = false;
-                    const currentD = new Date(year, month, i);
                     if (calStartDay !== null && calEndDay !== null) {
-                        const startD = new Date(calStartYear, calStartMonth, calStartDay);
-                        const endD = new Date(calEndYear, calEndMonth, calEndDay);
-                        if (currentD > startD && currentD < endD) inRange = true;
+                        if (i > calStartDay && i < calEndDay) inRange = true;
                     }
 
                     let wrapperStyle = "position: relative;";
@@ -6925,9 +6277,9 @@
 
                     if (inRange) {
                         bgHtml = '<div style="position: absolute; top: 0; bottom: 0; left: -50%; right: -50%; background: #e0f2fe; z-index: 1;"></div>';
-                    } else if (isStart && calEndDay !== null && (calStartDay !== calEndDay || calStartMonth !== calEndMonth || calStartYear !== calEndYear)) {
+                    } else if (isStart && calEndDay !== null && calStartDay !== calEndDay) {
                         bgHtml = '<div style="position: absolute; top: 0; bottom: 0; left: 50%; right: -50%; background: #e0f2fe; z-index: 1;"></div>';
-                    } else if (isEnd && (calStartDay !== calEndDay || calStartMonth !== calEndMonth || calStartYear !== calEndYear)) {
+                    } else if (isEnd && calStartDay !== null && calStartDay !== calEndDay) {
                         bgHtml = '<div style="position: absolute; top: 0; bottom: 0; left: -50%; right: 50%; background: #e0f2fe; z-index: 1;"></div>';
                     }
 
@@ -6936,85 +6288,35 @@
                     }
 
                     html += `<div style="${wrapperStyle}" onclick="window.pickCalDate(${i})">
-                        ${bgHtml}
-                        <div style="${circleStyle}">${i}</div>
-                    </div>`;
+                ${bgHtml}
+                <div style="${circleStyle}">${i}</div>
+            </div>`;
                 }
 
                 grid.innerHTML = html;
 
-                if (textRange && calStartDay !== null) {
-                    let endStr = '';
-                    if (calEndDay !== null) {
-                        if (calEndDay === calStartDay && calEndMonth === calStartMonth && calEndYear === calStartYear) {
-                            // same date
-                        } else {
-                            endStr = ` &ndash; ${calEndDay} ${calMonthNames[calEndMonth]}`;
-                        }
-                    }
-                    textRange.innerHTML = `${calStartDay} ${calMonthNames[calStartMonth]}${endStr}`;
+                if (textRange) {
+                    let endStr = calEndDay && calEndDay !== calStartDay ? ` &ndash; ${calEndDay} Jul` : '';
+                    textRange.innerHTML = `${calStartDay} Jul${endStr}`;
                 }
             }
 
             window.pickCalDate = function (day) {
-                const year = calCurrentDate.getFullYear();
-                const month = calCurrentDate.getMonth();
-
                 if (calClickState === 0) {
                     calStartDay = day;
-                    calStartMonth = month;
-                    calStartYear = year;
                     calEndDay = null;
-                    calEndMonth = null;
-                    calEndYear = null;
                     calClickState = 1;
                 } else {
-                    const currentD = new Date(year, month, day);
-                    const startD = new Date(calStartYear, calStartMonth, calStartDay);
-                    if (currentD >= startD) {
+                    if (day >= calStartDay) {
                         calEndDay = day;
-                        calEndMonth = month;
-                        calEndYear = year;
                     } else {
                         calEndDay = calStartDay;
-                        calEndMonth = calStartMonth;
-                        calEndYear = calStartYear;
-                        
                         calStartDay = day;
-                        calStartMonth = month;
-                        calStartYear = year;
                     }
                     calClickState = 0;
                 }
                 renderCalendar();
             };
-
-            const btnCalPrev = document.getElementById('btn-calendar-prev');
-            const btnCalNext = document.getElementById('btn-calendar-next');
-            const btnCalMonthYear = document.getElementById('modal-calendar-month-year');
-            
-            if (btnCalMonthYear) {
-                btnCalMonthYear.addEventListener('click', () => {
-                    window.openMonthPicker((year, month) => {
-                        calCurrentDate.setFullYear(year);
-                        calCurrentDate.setMonth(month);
-                        renderCalendar();
-                    }, calCurrentDate.getFullYear(), calCurrentDate.getMonth());
-                });
-            }
-
-            if (btnCalPrev) {
-                btnCalPrev.addEventListener('click', () => {
-                    calCurrentDate.setMonth(calCurrentDate.getMonth() - 1);
-                    renderCalendar();
-                });
-            }
-            if (btnCalNext) {
-                btnCalNext.addEventListener('click', () => {
-                    calCurrentDate.setMonth(calCurrentDate.getMonth() + 1);
-                    renderCalendar();
-                });
-            }
 
             renderCalendar();
 
@@ -7028,16 +6330,8 @@
                 btnModalOke.addEventListener('click', () => {
                     datePickerModal.style.display = 'none';
                     const startPad = calStartDay < 10 ? '0' + calStartDay : calStartDay;
-                    const startMonthPad = (calStartMonth + 1) < 10 ? '0' + (calStartMonth + 1) : (calStartMonth + 1);
-                    let dateStr = `${startPad}/${startMonthPad}/${calStartYear}`;
-                    
-                    if (calEndDay !== null) {
-                        const endPad = calEndDay < 10 ? '0' + calEndDay : calEndDay;
-                        const endMonthPad = (calEndMonth + 1) < 10 ? '0' + (calEndMonth + 1) : (calEndMonth + 1);
-                        if (calEndDay !== calStartDay || calEndMonth !== calStartMonth || calEndYear !== calStartYear) {
-                            dateStr += ` - ${endPad}/${endMonthPad}/${calEndYear}`;
-                        }
-                    }
+                    const endPad = calEndDay && calEndDay < 10 ? '0' + calEndDay : calEndDay;
+                    const dateStr = calEndDay && calEndDay !== calStartDay ? `${startPad}/07/2026 - ${endPad}/07/2026` : `${startPad}/07/2026`;
 
                     if (document.getElementById('tab-keuangan') && document.getElementById('tab-keuangan').style.display !== 'none') {
                         const ringkasanDateText = document.getElementById('ringkasan-date-text');
@@ -7453,7 +6747,7 @@
 
                 let html = '';
                 // Urutkan pelanggan secara alfabetis (A-Z)
-                let sortedCustomers = [...globalCustomers].sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+                let sortedCustomers = [...globalCustomers].sort((a, b) => a.nama.localeCompare(b.nama));
 
                 sortedCustomers.forEach(c => {
                     let phoneStr = c.telepon ? ' (' + c.telepon + ')' : '';
@@ -7718,13 +7012,6 @@
                     else alert('Pilih pelanggan terlebih dahulu!');
                     return;
                 }
-                
-                const posPegawaiSelect = document.getElementById('pos-pegawai-select');
-                if (!window.editingOrderId && (!posPegawaiSelect || !posPegawaiSelect.value)) {
-                    if (window.Swal) Swal.fire('Perhatian', 'Pilih pegawai yang mengerjakan terlebih dahulu!', 'warning');
-                    else alert('Pilih pegawai yang mengerjakan terlebih dahulu!');
-                    return;
-                }
 
                 if (cartData.length === 0) {
                     if (window.Swal) Swal.fire('Kosong', 'Tambahkan pesanan ke keranjang dulu!', 'warning');
@@ -7747,7 +7034,6 @@
                 let newOrder = {
                     id: window.editingOrderId ? window.editingOrderId : (posNotaBadgeId ? posNotaBadgeId.innerText : 'TRX/123'),
                     customerName: posCustomerSelect.value,
-                    pegawaiId: posPegawaiSelect ? posPegawaiSelect.value : '',
                     date: window.editingOrderId ? window.editingOrderOriginalDate : dateStr,
                     estDate: formatDate(estDate),
                     items: JSON.parse(JSON.stringify(cartData)), // clone
@@ -7784,7 +7070,6 @@
                     window.editingOrderId = null;
                     window.editingOrderOriginalDate = null;
                     window.editingOrderStatus = null;
-                    if(posPegawaiSelect) posPegawaiSelect.value = '';
 
                     if (posNotaBadgeId) posNotaBadgeId.innerText = generateNota();
 
@@ -8055,12 +7340,6 @@
                     // Trigger input event to update display
                     posCustomerSelect.dispatchEvent(new Event('input'));
                 }
-                
-                // Populate pegawai
-                const posPegawaiSelect = document.getElementById('pos-pegawai-select');
-                if (posPegawaiSelect) {
-                    posPegawaiSelect.value = order.pegawaiId || '';
-                }
 
                 // Populate dibayar
                 const inputUang = document.getElementById('input-uang');
@@ -8132,15 +7411,12 @@
                     row.style.padding = '0'; // padding dipindah ke inner row
 
                     row.innerHTML = `
-              <div style="display:grid; grid-template-columns: 110px 110px 150px 130px 100px 130px 130px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
-                <!-- Col 1: ID -->
-                  <div class="p-col" style="overflow: hidden;">
-                      <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.id}">${order.id}</div>
-                  </div>
-                  <!-- Col 2: Date -->
-                  <div class="p-col" style="overflow: hidden;">
-                      <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
-                  </div>
+              <div style="display:grid; grid-template-columns: 140px 140px 130px 90px 120px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
+                <!-- Col 1: ID & Date -->
+                <div class="p-col" style="overflow: hidden;">
+                    <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.id}">${order.id}</div>
+                    <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
+                </div>
                 
                 <!-- Col 2: Customer & Note -->
                 <div class="p-col" style="overflow: hidden;">
@@ -8158,7 +7434,7 @@
                 
                 <!-- Col 4: Price -->
                 <div class="p-col">
-                    <div class="p-price">Rp ${Math.round(order.total).toLocaleString('id-ID')}</div>
+                    <div class="p-price">${(order.total / 1000)}k</div>
                 </div>
                 
                 <!-- Col 5: Status -->
@@ -8169,7 +7445,10 @@
                     </select>
                 </div>
                 
-                
+                <!-- Col 6: Payment Method -->
+                <div class="p-col" style="font-size: 0.85rem; font-weight:600; color:#475569;">
+                    ${order.metodeBayar || '-'}
+                </div>
                 
                 <!-- Col 7: Status Dropdown -->
                 <div class="p-col">
@@ -8339,14 +7618,11 @@
                     let mainQty = order.items.length > 0 ? order.items[0].qty + (order.items[0].satuan || order.items[0].unit ? ' ' + (order.items[0].satuan || order.items[0].unit) : '') : '-';
 
                     card.innerHTML = `
-                <!-- Col 1: ID -->
-                  <div class="p-col" style="flex: 0 0 110px; width: 110px;">
-                      <div class="p-id">${order.id}</div>
-                  </div>
-                  <!-- Col 2: Date -->
-                  <div class="p-col" style="flex: 0 0 110px; width: 110px;">
-                      <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
-                  </div>
+                <!-- Col 1: ID & Date -->
+                <div class="p-col" style="flex: 0 0 110px; width: 110px;">
+                    <div class="p-id">${order.id}</div>
+                    <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
+                </div>
                 
                 <!-- Col 2: Customer -->
                 <div class="p-col" style="flex: 1;">
@@ -9175,20 +8451,166 @@
                 });
             }
 
-            // lap-transaksi-date-filter handled by laporan.js
+            const lapTransaksiDateFilter = document.getElementById('lap-transaksi-date-filter');
+            const lapTransaksiDateText = document.getElementById('lap-transaksi-date-text');
+            const btnRefreshLapTransaksi = document.getElementById('btn-refresh-lap-transaksi');
 
-            // window.renderLaporanTransaksiAccordion is now defined in laporan.js
+            if (lapTransaksiDateFilter && lapTransaksiDateText) {
+                lapTransaksiDateFilter.addEventListener('change', (e) => {
+                    const val = e.target.value;
+                    if (val === 'per-tanggal') {
+                        const datePickerModal = document.getElementById('custom-date-picker-modal');
+                        if (datePickerModal) datePickerModal.style.display = 'flex';
+                    } else if (val) {
+                        if (val === 'hari-ini') lapTransaksiDateText.innerText = '24/07/2026';
+                        else if (val === 'kemarin') lapTransaksiDateText.innerText = '23/07/2026';
+                        else if (val === '7-hari') lapTransaksiDateText.innerText = '18/07/2026 - 24/07/2026';
+                        else if (val === '30-hari') lapTransaksiDateText.innerText = '25/06/2026 - 24/07/2026';
+                        else if (val === 'bulan-ini') lapTransaksiDateText.innerText = '01/07/2026 - 31/07/2026';
+                        else if (val === 'per-bulan') lapTransaksiDateText.innerText = 'Juli 2026';
+
+                        if (btnRefreshLapTransaksi) btnRefreshLapTransaksi.click();
+                    }
+                });
+            }
+
+            if (btnRefreshLapTransaksi) {
+                btnRefreshLapTransaksi.addEventListener('click', () => {
+                    window.showToast('Memperbarui laporan transaksi...');
+                    if (typeof window.renderLaporanTransaksiAccordion === 'function') {
+                        window.renderLaporanTransaksiAccordion();
+                    }
+                });
+            }
+
+            window.renderLaporanTransaksiAccordion = function () {
+                const container = document.getElementById('lap-transaksi-accordion-container');
+                const emptyState = document.getElementById('lap-transaksi-empty-state');
+                const dataState = document.getElementById('lap-transaksi-data-state');
+                const totalCount = document.getElementById('lap-transaksi-total-count');
+                const totalSub = document.getElementById('lap-transaksi-total-sub');
+
+                if (!container) return;
+
+                let items = [];
+                const type = window.currentLaporanTransaksiType || 'Semua Transaksi';
+
+                if (type === 'Semua Transaksi' || type === 'Transaksi Belum Lunas') {
+                    items = [
+                        {
+                            date: '24-07-2026',
+                            count: 1,
+                            data: [
+                                { id: 'TRX/2607/270', customer: 'fajrian', status: 'Diambil', lunas: 'Belum Lunas', icon: 'https://cdn-icons-png.flaticon.com/512/8205/8205166.png' }
+                            ]
+                        },
+                        {
+                            date: '23-07-2026',
+                            count: 10,
+                            data: [
+                                { id: 'TRX/2607/260', customer: 'NAIN', status: 'Diambil', lunas: 'Belum Lunas', icon: 'https://cdn-icons-png.flaticon.com/512/3133/3133391.png' },
+                                { id: 'TRX/2607/261', customer: 'IDRIS', status: 'Diambil', lunas: 'Belum Lunas', icon: 'https://cdn-icons-png.flaticon.com/512/8205/8205166.png' },
+                                { id: 'TRX/2607/262', customer: 'BDV', status: 'Diambil', lunas: 'Belum Lunas', icon: 'https://cdn-icons-png.flaticon.com/512/17034/17034375.png' },
+                                { id: 'TRX/2607/263', customer: 'Abdi U', status: 'Diambil', lunas: 'Belum Lunas', icon: 'https://cdn-icons-png.flaticon.com/512/8205/8205166.png' }
+                            ]
+                        }
+                    ];
+                    totalCount.innerText = '71';
+                    totalSub.innerText = '(0.0 Kg / 0 Satuan / 0.0 m2)';
+                } else if (type === 'Transaksi Batal') {
+                    items = [
+                        {
+                            date: '24-07-2026',
+                            count: 2,
+                            data: [
+                                { id: 'TRX/2607/275', customer: 'Rudi', status: 'Batal', lunas: 'Batal', icon: 'https://cdn-icons-png.flaticon.com/512/8205/8205166.png' },
+                                { id: 'TRX/2607/276', customer: 'Sinta', status: 'Batal', lunas: 'Batal', icon: 'https://cdn-icons-png.flaticon.com/512/3133/3133391.png' }
+                            ]
+                        }
+                    ];
+                    totalCount.innerText = '2';
+                    totalSub.innerText = '(0.0 Kg / 0 Satuan / 0.0 m2)';
+                }
+
+                if (items.length === 0) {
+                    emptyState.style.display = 'flex';
+                    dataState.style.display = 'none';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                dataState.style.display = 'flex';
+
+                let html = '';
+                items.forEach((group, index) => {
+                    let rowHtml = '';
+                    group.data.forEach((trx, i) => {
+                        let pillStyle = trx.lunas === 'Lunas' ? 'background:#dcfce7; color:#16a34a;' : (trx.lunas === 'Batal' ? 'background:#fee2e2; color:#ef4444;' : 'background:#fee2e2; color:#991b1b;');
+                        let pillText = trx.lunas;
+
+                        rowHtml += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f1f5f9;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:45px; height:45px; border:1px solid #e2e8f0; border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fafc;">
+                                <img src="${trx.icon}" style="width:30px; object-fit:contain;" alt="item">
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:3px;">
+                                <div style="font-size:0.95rem; color:#1e293b; font-weight:600;">${trx.id}</div>
+                                <div style="font-size:0.75rem; color:#64748b;">Pelanggan : ${trx.customer}</div>
+                                <div style="font-size:0.75rem; color:#64748b;">Status : <span style="color:#0ea5e9;">${trx.status}</span></div>
+                            </div>
+                        </div>
+                        <div style="padding:4px 10px; border-radius:12px; font-size:0.65rem; font-weight:700; ${pillStyle}">
+                            ${pillText}
+                        </div>
+                    </div>
+                `;
+                    });
+
+                    html += `
+                <div class="acc-item" style="border-bottom:1px solid #f1f5f9; background:#fff; border-radius:0; border:none; margin:0;">
+                    <div class="acc-header" style="background:#f8fafc; padding:10px 20px; font-size:0.85rem; font-weight:600; color:#3b82f6;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-chevron-down acc-arrow" style="font-size:0.75rem;"></i> ${group.date}
+                        </div>
+                        <span style="color:#64748b; font-weight:500;">${group.count} Transaksi</span>
+                    </div>
+                    <div class="acc-content" style="padding:0;">
+                        ${rowHtml}
+                    </div>
+                </div>
+            `;
+                });
+
+                container.innerHTML = html;
+
+                // Setup accordion click
+                const accItems = container.querySelectorAll('.acc-item');
+                accItems.forEach((item, idx) => {
+                    const header = item.querySelector('.acc-header');
+                    if (idx === 0) item.classList.add('active'); // open first by default
+                    header.addEventListener('click', () => {
+                        const isActive = item.classList.contains('active');
+                        if (isActive) item.classList.remove('active');
+                        else item.classList.add('active');
+                    });
+                });
+            };
 
             const btnExportLapTransaksi = document.getElementById('btn-export-lap-transaksi');
             if (btnExportLapTransaksi) {
                 btnExportLapTransaksi.addEventListener('click', () => {
                     window.showToast('Mengekspor Laporan Transaksi...');
 
-                    const data = window.currentLaporanTransaksiExportData || [];
-                    if (data.length === 0) {
-                        window.showToast('Tidak ada data untuk diekspor.');
-                        return;
-                    }
+                    // Kolom spesifik sesuai permintaan:
+                    // Tanggal, Waktu, No. Nota, Nama Pelanggan, Kategori (KG)/(Satuan), Spooting, Status (Diambil/Belum Diambil), Qty, Satuan/KG, Harga, Dibayar, Cashbox
+                    const data = [
+                        { 'Tanggal': '24-07-2026', 'Waktu': '08:30:00', 'No. Nota': 'TRX/2607/270', 'Nama Pelanggan': 'fajrian', 'Kategori (KG)/(Satuan)': 'Kiloan', 'Spooting': '-', 'Status (Diambil/Belum Diambil)': 'Diambil', 'Qty': 2, 'Satuan/KG': 'KG', 'Harga': 20000, 'Dibayar': 0, 'Cashbox': 'Kasir Utama' },
+                        { 'Tanggal': '23-07-2026', 'Waktu': '14:15:00', 'No. Nota': 'TRX/2607/260', 'Nama Pelanggan': 'NAIN', 'Kategori (KG)/(Satuan)': 'Satuan', 'Spooting': 'Ya', 'Status (Diambil/Belum Diambil)': 'Diambil', 'Qty': 1, 'Satuan/KG': 'Satuan', 'Harga': 35000, 'Dibayar': 15000, 'Cashbox': 'BCA' },
+                        { 'Tanggal': '23-07-2026', 'Waktu': '10:10:00', 'No. Nota': 'TRX/2607/261', 'Nama Pelanggan': 'IDRIS', 'Kategori (KG)/(Satuan)': 'Kiloan', 'Spooting': '-', 'Status (Diambil/Belum Diambil)': 'Diambil', 'Qty': 5, 'Satuan/KG': 'KG', 'Harga': 50000, 'Dibayar': 0, 'Cashbox': 'Kasir Utama' },
+                        { 'Tanggal': '23-07-2026', 'Waktu': '09:05:00', 'No. Nota': 'TRX/2607/262', 'Nama Pelanggan': 'BDV', 'Kategori (KG)/(Satuan)': 'Satuan', 'Spooting': '-', 'Status (Diambil/Belum Diambil)': 'Diambil', 'Qty': 3, 'Satuan/KG': 'Satuan', 'Harga': 45000, 'Dibayar': 0, 'Cashbox': 'BCA' },
+                        { 'Tanggal': '23-07-2026', 'Waktu': '08:00:00', 'No. Nota': 'TRX/2607/263', 'Nama Pelanggan': 'Abdi U', 'Kategori (KG)/(Satuan)': 'Kiloan', 'Spooting': '-', 'Status (Diambil/Belum Diambil)': 'Diambil', 'Qty': 3.5, 'Satuan/KG': 'KG', 'Harga': 35000, 'Dibayar': 35000, 'Cashbox': 'Kasir Utama' }
+                    ];
 
                     const type = window.currentLaporanTransaksiType || 'Semua Transaksi';
                     const filename = 'Laporan_' + type.replace(/ /g, '_');
@@ -10685,34 +10107,6 @@
             // Initial call to set the label
             setTimeout(renderOutletList, 500);
 
-            // Filter logic for all reports
-            const reportPrefixes = ['omzet', 'arus', 'pendapatan', 'lainnya', 'pengeluaran', 'laba-rugi'];
-            reportPrefixes.forEach(prefix => {
-                const filterSel = document.getElementById(prefix + '-date-filter');
-                const dateTxt = document.getElementById(prefix + '-date-text');
-                const emptyState = document.getElementById(prefix + '-empty-state');
-                const dataState = document.getElementById(prefix + '-data-state');
-
-                if (filterSel && dateTxt && emptyState && dataState) {
-                    filterSel.addEventListener('change', (e) => {
-                        const val = e.target.value;
-                        if (val === 'per-tanggal') {
-                            const datePickerModal = document.getElementById('custom-date-picker-modal');
-                            if (datePickerModal) datePickerModal.style.display = 'flex';
-                        } else if (val) {
-                            if (val === 'hari-ini') dateTxt.innerText = '24/07/2026';
-                            else if (val === 'kemarin') dateTxt.innerText = '23/07/2026';
-                            else if (val === '7-hari') dateTxt.innerText = '18/07/2026 - 24/07/2026';
-                            else if (val === '30-hari') dateTxt.innerText = '25/06/2026 - 24/07/2026';
-                            else if (val === 'bulan-ini') dateTxt.innerText = '01/07/2026 - 31/07/2026';
-                            else if (val === 'per-bulan') dateTxt.innerText = 'Juli 2026';
-
-                            if (typeof window.showToast === 'function') window.showToast('Memperbarui data laporan...');
-                        }
-                    });
-                }
-            });
-
         });
     </script>
     <script>
@@ -10731,7 +10125,6 @@
             });
         }
     </script>
-    <script src="laporan.js?v=2"></script>
 </body>
 
 </html>

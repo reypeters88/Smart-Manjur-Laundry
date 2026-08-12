@@ -614,64 +614,72 @@
                     style="display: none; background: #f8fafc; min-height: calc(100vh - 70px); color: #1e293b; padding: 0;">
                     <div style="padding: 20px 15px 10px 15px;">
                         <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 20px;">Kinerja Pegawai</h2>
+
                         <!-- Search Bar -->
                         <div style="position: relative; margin-bottom: 25px;">
                             <i class="fa-solid fa-magnifying-glass"
-                                style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #8696a0; font-size: 0.9rem;"></i>
-                            <input type="text" id="search-pegawai" placeholder="Search name or role"
-                                style="width: 100%; background: #202c33; border: none; padding: 10px 15px 10px 45px; border-radius: 8px; color: #d1d7db; font-size: 0.95rem; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; box-sizing: border-box;">
+                                style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.9rem;"></i>
+                            <input type="text" id="search-pegawai" placeholder="Cari nama atau peran..."
+                                style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; padding: 12px 15px 12px 45px; border-radius: 8px; color: #1e293b; font-size: 0.95rem; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                         </div>
 
                         <!-- Ongoing / Sedang Bekerja -->
-                        <h3 style="font-size: 1rem; font-weight: 600; color: #e9edef; margin-bottom: 15px;">Pekerja
-                            Aktif Hari Ini</h3>
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; margin-bottom: 15px;">Pekerja Aktif Hari Ini</h3>
                         <div id="ongoing-pegawai-container"
-                            style="background: #18362a; border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+                            style="background: linear-gradient(135deg, #0ea5e9, #3b82f6); border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2);">
                             <!-- Data will be injected here via JS -->
                         </div>
 
                         <!-- Favourites / Semua Pegawai -->
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <h3 style="font-size: 1rem; font-weight: 600; color: #e9edef;">Daftar Pegawai</h3>
-                            <span style="color: #00a884; font-size: 0.85rem; font-weight: 500; cursor: pointer;">Lihat
-                                semua</span>
+                            <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">Daftar Pegawai</h3>
                         </div>
-                        <div id="list-pegawai-container" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div id="list-pegawai-container" style="display: flex; flex-direction: column; gap: 12px;">
                             <!-- List of employees injected here via JS -->
                         </div>
                     </div>
-
-                    <!-- Kinerja Modal Popup -->
-                    <div id="kinerja-modal"
-                        style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11,20,26,0.85); z-index: 10000; justify-content: center; align-items: center;">
-                        <div
-                            style="background: #202c33; width: 90%; max-width: 380px; border-radius: 12px; padding: 20px; box-sizing: border-box; color: #e9edef; position: relative;">
-                            <i class="fa-solid fa-xmark" id="btn-close-kinerja"
-                                style="position: absolute; top: 15px; right: 15px; font-size: 1.2rem; color: #8696a0; cursor: pointer;"></i>
-                            <div style="text-align: center; margin-bottom: 20px;">
-                                <div id="modal-pegawai-avatar"
-                                    style="width: 70px; height: 70px; background: #00a884; color: #111b21; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; margin: 0 auto 10px auto;">
-                                    A</div>
-                                <h2 id="modal-pegawai-nama"
-                                    style="font-size: 1.3rem; margin-bottom: 5px; color: #e9edef;">Nama Pegawai</h2>
-                                <p id="modal-pegawai-role" style="font-size: 0.9rem; color: #8696a0;">Role</p>
+                </div>
+                
+                <!-- LAYOUT DETAIL PEGAWAI -->
+                <div id="layout-detail-pegawai" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; position:relative;">
+                    <header class="cd-header" style="box-shadow: none; border-bottom: 1px solid #e2e8f0; background: #ffffff;">
+                        <button class="btn-icon" id="btn-back-detail-pegawai" style="color: #64748b;">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <div class="cd-header-center">
+                            <div style="font-weight: 600; font-size: 1.1rem; color: #1e293b;">Riwayat Kinerja</div>
+                        </div>
+                        <div style="width: 40px;"></div>
+                    </header>
+                    <div style="padding: 20px 15px;">
+                        <!-- Profile Card -->
+                        <div style="background: #ffffff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                            <div id="detail-pegawai-avatar" style="width: 70px; height: 70px; background: #e0f2fe; color: #0ea5e9; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; margin: 0 auto 10px auto;">A</div>
+                            <h2 id="detail-pegawai-nama" style="font-size: 1.3rem; margin-bottom: 5px; color: #1e293b; font-weight: 700;">Nama Pegawai</h2>
+                            <p id="detail-pegawai-role" style="font-size: 0.95rem; color: #64748b; font-weight: 500;">Role</p>
+                        </div>
+                        
+                        <!-- Summary Stats -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 5px; font-weight: 600; text-transform: uppercase;">Total Pekerjaan</div>
+                                <div id="detail-pegawai-qty" style="font-size: 1.3rem; font-weight: 800; color: #0ea5e9;">0</div>
                             </div>
-
-                            <div style="background: #111b21; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
-                                <div
-                                    style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #2a3942; padding-bottom: 10px;">
-                                    <span style="color: #8696a0; font-size: 0.9rem;">Total Dikerjakan</span>
-                                    <span id="modal-pegawai-qty" style="font-weight: 600; color: #00a884;">0 Kg</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span style="color: #8696a0; font-size: 0.9rem;">Estimasi Komisi</span>
-                                    <span id="modal-pegawai-komisi" style="font-weight: 600; color: #e9edef;">Rp
-                                        0</span>
-                                </div>
+                            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 5px; font-weight: 600; text-transform: uppercase;">Estimasi Komisi</div>
+                                <div id="detail-pegawai-komisi" style="font-size: 1.2rem; font-weight: 800; color: #10b981;">Rp 0</div>
                             </div>
-                            <button id="btn-tutup-kinerja"
-                                style="width: 100%; background: #00a884; color: #111b21; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;">Tutup</button>
+                        </div>
+
+                        <!-- Transaction List -->
+                        <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; margin-bottom: 15px;">Daftar Tugas Diselesaikan</h3>
+                        <div id="detail-pegawai-empty" style="display:none; text-align:center; padding:30px 10px; color:#94a3b8; font-size:0.9rem; background:#ffffff; border-radius:12px; border:1px dashed #cbd5e1;">
+                            <i class="fa-solid fa-box-open" style="font-size:2rem; margin-bottom:10px; color:#cbd5e1;"></i><br>
+                            Belum ada tugas yang diselesaikan.
+                        </div>
+                        <div id="detail-pegawai-list" style="display:flex; flex-direction:column; gap:10px;">
+                            <!-- Items injected via JS -->
                         </div>
                     </div>
                 </div>
@@ -709,11 +717,28 @@
                         </div>
                     </header>
 
-                    <!-- Search Container (Hidden by default) -->
+                    <!-- Search & Filter Container (Hidden by default) -->
                     <div id="pesanan-search-container"
                         style="display: none; padding: 10px 20px 0; background: var(--bg-white);">
-                        <input type="text" id="input-search-pesanan" placeholder="Cari nama pelanggan atau layanan..."
-                            style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 0.9rem; outline: none; background: #f8fafc;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="flex: 1; position: relative;">
+                                <input type="text" id="input-search-pesanan" placeholder="Cari nama pelanggan atau layanan..."
+                                    style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 0.9rem; outline: none; background: #f8fafc;">
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; background: #f8fafc; padding: 10px 15px; border: 1px solid var(--border-light); border-radius: 8px;">
+                                <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
+                                <select id="pesanan-date-filter" style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
+                                    <option value="semua">Semua Waktu</option>
+                                    <option value="hari-ini">Hari Ini</option>
+                                    <option value="kemarin">Kemarin</option>
+                                    <option value="7-hari">7 Hari Terakhir</option>
+                                    <option value="bulan-ini">Bulan Ini</option>
+                                    <option value="bulan-lalu">Bulan Lalu</option>
+                                    <option value="tahun-ini">Tahun Ini</option>
+                                    <option value="per-tanggal">Per Tanggal...</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Filter Tabs (Chips) -->
@@ -731,9 +756,10 @@
                         <div class="pesanan-table-container">
 
                             <!-- Header Row (Topline) -->
-                            <div class="pesanan-header-row" style="display: grid; grid-template-columns: 140px 140px 130px 90px 120px 110px 120px 1fr; align-items: center; padding: 15px 20px; gap: 15px;">
-                                <div class="h-col" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">ID / TGL</div>
-                                <div class="h-col" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">PELANGGAN</div>
+                            <div class="pesanan-header-row" style="display: grid; grid-template-columns: 100px 100px 140px 130px 90px 120px 110px 120px 1fr; align-items: center; padding: 15px 20px; gap: 15px;">
+                                <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('id')">ID <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
+                                <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('date')">TANGGAL <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
+                                <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('customerName')">PELANGGAN <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col">LAYANAN & QTY</div>
                                 <div class="h-col">TOTAL</div>
                                 <div class="h-col">STATUS BAYAR</div>
@@ -1205,12 +1231,10 @@
                     </div>
                 </header>
 
-                
-<!-- SEARCH BAR -->
-                <div class="kp-search-bar" style="display: flex; align-items: center; justify-content: space-between;">
-                    <div class="kp-search-title" id="kelola-pelanggan-title" style="flex:1;">Pelanggan (0)</div>
-                    <input type="text" id="input-search-kelola-pelanggan" placeholder="Cari pelanggan..." style="display:none; flex:1; padding:6px 12px; border-radius:6px; border:1px solid #ccc; font-size:0.9rem; margin-right:10px; outline:none;">
-                    <div class="kp-search-input-wrap" id="btn-toggle-search-kelola" style="cursor: pointer;">
+                <!-- SEARCH BAR -->
+                <div class="kp-search-bar">
+                    <div class="kp-search-title" id="kelola-pelanggan-title">Pelanggan (0)</div>
+                    <div class="kp-search-input-wrap">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                 </div>
@@ -1223,7 +1247,7 @@
                         <div class="kp-chip">Online</div>
                         <div class="kp-chip">By Grup</div>
                     </div>
-                    <div class="kp-sort" id="btn-sort-kelola" style="cursor: pointer; color: #64748b;">
+                    <div class="kp-sort">
                         A<i class="fa-solid fa-arrow-down-a-z"></i>Z
                     </div>
                 </div>
@@ -4597,21 +4621,8 @@
             const btnBackPesanan = document.getElementById('btn-back-pesanan');
             if (btnBackPesanan) {
                 btnBackPesanan.addEventListener('click', () => {
-                    if (window.pesananBackTarget === 'customer-detail') {
-                        // Kembali ke halaman profil pelanggan
-                        document.getElementById('layout-main').style.display = 'none';
-                        document.getElementById('layout-detail-pelanggan').style.display = 'block';
-                        window.pesananBackTarget = null; // Reset
-                        
-                        // Update UI bottom nav ke Akun (jika perlu)
-                        document.querySelectorAll('.bottom-nav .b-nav-btn').forEach(btn => btn.classList.remove('active'));
-                        const akunBtn = document.querySelector('.bottom-nav .b-nav-btn[data-bnav="akun"]');
-                        if (akunBtn) akunBtn.classList.add('active');
-                    } else {
-                        // Behavior default (kembali ke beranda transaksi)
-                        const berandaBtn = document.querySelector('.b-nav-btn[data-bnav="transaksi"]');
-                        if (berandaBtn) berandaBtn.click();
-                    }
+                    const berandaBtn = document.querySelector('.b-nav-btn[data-bnav="transaksi"]');
+                    if (berandaBtn) berandaBtn.click();
                 });
             }
 
@@ -4632,14 +4643,9 @@
                 const currentRows = document.querySelectorAll('.pesanan-row');
 
                 currentRows.forEach(row => {
-                    let statusMatch = false;
-                    if (filterValue === 'riwayat_lengkap') {
-                        statusMatch = true;
-                    } else {
-                        statusMatch = (filterValue === 'semua' && row.getAttribute('data-status') !== 'selesai') || 
-                                      (filterValue === 'terlambat' && row.getAttribute('data-terlambat') === 'true') || 
-                                      row.getAttribute('data-status') === filterValue;
-                    }
+                    const statusMatch = (filterValue === 'semua' && row.getAttribute('data-status') !== 'selesai') || 
+                                        (filterValue === 'terlambat' && row.getAttribute('data-terlambat') === 'true') || 
+                                        row.getAttribute('data-status') === filterValue;
                     const textMatch = row.textContent.toLowerCase().includes(keyword);
 
                     if (statusMatch && textMatch) {
@@ -4680,7 +4686,7 @@
             if (inputSearchPesanan) {
                 inputSearchPesanan.addEventListener('input', () => {
                     const activeChip = document.querySelector('.p-tab-btn.active');
-                    filterPesanan(activeChip ? activeChip.getAttribute('data-filter') : 'riwayat_lengkap');
+                    filterPesanan(activeChip ? activeChip.getAttribute('data-filter') : 'semua');
                 });
             }
 
@@ -4747,8 +4753,6 @@
             const layoutPos = document.getElementById('layout-pos');
             const btnBackPos = document.getElementById('btn-back-pos');
 
-            window.kelolaPelangganSortAZ = false;
-
             window.renderKelolaPelanggan = function () {
                 const title = document.getElementById('kelola-pelanggan-title');
                 if (title) title.innerText = 'Pelanggan (' + globalCustomers.length + ')';
@@ -4762,92 +4766,26 @@
                     return;
                 }
 
-                // Add originalIdx
-                let customersToRender = globalCustomers.map((c, idx) => ({ ...c, originalIdx: idx }));
-
-                // Filter by Search
-                const searchInput = document.getElementById('input-search-kelola-pelanggan');
-                if (searchInput && searchInput.value) {
-                    const kw = searchInput.value.toLowerCase();
-                    customersToRender = customersToRender.filter(c => 
-                        (c.nama && typeof c.nama === 'string' ? c.nama.toLowerCase() : '').includes(kw) || 
-                        (c.telepon && c.telepon.includes(kw)) || 
-                        (c.hp && c.hp.includes(kw))
-                    );
-                }
-
-                // Sort
-                if (window.kelolaPelangganSortAZ) {
-                    customersToRender.sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
-                }
-
                 const colors = ['#f59e0b', '#f97316', '#3b82f6', '#10b981', '#8b5cf6'];
-                customersToRender.forEach((cust, loopIdx) => {
-                    const namaAman = cust.nama || 'User'; const initial = namaAman.substring(0, 2).charAt(0).toUpperCase() + (namaAman.substring(1, 2) || '');
+                globalCustomers.forEach((cust, idx) => {
+                    const initial = cust.nama.substring(0, 2).charAt(0).toUpperCase() + (cust.nama.substring(1, 2) || '');
                     const phone = cust.telepon || cust.hp || 'Tanpa nomor';
-                    const color = colors[loopIdx % colors.length];
-                    
-                    // Hitung jumlah transaksi
-                    let txCount = 0;
-                    orderHistory.forEach(o => {
-                        if (o.customerName === cust.nama || o.customerName === `${cust.nama} (${phone})` || o.customerName === `${cust.nama} (Tanpa nomor)`) {
-                            txCount++;
-                        }
-                    });
+                    const color = colors[idx % colors.length];
 
                     listContainer.innerHTML += `
                 <div class="kp-list-item">
                     <div class="kp-avatar" style="background: ${color};"><div style="display:flex; justify-content:center; width:100%; height:100%; align-items:center;">${initial}</div></div>
-                    <div class="kp-info" onclick="window.openCustomerDetail(${cust.originalIdx})" style="cursor: pointer;">
+                    <div class="kp-info" onclick="window.openCustomerDetail(${idx})" style="cursor: pointer;">
                         <div class="kp-name">${cust.nama}</div>
-                        <div class="kp-phone">${phone} &bull; <span style="color:#3b82f6; font-weight:500;">${txCount} Transaksi</span></div>
+                        <div class="kp-phone">${phone}</div>
                     </div>
-                    <div class="kp-action" onclick="window.editCustomer(${cust.originalIdx})" style="cursor: pointer; padding: 10px;">
+                    <div class="kp-action" onclick="window.editCustomer(${idx})" style="cursor: pointer; padding: 10px;">
                         <i class="fa-solid fa-ellipsis" style="color: #f59e0b; font-size: 1.2rem;"></i>
                     </div>
                 </div>
             `;
                 });
             };
-
-            // Event Listeners untuk Cari dan Sortir Pelanggan
-            const btnToggleSearchKelola = document.getElementById('btn-toggle-search-kelola');
-            const inputSearchKelola = document.getElementById('input-search-kelola-pelanggan');
-            const titleKelola = document.getElementById('kelola-pelanggan-title');
-            
-            if (btnToggleSearchKelola && inputSearchKelola && titleKelola) {
-                btnToggleSearchKelola.addEventListener('click', () => {
-                    if (inputSearchKelola.style.display === 'none') {
-                        inputSearchKelola.style.display = 'block';
-                        titleKelola.style.display = 'none';
-                        inputSearchKelola.focus();
-                    } else {
-                        inputSearchKelola.style.display = 'none';
-                        titleKelola.style.display = 'block';
-                        inputSearchKelola.value = '';
-                        window.renderKelolaPelanggan();
-                    }
-                });
-
-                inputSearchKelola.addEventListener('input', () => {
-                    window.renderKelolaPelanggan();
-                });
-            }
-
-            const btnSortKelola = document.getElementById('btn-sort-kelola');
-            if (btnSortKelola) {
-                btnSortKelola.addEventListener('click', () => {
-                    window.kelolaPelangganSortAZ = !window.kelolaPelangganSortAZ;
-                    if (window.kelolaPelangganSortAZ) {
-                        btnSortKelola.innerHTML = 'Z<i class="fa-solid fa-arrow-up-z-a" style="margin:0 4px;"></i>A';
-                        btnSortKelola.style.color = '#3b82f6';
-                    } else {
-                        btnSortKelola.innerHTML = 'A<i class="fa-solid fa-arrow-down-a-z" style="margin:0 4px;"></i>Z';
-                        btnSortKelola.style.color = '#64748b';
-                    }
-                    window.renderKelolaPelanggan();
-                });
-            }
 
             window.editCustomer = function (idx) {
                 let c = globalCustomers[idx];
@@ -5014,12 +4952,12 @@
                         // Back override to go back to detail view
                         const btnBackPos = document.getElementById('btn-back-pos');
                         if (btnBackPos) {
-                            const oldBackPos = btnBackPos.onclick;
+                            const oldBack = btnBackPos.onclick;
                             btnBackPos.onclick = (e) => {
                                 if (e) { e.preventDefault(); e.stopPropagation(); }
                                 layoutPos.style.display = 'none';
                                 document.getElementById('layout-detail-pelanggan').style.display = 'block';
-                                btnBackPos.onclick = oldBackPos;
+                                btnBackPos.onclick = oldBack;
                             };
                         }
                     }
@@ -5033,35 +4971,20 @@
                 const btnLihatSemua = document.getElementById('cd-btn-lihat-history');
                 if (btnLihatSemua) {
                     btnLihatSemua.onclick = () => {
-                        // Switch to Pesanan view and auto search for this customer
+                        // Switch to Laporan view and auto search for this customer
                         document.getElementById('layout-detail-pelanggan').style.display = 'none';
-                        const layoutMain = document.getElementById('layout-main');
-                        if (layoutMain) layoutMain.style.display = 'flex';
-                        
-                        // Set the back target for the Pesanan view
-                        window.pesananBackTarget = 'customer-detail';
-
-                        const pesananBtn = document.querySelector('.b-nav-btn[data-bnav="pesanan"]');
-                        if (pesananBtn) {
-                            pesananBtn.click();
+                        const layoutLaporan = document.getElementById('layout-omzet');
+                        if (layoutLaporan) {
+                            layoutLaporan.style.display = 'block';
+                            document.querySelectorAll('.bottom-nav .b-nav-btn').forEach(btn => btn.classList.remove('active'));
+                            const lapBtn = document.querySelector('.bottom-nav .b-nav-btn[data-bnav="laporan"]');
+                            if (lapBtn) lapBtn.classList.add('active');
                             
-                            // Show search container if hidden
-                            const searchContainerPesanan = document.getElementById('pesanan-search-container');
-                            if (searchContainerPesanan && searchContainerPesanan.style.display === 'none') {
-                                searchContainerPesanan.style.display = 'block';
+                            const searchLaporan = document.getElementById('input-search-laporan');
+                            if (searchLaporan) {
+                                searchLaporan.value = c.nama;
+                                searchLaporan.dispatchEvent(new Event('input'));
                             }
-
-                            setTimeout(() => {
-                                // Remove 'active' from all chips to allow 'riwayat_lengkap'
-                                document.querySelectorAll('.p-tab-btn').forEach(btn => btn.classList.remove('active'));
-
-                                // Populate search and trigger input event
-                                const searchPesanan = document.getElementById('input-search-pesanan');
-                                if (searchPesanan) {
-                                    searchPesanan.value = c.nama;
-                                    searchPesanan.dispatchEvent(new Event('input'));
-                                }
-                            }, 50);
                         }
                     };
                 }
@@ -6138,10 +6061,12 @@
                                 if (lapTitle) lapTitle.innerText = title === 'Semua Transaksi' ? 'Transaksi Semua' : title;
                                 window.currentLaporanTransaksiType = title;
 
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lLapTransaksi.style.display = 'flex';
                                     setTimeout(() => lLapTransaksi.classList.add('active'), 10);
-                                
+                                }, 300);
 
                                 // Fetch data directly upon opening
                                 setTimeout(() => {
@@ -6191,10 +6116,12 @@
                         if (title === 'Laba Rugi') {
                             const lLabaRugi = document.getElementById('layout-laba-rugi');
                             if (lLabaRugi) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lLabaRugi.style.display = 'flex';
                                     setTimeout(() => lLabaRugi.classList.add('active'), 10);
-                                
+                                }, 300);
 
                                 if (typeof window.renderLabaRugi === 'function') {
                                     window.renderLabaRugi();
@@ -6210,10 +6137,12 @@
                                 // Render data pesanan masuk hari ini (kita pakai data semua dulu)
                                 renderPesananMasukHariIni();
 
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lPesananHariIni.style.display = 'flex';
                                     setTimeout(() => lPesananHariIni.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6222,13 +6151,15 @@
                         if (title === 'Omzet') {
                             const lOmzet = document.getElementById('layout-omzet');
                             if (lOmzet) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lOmzet.style.display = 'flex';
                                     setTimeout(() => lOmzet.classList.add('active'), 10);
 
                                     // Initialize chart if needed
                                     if (typeof initOmzetChart === 'function') initOmzetChart();
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6237,10 +6168,12 @@
                         if (title === 'Arus Keuangan') {
                             const lArus = document.getElementById('layout-arus-keuangan');
                             if (lArus) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lArus.style.display = 'flex';
                                     setTimeout(() => lArus.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6249,10 +6182,12 @@
                         if (title === 'Pendapatan Transaksi') {
                             const lPendapatan = document.getElementById('layout-pendapatan-transaksi');
                             if (lPendapatan) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lPendapatan.style.display = 'flex';
                                     setTimeout(() => lPendapatan.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6261,10 +6196,12 @@
                         if (title === 'Pendapatan Lainnya') {
                             const lLainnya = document.getElementById('layout-pendapatan-lainnya');
                             if (lLainnya) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lLainnya.style.display = 'flex';
                                     setTimeout(() => lLainnya.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6273,10 +6210,12 @@
                         if (title === 'Biaya Usaha') {
                             const lHutang = document.getElementById('layout-hutang');
                             if (lHutang) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lHutang.style.display = 'flex';
                                     setTimeout(() => lHutang.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6284,10 +6223,12 @@
                         if (title === 'Pengeluaran') {
                             const lPengeluaran = document.getElementById('layout-pengeluaran');
                             if (lPengeluaran) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lPengeluaran.style.display = 'flex';
                                     setTimeout(() => lPengeluaran.classList.add('active'), 10);
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6296,7 +6237,9 @@
                         if (title === 'Go Online') {
                             const lGoOnline = document.getElementById('layout-go-online');
                             if (lGoOnline) {
-                                hideAllLayouts();
+                                allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                                setTimeout(() => {
+                                    hideAllLayouts();
                                     lGoOnline.style.display = 'block';
                                     setTimeout(() => lGoOnline.classList.add('active'), 10);
 
@@ -6305,7 +6248,7 @@
                                     if (inputUrl) {
                                         inputUrl.value = localStorage.getItem('webapp_url') || '';
                                     }
-                                
+                                }, 300);
                                 return;
                             }
                         }
@@ -6315,9 +6258,6 @@
                             const tabKelolaPelanggan = document.getElementById('tab-kelola-pelanggan');
                             const tabAkun = document.getElementById('tab-akun');
                             if (tabKelolaPelanggan && tabAkun) {
-                                if (typeof window.renderKelolaPelanggan === 'function') {
-                                    window.renderKelolaPelanggan();
-                                }
                                 tabAkun.style.display = 'none';
                                 tabKelolaPelanggan.style.display = 'flex';
                                 window.scrollTo(0, 0);
@@ -6332,10 +6272,12 @@
                         }
 
                         // Animasi transisi masuk
-                        hideAllLayouts();
+                        allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
+                        setTimeout(() => {
+                            hideAllLayouts();
                             layoutDetail.style.display = 'flex';
                             setTimeout(() => layoutDetail.classList.add('active'), 10);
-                        
+                        }, 300);
                     });
                 });
 
@@ -7453,7 +7395,7 @@
 
                 let html = '';
                 // Urutkan pelanggan secara alfabetis (A-Z)
-                let sortedCustomers = [...globalCustomers].sort((a, b) => (a.nama || '').localeCompare(b.nama || ''));
+                let sortedCustomers = [...globalCustomers].sort((a, b) => a.nama.localeCompare(b.nama));
 
                 sortedCustomers.forEach(c => {
                     let phoneStr = c.telepon ? ' (' + c.telepon + ')' : '';
@@ -8132,15 +8074,12 @@
                     row.style.padding = '0'; // padding dipindah ke inner row
 
                     row.innerHTML = `
-              <div style="display:grid; grid-template-columns: 110px 110px 150px 130px 100px 130px 130px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
-                <!-- Col 1: ID -->
-                  <div class="p-col" style="overflow: hidden;">
-                      <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.id}">${order.id}</div>
-                  </div>
-                  <!-- Col 2: Date -->
-                  <div class="p-col" style="overflow: hidden;">
-                      <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
-                  </div>
+              <div style="display:grid; grid-template-columns: 140px 140px 130px 90px 120px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
+                <!-- Col 1: ID & Date -->
+                <div class="p-col" style="overflow: hidden;">
+                    <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.id}">${order.id}</div>
+                    <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
+                </div>
                 
                 <!-- Col 2: Customer & Note -->
                 <div class="p-col" style="overflow: hidden;">
@@ -8158,7 +8097,7 @@
                 
                 <!-- Col 4: Price -->
                 <div class="p-col">
-                    <div class="p-price">Rp ${Math.round(order.total).toLocaleString('id-ID')}</div>
+                    <div class="p-price">${(order.total / 1000)}k</div>
                 </div>
                 
                 <!-- Col 5: Status -->
@@ -8169,7 +8108,10 @@
                     </select>
                 </div>
                 
-                
+                <!-- Col 6: Payment Method -->
+                <div class="p-col" style="font-size: 0.85rem; font-weight:600; color:#475569;">
+                    ${order.metodeBayar || '-'}
+                </div>
                 
                 <!-- Col 7: Status Dropdown -->
                 <div class="p-col">
@@ -8339,14 +8281,11 @@
                     let mainQty = order.items.length > 0 ? order.items[0].qty + (order.items[0].satuan || order.items[0].unit ? ' ' + (order.items[0].satuan || order.items[0].unit) : '') : '-';
 
                     card.innerHTML = `
-                <!-- Col 1: ID -->
-                  <div class="p-col" style="flex: 0 0 110px; width: 110px;">
-                      <div class="p-id">${order.id}</div>
-                  </div>
-                  <!-- Col 2: Date -->
-                  <div class="p-col" style="flex: 0 0 110px; width: 110px;">
-                      <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
-                  </div>
+                <!-- Col 1: ID & Date -->
+                <div class="p-col" style="flex: 0 0 110px; width: 110px;">
+                    <div class="p-id">${order.id}</div>
+                    <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
+                </div>
                 
                 <!-- Col 2: Customer -->
                 <div class="p-col" style="flex: 1;">
