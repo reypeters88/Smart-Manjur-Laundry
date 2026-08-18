@@ -1,0 +1,129 @@
+﻿
+> laporan.js:60:                if(window.renderLaporanPengeluaran) window.renderLaporanPengeluaran();
+  laporan.js:61:                if(window.renderLaporanLabaRugi) window.renderLaporanLabaRugi();
+  laporan.js:62:            }
+  laporan.js:63:        } catch (err) {
+  laporan.js:64:            console.error('Failed to fetch data:', err);
+  laporan.js:65:            if (typeof window.showToast === 'function') window.showToast('Gagal menarik data dari 
+server.');
+  laporan.js:66:        }
+  laporan.js:67:    }
+  laporan.js:68:
+  laporan.js:69:    // Utilities
+  laporan.js:70:        window.parseDateString = function(dateStr, notaId) {
+  laporan.js:71:        if (!dateStr) return null;
+  laporan.js:72:        let d;
+  laporan.js:73:        if (typeof dateStr === 'string' && dateStr.includes('T') && dateStr.endsWith('Z')) {
+  laporan.js:74:            d = new Date(dateStr);
+  laporan.js:75:        } else {
+  laporan.js:76:            const parts = dateStr.split(' ');
+  laporan.js:77:            const dateParts = parts[0].split(/[/-]/);
+  laporan.js:78:            if (dateParts.length >= 3) {
+  laporan.js:79:                let day = parseInt(dateParts[0], 10);
+  laporan.js:80:                let month = parseInt(dateParts[1], 10) - 1;
+  laporan.js:81:                let year = parseInt(dateParts[2], 10);
+  laporan.js:82:                if (year < 100) year += 2000;
+  laporan.js:83:                else if (dateParts[0].length === 4) {
+  laporan.js:84:                    year = parseInt(dateParts[0], 10);
+  laporan.js:85:                    month = parseInt(dateParts[1], 10) - 1;
+  laporan.js:86:                    day = parseInt(dateParts[2], 10);
+  laporan.js:87:                }
+  laporan.js:88:                let hours = 0, minutes = 0;
+  laporan.js:89:                if (parts.length > 1) {
+  laporan.js:90:                    const timeParts = parts[1].split(':');
+  laporan.js:91:                    if (timeParts.length >= 2) {
+  laporan.js:92:                        hours = parseInt(timeParts[0], 10);
+  laporan.js:93:                        minutes = parseInt(timeParts[1], 10);
+  laporan.js:94:                    }
+  laporan.js:95:                }
+  laporan.js:96:                d = new Date(year, month, day, hours, minutes, 0);
+  laporan.js:97:            } else {
+  laporan.js:98:                d = new Date(dateStr);
+  laporan.js:99:            }
+  laporan.js:100:        }
+  laporan.js:101:        
+  laporan.js:102:        let valid = d && !isNaN(d);
+  laporan.js:103:        if (!valid) return null;
+  laporan.js:104:
+  laporan.js:105:        if (notaId) {
+  laporan.js:106:            if (notaId.startsWith('MJL-')) {
+  laporan.js:107:                let match = notaId.match(/MJL-(\d{2})(\d{2})-/);
+  laporan.js:108:                if (match) {
+  laporan.js:109:                    let trueMonthIdx = parseInt(match[1], 10) - 1;
+  laporan.js:110:                    let trueMonthNum = parseInt(match[1], 10);
+> laporan.js:357:    window.renderLaporanPengeluaran = function (filterVal = 'hari-ini') {
+  laporan.js:358:        const layout = document.getElementById('layout-pengeluaran');
+  laporan.js:359:        if (!layout) return;
+  laporan.js:360:
+  laporan.js:361:        const emptyState = document.getElementById('pengeluaran-empty-state');
+  laporan.js:362:        const dataState = document.getElementById('pengeluaran-data-state');
+  laporan.js:363:        const filterSel = document.getElementById('pengeluaran-date-filter');
+  laporan.js:364:        
+  laporan.js:365:        let db = getDB('db_pengeluaran');
+  laporan.js:366:        let total = 0;
+  laporan.js:367:        let filtered = db.filter(item => {
+  laporan.js:368:            if (filterVal === 'per-tanggal') {
+  laporan.js:369:                const start = filterSel ? filterSel.getAttribute('data-start') : null;
+  laporan.js:370:                const end = filterSel ? filterSel.getAttribute('data-end') : null;
+  laporan.js:371:                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+  laporan.js:372:            }
+  laporan.js:373:            return window.isDateInRange(parseDateString(item.date), filterVal);
+  laporan.js:374:        });
+  laporan.js:375:        if (filtered.length === 0) {
+  laporan.js:376:            if(emptyState) emptyState.style.display = 'flex';
+  laporan.js:377:            if(dataState) dataState.style.display = 'none';
+  laporan.js:378:            return;
+  laporan.js:379:        }
+  laporan.js:380:
+  laporan.js:381:        if(emptyState) emptyState.style.display = 'none';
+  laporan.js:382:        if(dataState) dataState.style.display = 'flex';
+  laporan.js:383:
+  laporan.js:384:        filtered.forEach(item => total += (parseFloat(item.nominal) || 0));
+  laporan.js:385:
+  laporan.js:386:        const spanTotal = layout.querySelector('span[style*="1.8rem"]');
+  laporan.js:387:        if (spanTotal) spanTotal.innerText = formatRupiah(total);
+  laporan.js:388:        
+  laporan.js:389:        const container = document.getElementById('pengeluaran-accordion-container');
+  laporan.js:390:        if (container) {
+  laporan.js:391:            let html = '';
+  laporan.js:392:            filtered.forEach(item => {
+  laporan.js:393:                html += `
+  laporan.js:394:                    <div style="padding:15px 20px; border-bottom:1px solid #f1f5f9; display:flex; 
+justify-content:space-between; align-items:center;">
+  laporan.js:395:                        <div>
+  laporan.js:396:                            <div style="font-weight:600; color:#1e293b;">${item.category || 
+'Manual'}</div>
+  laporan.js:397:                            <div style="font-size:0.8rem; 
+color:#64748b;">${formatDateDisplay(parseDateString(item.date))} - ${item.keterangan || '-'}</div>
+  laporan.js:398:                        </div>
+  laporan.js:399:                        <div style="font-weight:700; color:#ef4444;">Rp 
+${formatRupiah(item.nominal)}</div>
+  laporan.js:400:                    </div>
+  laporan.js:401:                `;
+  laporan.js:402:            });
+  laporan.js:403:            container.innerHTML = html;
+  laporan.js:404:        }
+  laporan.js:405:    };
+  laporan.js:406:
+  laporan.js:407:    // --- 6. LABA RUGI ---
+> laporan.js:497:        hookFilterEvents('pengeluaran', window.renderLaporanPengeluaran);
+  laporan.js:498:        hookFilterEvents('laba-rugi', window.renderLaporanLabaRugi);
+  laporan.js:499:        hookFilterEvents('lap-transaksi', () => { window.renderLaporanTransaksiAccordion(); });
+  laporan.js:500:        
+  laporan.js:501:        const lapSecondaryFilter = document.getElementById('lap-transaksi-filter-select');
+  laporan.js:502:        if (lapSecondaryFilter) {
+  laporan.js:503:            lapSecondaryFilter.addEventListener('change', (e) => {
+  laporan.js:504:                const textEl = document.getElementById('lap-transaksi-filter-text');
+  laporan.js:505:                if (textEl) textEl.innerText = e.target.options[e.target.selectedIndex].text;
+  laporan.js:506:                if (typeof window.renderLaporanTransaksiAccordion === 'function') 
+window.renderLaporanTransaksiAccordion();
+  laporan.js:507:            });
+  laporan.js:508:        }
+  laporan.js:509:        
+  laporan.js:510:        // Initial Fetch which triggers renders
+  laporan.js:511:        fetchApiData();
+  laporan.js:512:    }, 1000);
+  laporan.js:513:
+  laporan.js:514:})();
+
+

@@ -1,0 +1,232 @@
+﻿
+> laporan.js:187:    window.renderLaporanTransaksiAccordion = function () {
+  laporan.js:188:        const container = document.getElementById('lap-transaksi-accordion-container');
+  laporan.js:189:        const emptyState = document.getElementById('lap-transaksi-empty-state');
+  laporan.js:190:        const dataState = document.getElementById('lap-transaksi-data-state');
+  laporan.js:191:        const totalCount = document.getElementById('lap-transaksi-total-count');
+  laporan.js:192:        const totalSub = document.getElementById('lap-transaksi-total-sub');
+  laporan.js:193:        const filterSel = document.getElementById('lap-transaksi-date-filter');
+  laporan.js:194:
+  laporan.js:195:        if (!container) return;
+  laporan.js:196:
+  laporan.js:197:        let dbPemasukan = getDB('db_pemasukan');
+  laporan.js:198:        const type = window.currentLaporanTransaksiType || 'Semua Transaksi';
+  laporan.js:199:        
+  laporan.js:200:        let filterVal = filterSel ? filterSel.value : '';
+  laporan.js:201:        if (filterVal === 'per-bulan') filterVal = 'bulan-ini';
+  laporan.js:202:
+  laporan.js:203:        let filtered = dbPemasukan.filter(item => {
+  laporan.js:204:            if (item.type) return false; // Exclude pendapatan manual
+  laporan.js:205:            const dateObj = parseDateString(item.date);
+  laporan.js:206:            if (!dateObj) return false;
+  laporan.js:207:
+  laporan.js:208:            if (filterVal && filterVal !== 'semua') {
+  laporan.js:209:                if (filterVal === 'per-tanggal') {
+  laporan.js:210:                    const start = filterSel ? filterSel.getAttribute('data-start') : null;
+  laporan.js:211:                    const end = filterSel ? filterSel.getAttribute('data-end') : null;
+  laporan.js:212:                    if (!window.isDateInRange(dateObj, filterVal, start, end)) return false;
+  laporan.js:213:                } else {
+  laporan.js:214:                    if (!window.isDateInRange(dateObj, filterVal)) return false;
+  laporan.js:215:                }
+  laporan.js:216:            }
+  laporan.js:217:            if (type === 'Transaksi Belum Lunas') {
+  laporan.js:218:                return (item.dibayar || 0) < (item.total || 0) && item.status !== 'batal';
+  laporan.js:219:            } else if (type === 'Transaksi Batal') {
+  laporan.js:220:                return item.status === 'batal' || item.status === 'Batal';
+  laporan.js:221:            } else {
+  laporan.js:222:                const secondaryFilterSel = document.getElementById('lap-transaksi-filter-select');
+  laporan.js:223:                const secondaryFilterVal = secondaryFilterSel ? secondaryFilterSel.value : 'Semua';
+  laporan.js:224:                const isBatal = item.status === 'batal' || item.status === 'Batal';
+  laporan.js:225:                const isLunas = (item.dibayar || 0) >= (item.total || 0);
+  laporan.js:226:                
+  laporan.js:227:                if (secondaryFilterVal === 'Lunas') return !isBatal && isLunas;
+  laporan.js:228:                if (secondaryFilterVal === 'Belum Lunas') return !isBatal && !isLunas;
+  laporan.js:229:                if (secondaryFilterVal === 'Batal') return isBatal;
+  laporan.js:230:                return !isBatal;
+  laporan.js:231:            }
+  laporan.js:232:        });
+  laporan.js:233:
+  laporan.js:234:        if (filtered.length === 0) {
+  laporan.js:235:            if(dataState) dataState.style.display = 'flex';
+  laporan.js:236:            if(emptyState) emptyState.style.display = 'flex';
+  laporan.js:237:            if(container) container.style.display = 'none';
+  laporan.js:238:            if(totalCount) totalCount.innerText = '0';
+  laporan.js:239:            if(totalSub) totalSub.innerText = '(0 Total Qty)';
+  laporan.js:240:            return;
+  laporan.js:241:        }
+  laporan.js:242:
+  laporan.js:243:        if(emptyState) emptyState.style.display = 'none';
+  laporan.js:244:        if(container) container.style.display = 'flex';
+  laporan.js:245:        if(dataState) dataState.style.display = 'flex';
+  laporan.js:246:
+  laporan.js:247:        const grouped = {};
+  laporan.js:248:        filtered.forEach(trx => {
+  laporan.js:249:            const d = parseDateString(trx.date);
+  laporan.js:250:            const dStr = formatDateDisplay(d);
+  laporan.js:251:            if (!grouped[dStr]) grouped[dStr] = [];
+  laporan.js:252:            grouped[dStr].push(trx);
+  laporan.js:253:        });
+  laporan.js:254:
+  laporan.js:255:        let html = '';
+  laporan.js:256:        let totalQty = 0;
+  laporan.js:257:        let totalItems = 0;
+  laporan.js:258:
+  laporan.js:259:        Object.keys(grouped).sort((a, b) => parseDateString(b) - 
+parseDateString(a)).forEach((dateStr, index) => {
+  laporan.js:260:            let rowHtml = '';
+  laporan.js:261:            grouped[dateStr].forEach(trx => {
+  laporan.js:262:                totalItems++;
+  laporan.js:263:                const isLunas = (trx.dibayar || 0) >= (trx.total || 0);
+  laporan.js:264:                const statusStr = trx.status === 'batal' ? 'Batal' : (isLunas ? 'Lunas' : 'Belum 
+Lunas');
+  laporan.js:265:                const pillStyle = statusStr === 'Lunas' ? 'background:#dcfce7; color:#16a34a;' : 
+(statusStr === 'Batal' ? 'background:#fee2e2; color:#ef4444;' : 'background:#fee2e2; color:#991b1b;');
+  laporan.js:266:                const icon = trx.items && trx.items.length > 0 && trx.items[0].category === 'Satuan' 
+? 'https://cdn-icons-png.flaticon.com/512/3133/3133391.png' : 
+'https://cdn-icons-png.flaticon.com/512/8205/8205166.png';
+  laporan.js:267:                
+  laporan.js:268:                trx.items && trx.items.forEach(it => {
+  laporan.js:269:                    totalQty += (parseFloat(it.qty) || 0);
+  laporan.js:270:                });
+  laporan.js:271:
+  laporan.js:272:                rowHtml += `
+  laporan.js:273:                    <div style="display:flex; justify-content:space-between; align-items:center; 
+padding:15px; border-bottom:1px solid #f1f5f9;">
+  laporan.js:274:                        <div style="display:flex; align-items:center; gap:12px;">
+  laporan.js:275:                            <div style="width:45px; height:45px; border:1px solid #e2e8f0; 
+border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fafc;">
+  laporan.js:276:                                <img src="${icon}" style="width:30px; object-fit:contain;" alt="item">
+  laporan.js:277:                            </div>
+  laporan.js:278:                            <div style="display:flex; flex-direction:column; gap:3px;">
+  laporan.js:279:                                <div style="font-size:0.95rem; color:#1e293b; 
+font-weight:600;">${trx.id}</div>
+  laporan.js:280:                                <div style="font-size:0.75rem; color:#64748b;">Pelanggan : 
+${trx.customerName || trx.customer || 'Guest'}</div>
+  laporan.js:281:                                <div style="font-size:0.75rem; color:#64748b;">Status : <span 
+style="color:#0ea5e9;">${trx.status || 'Baru'}</span></div>
+  laporan.js:282:                            </div>
+  laporan.js:283:                        </div>
+  laporan.js:284:                        <div style="padding:4px 10px; border-radius:12px; font-size:0.65rem; 
+font-weight:700; ${pillStyle}">
+  laporan.js:285:                            ${statusStr}
+  laporan.js:286:                        </div>
+  laporan.js:287:                    </div>
+  laporan.js:288:                `;
+  laporan.js:289:            });
+  laporan.js:290:
+  laporan.js:291:            html += `
+  laporan.js:292:                <div class="acc-item ${index === 0 ? 'active' : ''}" style="border-bottom:1px solid 
+#f1f5f9; background:#fff; border-radius:0; border:none; margin:0;">
+  laporan.js:293:                    <div class="acc-header" style="background:#f8fafc; padding:10px 20px; 
+font-size:0.85rem; font-weight:600; color:#3b82f6; cursor:pointer; display:flex; justify-content:space-between; 
+align-items:center;">
+  laporan.js:294:                        <div style="display:flex; align-items:center; gap:8px;">
+  laporan.js:295:                            <i class="fa-solid fa-chevron-down acc-arrow" style="font-size:0.75rem; 
+transition:transform 0.3s;"></i> ${dateStr}
+  laporan.js:296:                        </div>
+  laporan.js:297:                        <span style="color:#64748b; font-weight:500;">${grouped[dateStr].length} 
+Transaksi</span>
+  laporan.js:298:                    </div>
+  laporan.js:299:                    <div class="acc-content" style="padding:0; max-height:none; overflow:visible; 
+${index === 0 ? 'display:block;' : 'display:none;'}">
+  laporan.js:300:                        ${rowHtml}
+  laporan.js:301:                    </div>
+  laporan.js:302:                </div>
+  laporan.js:303:            `;
+  laporan.js:304:        });
+  laporan.js:305:
+  laporan.js:306:                    container.innerHTML = html;
+  laporan.js:307:            const totalTextElement = document.querySelector(isTransaksi ? '#pendapatan-data-state div 
+> span[style*="font-size:1.6rem"]' : '#lainnya-data-state div > span[style*="font-size:1.6rem"]');
+  laporan.js:308:            if (totalTextElement) {
+  laporan.js:309:                totalTextElement.innerText = globalTotal.toLocaleString('en-US');
+  laporan.js:310:            }
+  laporan.js:311:
+  laporan.js:312:            // --- EXPAND ALL / COLLAPSE ALL LOGIC ---
+  laporan.js:313:            const accItems = container.querySelectorAll('.acc-item');
+  laporan.js:314:            const prefix = isTransaksi ? 'pendapatan' : 'lainnya';
+  laporan.js:315:            const btnExpandAll = document.getElementById('btn-' + prefix + '-expand-all');
+  laporan.js:316:            const btnCollapseAll = document.getElementById('btn-' + prefix + '-collapse-all');
+  laporan.js:317:            
+  laporan.js:318:            if (btnExpandAll) {
+  laporan.js:319:                const newBtnE = btnExpandAll.cloneNode(true);
+  laporan.js:320:                btnExpandAll.parentNode.replaceChild(newBtnE, btnExpandAll);
+  laporan.js:321:                newBtnE.addEventListener('click', () => {
+  laporan.js:322:                    accItems.forEach(item => {
+  laporan.js:323:                        item.classList.add('active');
+  laporan.js:324:                        const content = item.querySelector('.acc-content');
+  laporan.js:325:                        if (content) content.style.display = 'block';
+  laporan.js:326:                        const arrow = item.querySelector('.acc-arrow');
+  laporan.js:327:                        if (arrow) arrow.style.transform = 'rotate(-180deg)';
+  laporan.js:328:                    });
+  laporan.js:329:                });
+  laporan.js:330:            }
+  laporan.js:331:            if (btnCollapseAll) {
+  laporan.js:332:                const newBtnC = btnCollapseAll.cloneNode(true);
+  laporan.js:333:                btnCollapseAll.parentNode.replaceChild(newBtnC, btnCollapseAll);
+  laporan.js:334:                newBtnC.addEventListener('click', () => {
+  laporan.js:335:                    accItems.forEach(item => {
+  laporan.js:336:                        item.classList.remove('active');
+  laporan.js:337:                        const content = item.querySelector('.acc-content');
+  laporan.js:338:                        if (content) content.style.display = 'none';
+  laporan.js:339:                        const arrow = item.querySelector('.acc-arrow');
+  laporan.js:340:                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+  laporan.js:341:                    });
+  laporan.js:342:                });
+  laporan.js:343:            }
+  laporan.js:344:            // -----------------------------------------
+  laporan.js:345:        };
+  laporan.js:346:
+  laporan.js:347:        if (isTransaksi) {
+  laporan.js:348:            window.renderPendapatanAccordion = renderFunc;
+  laporan.js:349:            window.renderPendapatanAccordion();
+  laporan.js:350:        } else {
+  laporan.js:351:            window.renderLainnyaAccordion = renderFunc;
+  laporan.js:352:            window.renderLainnyaAccordion();
+  laporan.js:353:        }
+  laporan.js:354:    };
+  laporan.js:355:
+  laporan.js:356:    // --- 5. PENGELUARAN ---
+  laporan.js:357:    window.renderLaporanPengeluaran = function (filterVal = 'hari-ini') {
+  laporan.js:358:        const layout = document.getElementById('layout-pengeluaran');
+  laporan.js:359:        if (!layout) return;
+  laporan.js:360:
+  laporan.js:361:        const emptyState = document.getElementById('pengeluaran-empty-state');
+  laporan.js:362:        const dataState = document.getElementById('pengeluaran-data-state');
+  laporan.js:363:        const filterSel = document.getElementById('pengeluaran-date-filter');
+  laporan.js:364:        
+  laporan.js:365:        let db = getDB('db_pengeluaran');
+  laporan.js:366:        let total = 0;
+  laporan.js:367:        let filtered = db.filter(item => {
+  laporan.js:368:            if (filterVal === 'per-tanggal') {
+  laporan.js:369:                const start = filterSel ? filterSel.getAttribute('data-start') : null;
+  laporan.js:370:                const end = filterSel ? filterSel.getAttribute('data-end') : null;
+  laporan.js:371:                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+  laporan.js:372:            }
+  laporan.js:373:            return window.isDateInRange(parseDateString(item.date), filterVal);
+  laporan.js:374:        });
+  laporan.js:375:        if (filtered.length === 0) {
+  laporan.js:376:            if(emptyState) emptyState.style.display = 'flex';
+  laporan.js:377:            if(dataState) dataState.style.display = 'none';
+  laporan.js:378:            return;
+  laporan.js:379:        }
+  laporan.js:380:
+  laporan.js:381:        if(emptyState) emptyState.style.display = 'none';
+  laporan.js:382:        if(dataState) dataState.style.display = 'flex';
+  laporan.js:383:
+  laporan.js:384:        filtered.forEach(item => total += (parseFloat(item.nominal) || 0));
+  laporan.js:385:
+  laporan.js:386:        const spanTotal = layout.querySelector('span[style*="1.8rem"]');
+  laporan.js:387:        if (spanTotal) spanTotal.innerText = formatRupiah(total);
+> laporan.js:506:                if (typeof window.renderLaporanTransaksiAccordion === 'function') 
+window.renderLaporanTransaksiAccordion();
+  laporan.js:507:            });
+  laporan.js:508:        }
+  laporan.js:509:        
+  laporan.js:510:        // Initial Fetch which triggers renders
+  laporan.js:511:        fetchApiData();
+  laporan.js:512:    }, 1000);
+  laporan.js:513:
+  laporan.js:514:})();
+
+

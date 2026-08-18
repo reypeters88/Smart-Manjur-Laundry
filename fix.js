@@ -1,16 +1,14 @@
-import re
+const fs = require('fs');
+const content = fs.readFileSync('g:/My Drive/Apiksi/Projek 2/index.html', 'utf8');
 
-with open(r'g:\My Drive\Apiksi\Projek 2\index.html', 'r', encoding='utf-8') as f:
-    content = f.read()
+const startStr = 'window.bukaDetailRingkasan = function(tipe) {';
+const endStr = '// Show Layout';
 
-start_str = 'window.bukaDetailRingkasan = function(tipe) {'
-end_str = '// Show Layout'
+const startIdx = content.indexOf(startStr);
+const endIdx = content.indexOf(endStr, startIdx);
 
-start_idx = content.find(start_str)
-end_idx = content.find(end_str, start_idx)
-
-if start_idx != -1 and end_idx != -1:
-    new_logic = '''window.bukaDetailRingkasan = function(tipe) {
+if (startIdx !== -1 && endIdx !== -1) {
+    const newLogic = window.bukaDetailRingkasan = function(tipe) {
                 const layoutMain = document.getElementById('layout-main');
                 const layoutDetail = document.getElementById('layout-detail-ringkasan');
                 const title = document.getElementById('detail-ringkasan-title');
@@ -103,80 +101,29 @@ if start_idx != -1 and end_idx != -1:
                         grouped[dateStr].total += parseFloat(item.nominal || 0);
                     });
 
-                    let html = 
-                        <div style="display:flex; gap:10px; margin-bottom:15px; justify-content: flex-end;">
-                            <button id="btn-detail-expand-all" style="background:#e0f2fe; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#0369a1; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-down"></i> Buka Semua</button>
-                            <button id="btn-detail-collapse-all" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#475569; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-up"></i> Tutup Semua</button>
-                        </div>
-                        <div id="detail-accordion-container" style="display:flex; flex-direction:column; gap:10px;">
-                    ;
+                    let html = '\\n                        <div style="display:flex; gap:10px; margin-bottom:15px; justify-content: flex-end;">\\n                            <button id="btn-detail-expand-all" style="background:#e0f2fe; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#0369a1; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-down"></i> Buka Semua</button>\\n                            <button id="btn-detail-collapse-all" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#475569; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-up"></i> Tutup Semua</button>\\n                        </div>\\n                        <div id="detail-accordion-container" style="display:flex; flex-direction:column; gap:10px;">\\n                    ';
 
                     Object.keys(grouped).forEach(dateStr => {
                         let group = grouped[dateStr];
-                        html += 
-                            <div class="accordion-item" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">
-                                <div class="accordion-header" style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#f8fafc; border-bottom:1px solid #e2e8f0;" onclick="this.parentElement.classList.toggle('active')">
-                                    <div style="display:flex; align-items:center; gap:10px;">
-                                        <div style="background:#e0f2fe; color:#0ea5e9; width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem;">
-                                            <i class="fa-solid fa-calendar-day"></i>
-                                        </div>
-                                        <div>
-                                            <div style="font-size:0.95rem; font-weight:700; color:#0f172a;"></div>
-                                            <div style="font-size:0.75rem; color:#64748b;"> Transaksi</div>
-                                        </div>
-                                    </div>
-                                    <div style="display:flex; align-items:center; gap:15px;">
-                                        <div style="font-weight:700; color:;">Rp </div>
-                                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 acc-arrow"></i>
-                                    </div>
-                                </div>
-                                <div class="accordion-content" style="padding: 0; background:#ffffff;">
-                                    <div style="overflow-x:auto;">
-                                        <table style="width:100%; border-collapse:collapse; min-width:500px;">
-                                            <thead>
-                                                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
-                                                    <th style="padding:12px 15px; text-align:left; font-size:0.8rem; color:#475569; font-weight:600;">No. Nota</th>
-                                                    <th style="padding:12px 15px; text-align:left; font-size:0.8rem; color:#475569; font-weight:600;">Nama</th>
-                                                    <th style="padding:12px 15px; text-align:right; font-size:0.8rem; color:#475569; font-weight:600;">Nominal (Rp)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                        ;
+                        html += '\\n                            <div class="accordion-item" style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden;">\\n                                <div class="accordion-header" style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#f8fafc; border-bottom:1px solid #e2e8f0;" onclick="this.parentElement.classList.toggle(\\\'active\\\')">\\n                                    <div style="display:flex; align-items:center; gap:10px;">\\n                                        <div style="background:#e0f2fe; color:#0ea5e9; width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem;">\\n                                            <i class="fa-solid fa-calendar-day"></i>\\n                                        </div>\\n                                        <div>\\n                                            <div style="font-size:0.95rem; font-weight:700; color:#0f172a;">' + dateStr + '</div>\\n                                            <div style="font-size:0.75rem; color:#64748b;">' + group.items.length + ' Transaksi</div>\\n                                        </div>\\n                                    </div>\\n                                    <div style="display:flex; align-items:center; gap:15px;">\\n                                        <div style="font-weight:700; color:' + (tipe === 'pengeluaran' ? '#ef4444' : '#10b981') + ';">Rp ' + group.total.toLocaleString('id-ID') + '</div>\\n                                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 acc-arrow"></i>\\n                                    </div>\\n                                </div>\\n                                <div class="accordion-content" style="padding: 0; background:#ffffff;">\\n                                    <div style="overflow-x:auto;">\\n                                        <table style="width:100%; border-collapse:collapse; min-width:500px;">\\n                                            <thead>\\n                                                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">\\n                                                    <th style="padding:12px 15px; text-align:left; font-size:0.8rem; color:#475569; font-weight:600;">No. Nota</th>\\n                                                    <th style="padding:12px 15px; text-align:left; font-size:0.8rem; color:#475569; font-weight:600;">Nama</th>\\n                                                    <th style="padding:12px 15px; text-align:right; font-size:0.8rem; color:#475569; font-weight:600;">Nominal (Rp)</th>\\n                                                </tr>\\n                                            </thead>\\n                                            <tbody>\\n                        ';
 
                         group.items.forEach(item => {
                             let textColor = item.isOut ? '#ef4444' : '#10b981';
                             let nominalText = parseFloat(item.nominal).toLocaleString('id-ID');
-                            html += 
-                                <tr style="border-bottom:1px solid #f1f5f9; transition:background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                                    <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;"></td>
-                                    <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;"></td>
-                                    <td style="padding:12px 15px; font-size:0.95rem; font-weight:700; color:; text-align:right;"></td>
-                                </tr>
-                            ;
+                            html += '\\n                                <tr style="border-bottom:1px solid #f1f5f9; transition:background 0.2s;" onmouseover="this.style.background=\\\'#f8fafc\\\'" onmouseout="this.style.background=\\\'transparent\\\'">\\n                                    <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;">' + (item.id || '-') + '</td>\\n                                    <td style="padding:12px 15px; font-size:0.85rem; color:#64748b;">' + (item.desc || '-') + '</td>\\n                                    <td style="padding:12px 15px; font-size:0.95rem; font-weight:700; color:' + textColor + '; text-align:right;">' + nominalText + '</td>\\n                                </tr>\\n                            ';
                         });
 
-                        html += 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        ;
+                        html += '\\n                                            </tbody>\\n                                        </table>\\n                                    </div>\\n                                </div>\\n                            </div>\\n                        ';
                     });
 
-                    html += </div>;
+                    html += '\\n                        </div>';
                     list.innerHTML = html;
 
                     // Dynamic Style for this accordion
                     if (!document.getElementById('detail-accordion-style')) {
                         const style = document.createElement('style');
                         style.id = 'detail-accordion-style';
-                        style.innerHTML = 
-                            #detail-accordion-container .accordion-item .accordion-content { display: none !important; }
-                            #detail-accordion-container .accordion-item.active .accordion-content { display: block !important; }
-                            #detail-accordion-container .accordion-item .acc-arrow { transform: rotate(0deg); }
-                            #detail-accordion-container .accordion-item.active .acc-arrow { transform: rotate(-180deg); }
-                        ;
+                        style.innerHTML = '\\n                            #detail-accordion-container .accordion-item .accordion-content { display: none !important; }\\n                            #detail-accordion-container .accordion-item.active .accordion-content { display: block !important; }\\n                            #detail-accordion-container .accordion-item .acc-arrow { transform: rotate(0deg); }\\n                            #detail-accordion-container .accordion-item.active .acc-arrow { transform: rotate(-180deg); }\\n                        ';
                         document.head.appendChild(style);
                     }
 
@@ -197,10 +144,10 @@ if start_idx != -1 and end_idx != -1:
                     }
                 }
             };
-'''
-    new_content = content[:start_idx] + new_logic + content[end_idx:]
-    with open(r'g:\My Drive\Apiksi\Projek 2\index.html', 'w', encoding='utf-8') as f:
-        f.write(new_content)
-    print("Fixed syntax error in index.html")
-else:
-    print("Could not find the function block!")
+;
+    const newContent = content.substring(0, startIdx) + newLogic + content.substring(endIdx);
+    fs.writeFileSync('g:/My Drive/Apiksi/Projek 2/index.html', newContent, 'utf8');
+    console.log("Fixed syntax error in index.html");
+} else {
+    console.log("Could not find the function block!");
+}

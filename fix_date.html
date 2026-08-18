@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Data Asli</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .box { border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        button { padding: 10px 20px; background: #0ea5e9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        #log { background: #f1f5f9; padding: 15px; border-radius: 5px; max-height: 500px; overflow-y: auto; font-family: monospace; white-space: pre-wrap; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h2>Alat Diagnostik Data</h2>
+    <div class="box">
+        <button id="btn-cek">Cek Data MJL-0826-111</button>
+    </div>
+    <div id="log"></div>
+    <script>
+        function log(msg) {
+            const l = document.getElementById('log');
+            l.innerHTML += msg + '<br>';
+        }
+        document.getElementById('btn-cek').addEventListener('click', function() {
+            log('Mencari data MJL-0826-111...');
+            let data = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+            let found = false;
+            data.forEach(trx => {
+                if (trx.id === 'MJL-0826-111' || trx.id === 'MJL-0826-110') {
+                    log('=================');
+                    log('ID: ' + trx.id);
+                    log('DATE RAW: "' + trx.date + '"');
+                    log('TYPE: ' + typeof trx.date);
+                    log('FULL JSON: ' + JSON.stringify(trx));
+                    found = true;
+                }
+            });
+            if (!found) log('Data tidak ditemukan di db_pemasukan!');
+        });
+    </script>
+</body>
+</html>

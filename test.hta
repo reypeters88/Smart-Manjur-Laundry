@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<script>
+window.onerror = function(m, u, l, c, e) {
+    try {
+        var fso = new ActiveXObject('Scripting.FileSystemObject');
+        var ts = fso.CreateTextFile('error.txt', true);
+        ts.WriteLine(m + ' at line ' + l);
+        ts.Close();
+    } catch(err) {}
+    window.close();
+};
+</script>
+<script src="test.js"></script>
+<script>
+    try {
+        var fso = new ActiveXObject('Scripting.FileSystemObject');
+        var ts = fso.CreateTextFile('error.txt', true);
+        ts.WriteLine('NO ERROR');
+        ts.Close();
+    } catch(err) {}
+    window.close();
+</script>
+</head>
+<body></body>
+</html>

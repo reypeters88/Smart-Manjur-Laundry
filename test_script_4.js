@@ -1,4 +1,7 @@
- = function(dateStr, notaId) {
+
+
+
+        window.parseDateString = function(dateStr, notaId) {
             if (!dateStr) return null;
             let d;
             if (typeof dateStr === 'string' && dateStr.includes('T') && dateStr.endsWith('Z')) {

@@ -1,0 +1,42 @@
+<script>
+    let dateStr = '08 Des 2026';
+    let notaId = 'MJL-0826-111';
+
+    function parseDateString(dateStr, notaId) {
+        if (!dateStr) return new Date();
+        
+        let d = new Date(dateStr);
+        let valid = !isNaN(d);
+        
+        if (notaId) {
+            if (notaId.startsWith('MJL-')) {
+                let match = notaId.match(/MJL-(\d{2})(\d{2})-/);
+                if (match && valid) {
+                    let trueMonthIdx = parseInt(match[1], 10) - 1;
+                    let trueMonthNum = parseInt(match[1], 10);
+                    let trueYear = 2000 + parseInt(match[2], 10);
+                    
+                    let pd = d.getDate();
+                    let pm = d.getMonth() + 1;
+                    let py = d.getFullYear();
+                    
+                    if (py === trueYear) {
+                        if (pm === trueMonthNum) return d;
+                        if (pd === trueMonthNum) {
+                            return new Date(trueYear, trueMonthIdx, pm, d.getHours(), d.getMinutes());
+                        }
+                    }
+                }
+            }
+        }
+        if (valid) return d;
+        return 'INVALID_DATE';
+    }
+
+    let result = parseDateString(dateStr, notaId);
+    let output = result === 'INVALID_DATE' ? 'INVALID_DATE' : result.toString();
+    
+    // Also test what happens if valid == false
+    console.log(output);
+    document.write(output);
+</script>
