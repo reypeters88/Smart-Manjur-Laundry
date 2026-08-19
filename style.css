@@ -1927,8 +1927,8 @@ body {
 }
 
 .nota-action-btns {
-    position: absolute;
-    bottom: 25px; left: 20px; right: 20px;
+    position: relative;
+    margin-top: 30px; margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     gap: 12px;

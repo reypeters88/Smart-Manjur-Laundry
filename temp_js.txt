@@ -1,0 +1,152 @@
+            // --- LOGIKA DETAIL TRANSAKSI ---
+            let currentDetailTrxObj = null;
+
+            const btnBackDetailTrx = document.getElementById('btn-back-detail-trx');
+            if (btnBackDetailTrx) {
+                btnBackDetailTrx.addEventListener('click', () => {
+                    document.getElementById('layout-detail-trx').style.display = 'none';
+                    document.getElementById('layout-riwayat-pelanggan').style.display = 'block';
+                });
+            }
+
+            const btnTrxReceipt = document.getElementById('btn-trx-receipt');
+            if (btnTrxReceipt) {
+                btnTrxReceipt.addEventListener('click', () => {
+                    if (currentDetailTrxObj && typeof renderNota === 'function') {
+                        renderNota(currentDetailTrxObj);
+                        const layoutNota = document.getElementById('layout-nota');
+                        if (layoutNota) {
+                            layoutNota.style.display = 'block';
+                            setTimeout(() => layoutNota.classList.add('active'), 10);
+                        }
+                    }
+                });
+            }
+
+            const btnTrxPrint = document.getElementById('btn-trx-print');
+            if (btnTrxPrint) {
+                btnTrxPrint.addEventListener('click', () => {
+                    if (currentDetailTrxObj) {
+                        if (typeof renderNota === 'function') {
+                            renderNota(currentDetailTrxObj);
+                        }
+                        if (typeof btPrinter !== 'undefined') {
+                            btPrinter.print(currentDetailTrxObj);
+                        } else if (typeof window.printReceiptBrowser === 'function') {
+                            window.printReceiptBrowser(currentDetailTrxObj);
+                        } else {
+                            window.print();
+                        }
+                    }
+                });
+            }
+            
+            const dtBtnBatal = document.getElementById('dt-btn-batal');
+            if (dtBtnBatal) {
+                dtBtnBatal.addEventListener('click', () => {
+                    document.getElementById('layout-detail-trx').style.display = 'none';
+                    document.getElementById('layout-riwayat-pelanggan').style.display = 'block';
+                });
+            }
+
+            window.openDetailTrx = function(trxId) {
+                const history = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+                const trx = history.find(o => o.id === trxId);
+                if (!trx) return;
+
+                currentDetailTrxObj = trx;
+
+                // Populate Header & Top Info
+                document.getElementById('dt-status-title').innerText = trx.status || 'Selesai';
+                document.getElementById('dt-trx-id').innerText = trx.id;
+                document.getElementById('dt-trx-date').innerText = trx.date || '';
+                
+                // Customer
+                let cName = trx.customerName || 'Anonim';
+                let cPhone = 'Tanpa nomor';
+                if (cName.includes('(')) {
+                    let parts = cName.split('(');
+                    cName = parts[0].trim();
+                    cPhone = parts[1].replace(')', '').trim();
+                }
+                document.getElementById('dt-cust-name').innerText = cName;
+                document.getElementById('dt-cust-phone').innerText = cPhone;
+
+                // Tagihan
+                let total = trx.grandTotal || trx.total || 0;
+                document.getElementById('dt-tagihan').innerText = parseInt(total).toLocaleString('id-ID');
+
+                // Bayar btn logic
+                const btnBayar = document.getElementById('dt-btn-bayar');
+                if (trx.paymentStatus === 'Belum Lunas' || (trx.dibayar && parseInt(trx.dibayar) < parseInt(total))) {
+                    btnBayar.innerText = 'BAYAR';
+                    btnBayar.style.background = '#f59e0b';
+                } else {
+                    btnBayar.innerText = 'LUNAS';
+                    btnBayar.style.background = '#10b981';
+                }
+
+                // Parfum & Est Selesai
+                document.getElementById('dt-parfum-name').innerHTML = 'Pilih Parfum <span style="color:#3b82f6; font-weight:600;">' + (trx.parfum || '-') + '</span>';
+                document.getElementById('dt-est-selesai').innerText = trx.estimasiSelesai || trx.date || '-';
+                document.getElementById('dt-catatan').innerText = trx.catatan || 'Tidak Ada';
+
+                // Render Items
+                const itemList = document.getElementById('dt-item-list');
+                itemList.innerHTML = '';
+                let items = trx.items;
+                if (typeof items === 'string') {
+                    try { items = JSON.parse(items); } catch(e){ items = []; }
+                }
+                if (items && items.length > 0) {
+                    items.forEach(item => {
+                        let basketColor = item.type === 'produk' || item.kategori === 'Produk' ? '#f59e0b' : '#f43f5e';
+                        let basketBg = item.type === 'produk' || item.kategori === 'Produk' ? '#fef3c7' : '#ffe4e6';
+                        itemList.innerHTML += '<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 10px;">' +
+                                '<div style="display: flex; gap: 15px; align-items: center;">' +
+                                    '<div style="width: 45px; height: 45px; border-radius: 8px; background: ' + basketBg + '; display: flex; align-items: center; justify-content: center;">' +
+                                        '<i class="fa-solid fa-basket-shopping" style="color: ' + basketColor + '; font-size: 1.2rem;"></i>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<div style="font-weight: 500; color: #1e293b; font-size: 0.95rem;">' + (item.name || item.nama) + '</div>' +
+                                        '<div style="color: #64748b; font-size: 0.8rem; margin-top: 2px;">' + item.qty + ' ' + (item.satuan || 'Pcs') + '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div style="color: #cbd5e1;"><i class="fa-solid fa-ellipsis"></i></div>' +
+                            '</div>';
+                    });
+                }
+
+                // Render History
+                const histList = document.getElementById('dt-history-list');
+                histList.innerHTML = '';
+                
+                let statuses = [
+                    { title: 'Pesanan Dibuat', desc: 'Oleh : Kasir', time: trx.date },
+                    { title: 'Pesanan Diproses', desc: 'Pesanan sedang diproses', time: trx.date }
+                ];
+                if (trx.status === 'Selesai' || trx.status === 'Diambil') {
+                    statuses.push({ title: 'Pesanan selesai diproses', desc: 'Menunggu Pengambilan', time: trx.date });
+                }
+                if (trx.status === 'Diambil') {
+                    statuses.push({ title: 'Pesanan Diterima Customer', desc: 'Order selesai', time: trx.date });
+                }
+
+                statuses.forEach(s => {
+                    histList.innerHTML += '<div style="display: flex; gap: 15px;">' +
+                            '<div style="color: #3b82f6; font-size: 1.2rem;"><i class="fa-solid fa-check"></i></div>' +
+                            '<div style="flex-grow: 1;">' +
+                                '<div style="font-weight: 500; color: #1e293b; margin-bottom: 2px;">' + s.title + '</div>' +
+                                '<div style="color: #64748b; font-size: 0.75rem;">' + s.desc + '</div>' +
+                            '</div>' +
+                            '<div style="color: #94a3b8; font-size: 0.75rem; text-align: right; width: 70px;">' +
+                                s.time.split(' ').join('<br>') +
+                            '</div>' +
+                        '</div>';
+                });
+
+                // Switch Layout
+                document.getElementById('layout-riwayat-pelanggan').style.display = 'none';
+                document.getElementById('layout-detail-trx').style.display = 'block';
+                window.scrollTo(0,0);
+            };

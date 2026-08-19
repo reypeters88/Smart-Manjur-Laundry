@@ -1,0 +1,97 @@
+        <!-- LAYOUT DETAIL TRANSAKSI -->
+        <div id="layout-detail-trx" class="layout" style="display: none; background: #f8fafc; min-height: 100vh; position: relative; padding-bottom: 80px;">
+            <header style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: #ffffff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
+                <button class="btn-icon" id="btn-back-detail-trx" style="color: #64748b; font-size: 1.2rem; cursor: pointer; border: none; background: transparent;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div style="flex-grow: 1; text-align: center;">
+                    <img src="logo_manjur.png" alt="Logo" class="dynamic-logo" style="height: 25px;">
+                </div>
+                <div style="display: flex; gap: 15px; color: #3b82f6; font-size: 1.2rem;">
+                    <i class="fa-solid fa-receipt" id="btn-trx-receipt" style="cursor: pointer;"></i>
+                    <i class="fa-solid fa-print" id="btn-trx-print" style="cursor: pointer;"></i>
+                </div>
+            </header>
+
+            <div style="padding: 20px;">
+                <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                    <div id="dt-status-title" style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 15px;">Selesai</div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div>
+                            <div id="dt-trx-id" style="font-weight: 600; color: #1e293b; margin-bottom: 5px;">TRX/2608/120</div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #3b82f6; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div>
+                                    <div id="dt-cust-name" style="font-weight: 500; color: #1e293b; font-size: 0.95rem;">Nama Pelanggan</div>
+                                    <div id="dt-cust-phone" style="color: #64748b; font-size: 0.8rem;">Tanpa nomor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div id="dt-trx-date" style="color: #64748b; font-size: 0.8rem; margin-bottom: 10px;">18/08/2026 09:04:14</div>
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; color: #cbd5e1; font-size: 1.1rem;">
+                                <i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i>
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #ffffff; border-radius: 12px; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 600; color: #1e293b;">Informasi Antar/Jemput</div>
+                    <i class="fa-solid fa-chevron-down" style="color: #64748b;"></i>
+                </div>
+
+                <div style="background: #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 15px; color: #ffffff; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 5px;">Tagihan</div>
+                        <div id="dt-tagihan" style="font-size: 1.4rem; font-weight: 700;">18,500</div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">DETAIL</button>
+                        <button id="dt-btn-bayar" style="background: #f59e0b; border: none; color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">BAYAR</button>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 0.8rem; color: #64748b;">Est. Selesai</div>
+                    <div id="dt-est-selesai" style="font-weight: 600; color: #1e293b;">19/08/2026 09:04:14</div>
+                </div>
+
+                <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 10px;">Detail Pesanan</div>
+                    <div id="dt-parfum-name" style="font-size: 0.8rem; color: #64748b; margin-bottom: 15px;">Pilih Parfum <span style="color: #3b82f6;">-</span></div>
+                    
+                    <div id="dt-item-list" style="display: flex; flex-direction: column; gap: 15px;">
+                        <!-- Items rendered here -->
+                    </div>
+                </div>
+
+                <div style="background: #ffffff; border-radius: 12px; padding: 15px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 600; color: #1e293b;">Produk Tambahan</div>
+                    <i class="fa-solid fa-chevron-down" style="color: #64748b;"></i>
+                </div>
+
+                <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 10px;">Informasi Tambahan</div>
+                    <div id="dt-catatan" style="font-size: 0.85rem; color: #64748b;">Tidak Ada</div>
+                </div>
+
+                <div style="background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div style="font-weight: 600; color: #1e293b;">Histori Pesanan</div>
+                        <i class="fa-solid fa-chevron-up" style="color: #64748b;"></i>
+                    </div>
+                    <div id="dt-history-list" style="display: flex; flex-direction: column; gap: 15px; font-size: 0.85rem;">
+                        <!-- History rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; background: #ffffff; padding: 15px 20px; border-top: 1px solid #e2e8f0; z-index: 10;">
+                <button id="dt-btn-batal" style="width: 100%; padding: 15px; border-radius: 12px; background: transparent; border: 1px solid #ef4444; color: #ef4444; font-weight: 600; font-size: 1rem; cursor: pointer;">BATAL</button>
+            </div>
+        </div>

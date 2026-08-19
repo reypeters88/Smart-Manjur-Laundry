@@ -51,7 +51,7 @@
                 if (typeof window.showToast === 'function') window.showToast('Data berhasil dimuat!');
                 // Re-render current reports if any are active
                 if(window.renderLaporanTransaksiAccordion) window.renderLaporanTransaksiAccordion();
-                if(window.renderLaporanOmzet) window.renderLaporanOmzet();
+                // Omzet relies on localStorage now
                 if(window.renderLaporanArusKeuangan) window.renderLaporanArusKeuangan();
                 if(window.renderLaporanPendapatan) {
                     window.renderLaporanPendapatan('hari-ini', 'transaksi');
@@ -848,15 +848,104 @@
             if(emptyState) emptyState.style.display = 'flex';
             if(dataState) dataState.style.display = 'none';
             return;
+        let filtered = db.filter(item => {
+            if (filterVal === 'per-tanggal') {
+                const start = filterSel ? filterSel.getAttribute('data-start') : null;
+                const end = filterSel ? filterSel.getAttribute('data-end') : null;
+                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+            }
+            return window.isDateInRange(parseDateString(item.date), filterVal);
+        });
+        if (filtered.length === 0) {
+            if(emptyState) emptyState.style.display = 'flex';
+            if(dataState) dataState.style.display = 'none';
+            return;
+        }
+
+        if(emptyState) emptyState.style.display = 'none';
+        if(dataState) dataState.style.display = 'flex';
+
+        filtered.forEach(item => total += (parseFloat(item.nominal) || 0));
+
+        const spanTotal = layout.querySelector('span[style*="1.8rem"]');
+        if (spanTotal) spanTotal.innerText = formatRupiah(total);
+        
+        const container = document.getElementById('pengeluaran-accordion-container');
+        if (container) {
+            let html = '';
+            filtered.forEach(item => {
+                html += `
+                    <div style="padding:15px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:600; color:#1e293b;">${item.category || 'Manual'}</div>
+                            <div style="font-size:0.8rem; color:#64748b;">${formatDateDisplay(parseDateString(item.date))} - ${item.keterangan || '-'}</div>
+                        </div>
+                        <div style="font-weight:700; color:#ef4444;">Rp ${formatRupiah(item.nominal)}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+    };
+
+    // --- 6. LABA RUGI ---
+    window.renderLaporanLabaRugi = function (filterVal = 'hari-ini') {
+        const layout = document.getElementById('layout-laba-rugi');
+        if (!layout) return;
+
+        const emptyState = document.getElementById('laba-rugi-empty-state');
+        const dataState = document.getElementById('laba-rugi-data-state');
+        const filterSel = document.getElementById('laba-rugi-date-filter');
+        
+        let dbPem = getDB('db_pemasukan');
+        let dbPeng = getDB('db_pengeluaran');
+
+        let totalPemasukan = 0;
+        let totalPengeluaran = 0;
+
+        let pemFilter = dbPem.filter(item => {
+            if (item.status === 'batal') return false;
+            if (filterVal === 'per-tanggal') {
+                const start = filterSel ? filterSel.getAttribute('data-start') : null;
+                const end = filterSel ? filterSel.getAttribute('data-end') : null;
+                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+            }
+            return window.isDateInRange(parseDateString(item.date), filterVal);
+        });
+        let pengFilter = dbPeng.filter(item => {
+            if (filterVal === 'per-tanggal') {
+                const start = filterSel ? filterSel.getAttribute('data-start') : null;
+                const end = filterSel ? filterSel.getAttribute('data-end') : null;
+                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+            }
+            return window.isDateInRange(parseDateString(item.date), filterVal);
+        });
+        pemFilter.forEach(x => totalPemasukan += (parseFloat(x.type ? x.nominal : x.dibayar) || 0));
+        pengFilter.forEach(x => totalPengeluaran += (parseFloat(x.nominal) || 0));
+
+        if (totalPemasukan === 0 && totalPengeluaran === 0) {
+            if(emptyState) emptyState.style.display = 'flex';
+            if(dataState) dataState.style.display = 'none';
+            return;
         }
 
         if(emptyState) emptyState.style.display = 'none';
         if(dataState) dataState.style.display = 'flex';
 
         const lPendapatan = document.getElementById('lr-total-pendapatan');
-        }
+        if (lPendapatan) lPendapatan.innerText = window.formatRupiah(totalPemasukan);
+        
+        const lPengeluaran = document.getElementById('lr-total-pengeluaran');
+        if (lPengeluaran) lPengeluaran.innerText = window.formatRupiah(totalPengeluaran);
 
-        hookFilterEvents('omzet', window.renderLaporanOmzet);
+        const spans = layout.querySelectorAll('span[style*="1.8rem"]');
+        if (spans.length > 0) {
+            const laba = totalPemasukan - totalPengeluaran;
+            spans[spans.length - 1].innerText = window.formatRupiah(Math.abs(laba));
+        }
+    };
+
+        // hookFilterEvents('omzet', window.renderLaporanOmzet); - handled in index.html
         hookFilterEvents('arus', window.renderLaporanArusKeuangan);
         hookFilterEvents('pendapatan', (val) => window.renderLaporanPendapatan(val, 'transaksi'));
         hookFilterEvents('lainnya', (val) => window.renderLaporanPendapatan(val, 'lainnya'));
@@ -875,115 +964,10 @@
         
         // Initial Fetch which triggers renders
         fetchApiData();
-    }, 1000);
-
 })();
-        // Find Laba Bersih ID, currently missing ID in index, but we can do a selector
-        // The Laba Bersih is the last massive span with 1.8rem
-        const spans = layout.querySelectorAll('span[style*="1.8rem"]');
-        if (spans.length > 0) {
-            const laba = totalPemasukan - totalPengeluaran;
-            spans[spans.length - 1].innerText = window.formatRupiah(Math.abs(laba));
-        }
-    };
+        // hook events already handled
 
-    window.omzetChartInstance = null;
-    window.renderLaporanOmzet = function(filterVal = 'hari-ini') {
-        const layout = document.getElementById('layout-omzet');
-        if (!layout) return;
-
-        const dbPem = window.globalApiData.pemasukan || [];
-        const emptyState = document.getElementById('omzet-empty-state');
-        const dataState = document.getElementById('omzet-data-state');
-        
-        let startStr = null, endStr = null;
-        const filterSel = document.getElementById('omzet-date-filter');
-        if (filterVal === 'per-tanggal' && filterSel) {
-            startStr = filterSel.getAttribute('data-start');
-            endStr = filterSel.getAttribute('data-end');
-        }
-
-        const filtered = dbPem.filter(item => {
-            if (item.type) return false;
-            return window.isDateInRange(window.parseDateString(item.date), filterVal, startStr, endStr);
-        });
-
-        if (filtered.length === 0) {
-            if(emptyState) emptyState.style.display = 'flex';
-            if(dataState) dataState.style.display = 'none';
-            return;
-        }
-
-        if(emptyState) emptyState.style.display = 'none';
-        if(dataState) dataState.style.display = 'flex';
-
-        let totalOmzet = 0;
-        filtered.forEach(x => totalOmzet += (parseFloat(x.dibayar) || 0));
-
-        const spans = layout.querySelectorAll('span[style*="1.8rem"]');
-        if (spans.length > 0) {
-            spans[0].innerText = window.formatRupiah(totalOmzet);
-        }
-
-        const chartData = { labels: [], data: [] };
-        const grouped = {};
-        filtered.forEach(item => {
-            const d = window.parseDateString(item.date);
-            const dStr = window.formatDateDisplay(d);
-            if (!grouped[dStr]) grouped[dStr] = { nominal: 0, count: 0 };
-            grouped[dStr].nominal += (parseFloat(item.dibayar) || 0);
-            grouped[dStr].count += 1;
-        });
-
-        const tbody = document.getElementById('omzet-tbody');
-        if (tbody) {
-            let html = '';
-            Object.keys(grouped).sort((a,b) => window.parseDateString(b) - window.parseDateString(a)).forEach(dStr => {
-                const g = grouped[dStr];
-                html += `
-                <tr>
-                    <td style="padding-bottom:15px; border-bottom:1px solid #f1f5f9; padding-top:10px;">${dStr}</td>
-                    <td style="padding-bottom:15px; border-bottom:1px solid #f1f5f9; padding-top:10px; text-align:center;">${g.count}</td>
-                    <td style="padding-bottom:15px; border-bottom:1px solid #f1f5f9; padding-top:10px; text-align:right;">${window.formatRupiah(g.nominal)}</td>
-                </tr>`;
-                chartData.labels.unshift(dStr);
-                chartData.data.unshift(g.nominal);
-            });
-            tbody.innerHTML = html;
-        }
-
-        const ctx = document.getElementById('omzetChart');
-        if (ctx) {
-            if (window.omzetChartInstance) {
-                window.omzetChartInstance.destroy();
-            }
-            if (window.Chart) {
-                window.omzetChartInstance = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            label: 'Omzet',
-                            data: chartData.data,
-                            borderColor: '#0ea5e9',
-                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { display: false } },
-                            y: { beginAtZero: true }
-                        }
-                    }
-                });
-            }
-        }
-    };
+    // Omzet handling moved to index.html
 
     window.renderLaporanArusKeuangan = function(filterVal = 'hari-ini') {
         const layout = document.getElementById('layout-arus-keuangan');
@@ -1087,7 +1071,7 @@
             });
         }
 
-        hookFilterEvents('omzet', window.renderLaporanOmzet);
+        // hookFilterEvents('omzet', window.renderLaporanOmzet); - handled in index.html
         hookFilterEvents('arus', window.renderLaporanArusKeuangan);
         hookFilterEvents('pendapatan', (val) => window.renderLaporanPendapatan(val, 'transaksi'));
         hookFilterEvents('lainnya', (val) => window.renderLaporanPendapatan(val, 'lainnya'));
