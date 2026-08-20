@@ -2512,13 +2512,14 @@
                 </div>
                 
                 <!-- Filter Section -->
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
                     <div style="display:flex; flex-direction:column; gap:3px;">
                         <div style="display:flex; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; position:relative;">
                             <i class="fa-regular fa-calendar-days" style="color:#3b82f6;"></i>
                             <select id="arus-date-filter"
                                 style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
-                                <option value="" disabled selected>Filter</option>
+                                <option value="" disabled selected>By Tanggal</option>
+                                <option value="semua">Semua Waktu</option>
                                 <option value="hari-ini">Hari Ini</option>
                                 <option value="kemarin">Kemarin</option>
                                 <option value="7-hari">7 Hari Terakhir</option>
@@ -2530,8 +2531,11 @@
                             <i class="fa-solid fa-caret-down"
                                 style="font-size:0.8rem; position:absolute; right:0; top:4px; pointer-events:none;"></i>
                         </div>
-                        <div id="arus-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Pilih Tanggal</div>
+                        <div id="arus-date-text" style="font-size:0.75rem; color:#94a3b8; margin-left:24px;">Hari Ini</div>
                     </div>
+                    <button id="btn-refresh-arus" style="border: 1px solid #94a3b8; background: transparent; color: #3b82f6; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        Refresh
+                    </button>
                 </div>
             </div>
 
@@ -2616,62 +2620,12 @@
                                 </tr>
                             </thead>
                             <tbody id="arus-tbody" style="color:#475569;">
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">Pendapatan Tunai</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">235,600</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">Pendapatan QRIS</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">32,000</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">pengeluaran tgl 17 07
-                                        2026<br><span style="color:#94a3b8;">1 tbg gas yg 3kg ( 23.000 )</span></td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">141,000</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">pengeluaran tgl 16 07
-                                        2026<br><span style="color:#94a3b8;">1 gln ( 10.000 )</span></td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">10,000</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">pengeluaran tgl 15 07
-                                        2026<br><span style="color:#94a3b8;">3 bks downy ( 99.000 )</span></td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">122,000</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">18-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">Pendapatan Tunai</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">91,800</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-bottom:15px; vertical-align:top;">23-07-2026</td>
-                                    <td style="padding-bottom:15px; vertical-align:top;">Pendapatan Tunai</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">213,400</td>
-                                    <td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Total -->
-                    <div
-                        style="display:flex; justify-content:flex-end; margin-top:15px; border-top:1px solid #f1f5f9; padding-top:15px;">
-                        <div style="color:#334155; font-size:0.9rem;">
-                            Total Kas : <span style="font-weight:700; color:#1e293b;">1,801,900</span>
-                        </div>
-                    </div>
+                    <!-- Total (Dipindah ke Bottom Bar) -->
+                    <div style="height: 60px;"></div> <!-- Spacer untuk bottom bar -->
                 </div>
 
                 <!-- CONTENT CASHBOX -->
@@ -2702,6 +2656,16 @@
                         <div style="color:#334155; font-weight:600;">Total Pemasukan</div>
                         <div style="color:#0ea5e9; font-weight:700; font-size:1.1rem;">Rp 1,861,400</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- FIXED BOTTOM BAR (NEW) -->
+            <div id="arus-fixed-bottom" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; padding: 15px 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 100; border-top: 1px solid #f1f5f9; box-sizing: border-box;">
+                <button id="btn-analisa-arus" style="background: #f59e0b; color: white; border: none; padding: 10px 24px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);">
+                    Analisa Arus Kas
+                </button>
+                <div style="position: absolute; right: 20px; color:#334155; font-size:0.9rem;">
+                    Total Kas : <span id="arus-total-kas-text" style="font-weight:700; color:#1e293b;">0</span>
                 </div>
             </div>
         </div>
@@ -3038,7 +3002,7 @@
             </div>
 
             <!-- Analisa Omzet Floating Button -->
-            <div style="position: absolute; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; pointer-events: none; z-index: 10;">
+            <div style="position: fixed; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; pointer-events: none; z-index: 999;">
                 <button style="background: #f59e0b; color: #ffffff; font-weight: 600; font-size: 0.95rem; padding: 12px 30px; border: none; border-radius: 30px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); pointer-events: auto; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                     Analisa Omzet
                 </button>
@@ -4358,11 +4322,22 @@
                 if (syncTimeout) clearTimeout(syncTimeout);
                 syncTimeout = setTimeout(async () => {
                     try {
+                        // Helper to split date and time for Google Sheets
+                        const splitDateWaktu = (key) => {
+                            let arr = JSON.parse(localStorage.getItem(key) || '[]');
+                            return arr.map(t => {
+                                if (t.date && t.date.length > 10) {
+                                    t.tanggal_saja = t.date.substring(0, 10);
+                                    t.waktu_saja = t.date.substring(11, 19);
+                                }
+                                return t;
+                            });
+                        };
                         const payload = {
                             action: 'sync',
                             data: {
-                                pemasukan: JSON.parse(localStorage.getItem('db_pemasukan') || '[]'),
-                                pengeluaran: JSON.parse(localStorage.getItem('db_pengeluaran') || '[]'),
+                                pemasukan: splitDateWaktu('db_pemasukan'),
+                                pengeluaran: splitDateWaktu('db_pengeluaran'),
                                 pelanggan: JSON.parse(localStorage.getItem('db_pelanggan') || '[]'),
                                 inventory: JSON.parse(localStorage.getItem('db_inventory') || '[]'),
                                 Layanan: JSON.parse(localStorage.getItem('db_layanan') || '[]'),
@@ -4474,6 +4449,8 @@
                             localStorage.setItem('db_users', JSON.stringify(result.data.user || []));
                             localStorage.setItem('db_bank', JSON.stringify(result.data.Bank || []));
 
+                            if (typeof window.cleanDatabaseDates === 'function') window.cleanDatabaseDates();
+
                             if (typeof window.renderManajemenPengguna === 'function') window.renderManajemenPengguna();
                             if (typeof window.renderLoginScreen === 'function') window.renderLoginScreen();
                             if (typeof window.renderKepegawaian === 'function') window.renderKepegawaian();
@@ -4498,11 +4475,22 @@
                     try {
                         showLoading('Mengirim data ke Google Sheets...');
                         // Kumpulkan semua data lokal
+                        // Helper to split date and time for Google Sheets
+                        const splitDateWaktu = (key) => {
+                            let arr = JSON.parse(localStorage.getItem(key) || '[]');
+                            return arr.map(t => {
+                                if (t.date && t.date.length > 10) {
+                                    t.tanggal_saja = t.date.substring(0, 10);
+                                    t.waktu_saja = t.date.substring(11, 19);
+                                }
+                                return t;
+                            });
+                        };
                         const payload = {
                             action: 'sync',
                             data: {
-                                pemasukan: JSON.parse(localStorage.getItem('db_pemasukan') || '[]'),
-                                pengeluaran: JSON.parse(localStorage.getItem('db_pengeluaran') || '[]'),
+                                pemasukan: splitDateWaktu('db_pemasukan'),
+                                pengeluaran: splitDateWaktu('db_pengeluaran'),
                                 pelanggan: JSON.parse(localStorage.getItem('db_pelanggan') || '[]'),
                                 inventory: JSON.parse(localStorage.getItem('db_inventory') || '[]'),
                                 Layanan: JSON.parse(localStorage.getItem('db_layanan') || '[]'),
@@ -4813,6 +4801,8 @@
                 currentRows.forEach(row => {
                     const statusMatch = (filterValue === 'semua' && row.getAttribute('data-status') !== 'selesai') || 
                                         (filterValue === 'terlambat' && row.getAttribute('data-terlambat') === 'true') || 
+                                        (filterValue === 'masuk' && row.getAttribute('data-masuk') === 'true') ||
+                                        (filterValue === 'harus-selesai' && row.getAttribute('data-harus-selesai') === 'true') ||
                                         row.getAttribute('data-status') === filterValue;
                     const textMatch = row.textContent.toLowerCase().includes(keyword);
 
@@ -6595,7 +6585,9 @@
                             'Proses Cuci': 'cuci-jemur',
                             'Proses Setrika': 'setrika',
                             'Selesai': 'selesai',
-                            'Pesanan Terlambat': 'terlambat'
+                            'Pesanan Terlambat': 'terlambat',
+                            'Pesanan Masuk Hari Ini': 'masuk',
+                            'Pesanan Harus Selesai': 'harus-selesai'
                         };
 
                         if (pesananMap[title]) {
@@ -6775,6 +6767,10 @@
                                     hideAllLayouts();
                                     lArus.style.display = 'flex';
                                     setTimeout(() => lArus.classList.add('active'), 10);
+                                    if (typeof window.renderLaporanArusKeuangan === 'function') {
+                                        const filterVal = document.getElementById('arus-date-filter') ? document.getElementById('arus-date-filter').value : 'hari-ini';
+                                        window.renderLaporanArusKeuangan(filterVal);
+                                    }
                                 }, 300);
                                 return;
                             }
@@ -6911,13 +6907,31 @@
             const btnExportArus = document.getElementById('btn-export-arus');
             if (btnExportArus) {
                 btnExportArus.addEventListener('click', () => {
-                    window.showToast('Mengekspor data Arus Keuangan...');
-                    const data = [
-                        { Tanggal: '23-07-2026', Kategori: 'Kasir', Uraian: 'Saldo Masuk Kasir (Shift Pagi)', Tipe: 'Masuk', Nominal: 500000 },
-                        { Tanggal: '23-07-2026', Kategori: 'Operasional', Uraian: 'Beli Lakban & Plastik', Tipe: 'Keluar', Nominal: -45000 },
-                        { Tanggal: '22-07-2026', Kategori: 'Kasir', Uraian: 'Setor Tunai ke Bank', Tipe: 'Keluar', Nominal: -1500000 }
-                    ];
-                    window.exportToExcel(data, 'Arus_Keuangan_Manjur');
+                    if (typeof window.showToast === 'function') window.showToast('Mengekspor data Arus Keuangan...');
+                    
+                    const data = [];
+                    if (window.currentArusData && window.currentArusData.length > 0) {
+                        window.currentArusData.forEach(item => {
+                            // Strip HTML tags from ket
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = item.ket;
+                            const cleanKet = tempDiv.textContent || tempDiv.innerText || "";
+                            
+                            data.push({
+                                Tanggal: window.formatDateDisplay(item.date),
+                                Keterangan: cleanKet,
+                                Debit: item.debit,
+                                Kredit: item.kredit
+                            });
+                        });
+                    }
+                    if (data.length === 0) {
+                        if (typeof window.showToast === 'function') window.showToast('Tidak ada data untuk diekspor.');
+                        return;
+                    }
+                    if (typeof window.exportToExcel === 'function') {
+                        window.exportToExcel(data, 'Arus_Keuangan_Manjur');
+                    }
                 });
             }
 
@@ -6926,41 +6940,22 @@
             const btnRefreshArus = document.getElementById('btn-refresh-arus');
             const arusEmptyState = document.getElementById('arus-empty-state');
             const arusDataState = document.getElementById('arus-data-state');
+            const btnAnalisaArus = document.getElementById('btn-analisa-arus');
 
-            if (arusDateFilter && arusDateText && btnRefreshArus && arusEmptyState && arusDataState) {
-                arusDateFilter.addEventListener('change', (e) => {
-                    const val = e.target.value;
-                    if (val === 'per-tanggal') {
-                        const datePickerModal = document.getElementById('custom-date-picker-modal');
-                        if (datePickerModal) datePickerModal.style.display = 'flex';
-                    } else if (val) {
-                        // Update text based on filter
-                        if (val === 'hari-ini') arusDateText.innerText = '24/07/2026';
-                        else if (val === 'kemarin') arusDateText.innerText = '23/07/2026';
-                        else if (val === '7-hari') arusDateText.innerText = '18/07/2026 - 24/07/2026';
-                        else if (val === '30-hari') arusDateText.innerText = '25/06/2026 - 24/07/2026';
-                        
-                        
-
-                        // Show elements
-                        arusDateText.style.display = 'block';
-                        btnRefreshArus.style.display = 'flex';
-
-                        // Hide empty state, show data state
-                        arusEmptyState.style.display = 'none';
-                        arusDataState.style.display = 'flex';
-
-                        // Trigger refresh animation
-                        btnRefreshArus.click();
-                    }
+            if (btnAnalisaArus) {
+                btnAnalisaArus.addEventListener('click', () => {
+                    if (typeof window.showToast === 'function') window.showToast('Fitur Analisa Arus Kas sedang dalam pengembangan.');
                 });
+            }
 
+            if (btnRefreshArus) {
                 btnRefreshArus.addEventListener('click', () => {
                     const icon = document.getElementById('arus-refresh-icon');
                     if (icon) icon.classList.add('fa-spin');
                     setTimeout(() => {
                         if (icon) icon.classList.remove('fa-spin');
-                        showToast('Memperbarui data arus keuangan...');
+                        if (typeof window.showToast === 'function') window.showToast('Memperbarui data arus keuangan...');
+                        if (typeof window.renderLaporanArusKeuangan === 'function') window.renderLaporanArusKeuangan(arusDateFilter ? arusDateFilter.value : 'hari-ini');
                     }, 800);
                 });
             }
@@ -6998,35 +6993,10 @@
             const arusCashboxText = document.getElementById('arus-cashbox-text');
             const arusTbody = document.getElementById('arus-tbody');
             if (arusCashboxFilter && arusCashboxText && arusTbody) {
-                const dummyDataSemua = arusTbody.innerHTML; // Simpan data awal "Semua"
-
+                
                 arusCashboxFilter.addEventListener('change', (e) => {
                     const val = e.target.value;
                     arusCashboxText.innerText = val;
-
-                    // Update dummy data pada tabel sesuai filter Cashbox
-                    if (val === 'Semua') {
-                        arusTbody.innerHTML = dummyDataSemua;
-                    } else if (val === 'Tunai') {
-                        arusTbody.innerHTML = `
-                    <tr><td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td><td style="padding-bottom:15px; vertical-align:top;">Pendapatan Tunai</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">235,600</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td></tr>
-                    <tr><td style="padding-bottom:15px; vertical-align:top;">18-07-2026</td><td style="padding-bottom:15px; vertical-align:top;">Pendapatan Tunai</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">91,800</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td></tr>
-                    <tr><td style="padding-bottom:15px; vertical-align:top;">23-07-2026</td><td style="padding-bottom:15px; vertical-align:top;">Pendapatan Tunai</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">213,400</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td></tr>
-                `;
-                    } else if (val === 'QRIS') {
-                        arusTbody.innerHTML = `
-                    <tr><td style="padding-bottom:15px; vertical-align:top;">17-07-2026</td><td style="padding-bottom:15px; vertical-align:top;">Pendapatan QRIS</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">32,000</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td></tr>
-                    <tr><td style="padding-bottom:15px; vertical-align:top;">18-07-2026</td><td style="padding-bottom:15px; vertical-align:top;">Pendapatan QRIS</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">45,800</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td></tr>
-                `;
-                    } else if (val === 'Mandiri') {
-                        arusTbody.innerHTML = `
-                    <tr><td style="padding-bottom:15px; vertical-align:top;">22-07-2026</td><td style="padding-bottom:15px; vertical-align:top;">Pendapatan MANDIRI</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">144,000</td><td style="padding-bottom:15px; text-align:right; vertical-align:top;">0</td></tr>
-                `;
-                    }
-
-                    // Simulate reload on filter change
-                    const btnRefreshArus = document.getElementById('btn-refresh-arus');
-                    if (btnRefreshArus) btnRefreshArus.click();
                 });
             }
 
@@ -7393,7 +7363,7 @@
                         activeMonthFilterSelect(window.currentMonthPickerYear, window.selectedMonthIndex);
                         return;
                     }
-                    const customVal = `CUSTOM_MONTH_-`;
+                    const customVal = `CUSTOM_MONTH_${window.currentMonthPickerYear}-${(window.selectedMonthIndex + 1).toString().padStart(2, '0')}`;
                     if (activeMonthFilterSelect) {
                         let opt = [...activeMonthFilterSelect.options].find(o => o.value === customVal);
                         if(!opt) {
@@ -7422,13 +7392,13 @@
             };
 
             let calCurrentDate = new Date();
-            let calStartDay = calCurrentDate.getDate();
-            let calStartMonth = calCurrentDate.getMonth();
-            let calStartYear = calCurrentDate.getFullYear();
-            let calEndDay = null;
-            let calEndMonth = null;
-            let calEndYear = null;
-            let calClickState = 0; // 0 = picking start, 1 = picking end
+            window.calStartDay = calCurrentDate.getDate();
+            window.calStartMonth = calCurrentDate.getMonth();
+            window.calStartYear = calCurrentDate.getFullYear();
+            window.calEndDay = null;
+            window.calEndMonth = null;
+            window.calEndYear = null;
+            window.calClickState = 0; // 0 = picking start, 1 = picking end
 
             const calMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
@@ -7692,10 +7662,11 @@
             if (btnExportOmzet) {
                 btnExportOmzet.addEventListener('click', () => {
                     window.showToast('Mengekspor data Omzet...');
-                    const data = [
-                        { Tanggal: '23-07-2026', Item: 'Cuci Komplit', Tipe: 'Kiloan', Total_Masuk: '20 Kg', Total_Omzet: 140000 },
-                        { Tanggal: '23-07-2026', Item: 'Cuci Kering', Tipe: 'Kiloan', Total_Masuk: '5 Kg', Total_Omzet: 30000 }
-                    ];
+                    let data = window.currentOmzetExportData || [];
+                    if (data.length === 0) {
+                        window.showToast('Tidak ada data untuk diekspor');
+                        return;
+                    }
                     window.exportToExcel(data, 'Laporan_Omzet_Manjur');
                 });
             }
@@ -7779,6 +7750,25 @@
                     if (emptyState) emptyState.style.display = 'none';
                     if (dataState) dataState.style.display = 'block';
                 }
+
+                window.currentOmzetExportData = filteredTrx.map(trx => {
+                    let itemsStr = '';
+                    if (trx.items && Array.isArray(trx.items)) {
+                        itemsStr = trx.items.map(i => `${i.name} (${i.qty})`).join(', ');
+                    }
+                    
+                    let dObj = new Date(trx.date);
+                    let formattedDate = `${dObj.getDate().toString().padStart(2, '0')}/${(dObj.getMonth() + 1).toString().padStart(2, '0')}/${dObj.getFullYear()} ${dObj.getHours().toString().padStart(2, '0')}:${dObj.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    return {
+                        'ID Pesanan': trx.id || '-',
+                        'Tanggal': formattedDate,
+                        'Pelanggan': trx.customerName || 'Umum',
+                        'Item': itemsStr || '-',
+                        'Total Harga (Rp)': parseFloat(trx.total || 0),
+                        'Status': trx.status || '-'
+                    };
+                });
 
                 let tableHtml = '';
                 
@@ -7924,13 +7914,13 @@
             }
 
             let omzetChartInstance = null;
-            window.initOmzetChart = function (filterVal = '7-hari') {
+            window.initOmzetChart = function (filterVal = 'bulan-ini') {
                 const ctx = document.getElementById('omzetChart');
                 if (!ctx) return;
                 
                 // Set default initial value if not set
                 if (omzetDateFilter && !omzetDateFilter.value) {
-                    omzetDateFilter.value = '7-hari';
+                    omzetDateFilter.value = 'bulan-ini';
                     const evt = new Event('change');
                     omzetDateFilter.dispatchEvent(evt);
                     return; // The event will recall initOmzetChart
@@ -8345,7 +8335,7 @@
 
                 const formatDate = (date) => {
                     let pad = (n) => n.toString().padStart(2, '0');
-                    return pad(date.getDate()) + '/' + pad(date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+                    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':00';
                 };
 
                 let dateStr = formatDate(currentDate);
@@ -8714,9 +8704,12 @@
                     row.setAttribute('data-status', currentStatus);
 
                     let isTerlambat = false;
+                    let isMasuk = false;
+                    let isHarusSelesai = false;
                     let today = new Date();
                     today.setHours(0, 0, 0, 0);
-                    if (currentStatus !== 'selesai' && currentStatus !== 'diambil' && order.date && typeof order.date === 'string') {
+
+                    if (order.date && typeof order.date === 'string') {
                         let parts = order.date.split(' ')[0].split(/[\/-]/);
                         if (parts.length === 3) {
                             let y = parts[0].length === 4 ? parseInt(parts[0]) : parseInt(parts[2]);
@@ -8724,12 +8717,23 @@
                             let m = parseInt(parts[1]);
                             let d = parts[0].length === 4 ? parseInt(parts[2]) : parseInt(parts[0]);
                             let orderDate = new Date(y, m - 1, d);
-                            let estDate = new Date(orderDate);
-                            estDate.setDate(estDate.getDate() + 1);
-                            if (estDate.getTime() < today.getTime()) isTerlambat = true;
+                            orderDate.setHours(0,0,0,0);
+                            
+                            if (orderDate.getTime() === today.getTime()) {
+                                isMasuk = true;
+                            }
+                            
+                            if (currentStatus !== 'selesai' && currentStatus !== 'diambil') {
+                                let estDate = new Date(orderDate);
+                                estDate.setDate(estDate.getDate() + 1);
+                                if (estDate.getTime() < today.getTime()) isTerlambat = true;
+                                if (estDate.getTime() === today.getTime()) isHarusSelesai = true;
+                            }
                         }
                     }
                     row.setAttribute('data-terlambat', isTerlambat ? 'true' : 'false');
+                    row.setAttribute('data-masuk', isMasuk ? 'true' : 'false');
+                    row.setAttribute('data-harus-selesai', isHarusSelesai ? 'true' : 'false');
 
                     // Format customer
                     let cName = order.customerName;
@@ -11341,10 +11345,81 @@
             });
         }
     </script>
-    <script src="laporan.js"></script>
+    <script src="script.js?v=2"></script>
+    <script src="app.js?v=2"></script>
+    <script src="laporan.js?v=2"></script>
+    <script>
+        // AUTO-FIX DATE SCRIPT (Run once to fix corrupted dates)
+        window.cleanDatabaseDates = function() {
+            let changed = false;
+            ['db_pemasukan', 'db_pengeluaran'].forEach(key => {
+                try {
+                    let data = JSON.parse(localStorage.getItem(key) || '[]');
+                    data.forEach(trx => {
+                        if (trx.date) {
+                            let d = window.parseDateString ? window.parseDateString(trx.date) : new Date(trx.date);
+                            if (d && !isNaN(d)) {
+                                let isCorrupted = false;
+                                
+                                // Deteksi untuk pemasukan bulan Agustus (MJL-0826-xxx)
+                                if (trx.id && trx.id.includes('-0826-') && d.getMonth() !== 7) {
+                                    // Make sure it's a swapped date from Google Sheets
+                                    if (d.getDate() === 8) {
+                                        isCorrupted = true;
+                                    }
+                                }
+                                
+                                // Deteksi untuk pengeluaran dengan timestamp di ID (EXP-1723... atau TRF-OUT-1723...)
+                                if (trx.id && (trx.id.startsWith('EXP-') || trx.id.startsWith('TRF-OUT-') || trx.id.startsWith('KOR-OUT-') || trx.id.startsWith('INC-'))) {
+                                    let idParts = trx.id.split('-');
+                                    let epoch = parseInt(idParts[idParts.length - 1]);
+                                    if (!isNaN(epoch) && epoch > 1700000000000) {
+                                        let trueDate = new Date(epoch);
+                                        if (d.getMonth() !== trueDate.getMonth()) {
+                                            isCorrupted = true;
+                                        }
+                                    }
+                                }
+
+                                let finalDate = d;
+                                if (isCorrupted) {
+                                    let corruptMonth = d.getMonth();
+                                    let corruptDay = d.getDate();
+                                    // Swap day and month
+                                    finalDate = new Date(d.getFullYear(), corruptDay - 1, corruptMonth + 1, d.getHours(), d.getMinutes(), d.getSeconds());
+                                }
+                                
+                                // Always rewrite to standard YYYY-MM-DD HH:mm:ss format
+                                let pad = (n) => n.toString().padStart(2, '0');
+                                let newDateStr = finalDate.getFullYear() + '-' + pad(finalDate.getMonth() + 1) + '-' + pad(finalDate.getDate()) + ' ' + pad(finalDate.getHours()) + ':' + pad(finalDate.getMinutes()) + ':00';
+                                
+                                if (trx.date !== newDateStr) {
+                                    trx.date = newDateStr;
+                                    changed = true;
+                                }
+                            }
+                        }
+                    });
+                    if (changed) {
+                        localStorage.setItem(key, JSON.stringify(data));
+                    }
+                } catch(e){}
+            });
+            return changed;
+        };
+        
+        // Eksekusi saat pertama kali dimuat
+        if (window.cleanDatabaseDates()) {
+            console.log("Found and fixed corrupted dates.");
+            if (typeof window.syncData === 'function') {
+                setTimeout(() => window.syncData(), 2000);
+            }
+        }
+    </script>
 </body>
 
 </html>
+
 
 
 

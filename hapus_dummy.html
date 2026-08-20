@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapus Data Dummy</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .box { border: 1px solid #ccc; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        button { padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        #log { background: #f1f5f9; padding: 15px; border-radius: 5px; max-height: 500px; overflow-y: auto; font-family: monospace; white-space: pre-wrap; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h2>Alat Hapus Transaksi Dummy</h2>
+    <div class="box">
+        <p>Klik tombol di bawah ini untuk menghapus transaksi dummy (seperti <b>MJL-0826-111</b> dan <b>MJL-0826-110</b>) dari sistem aplikasi Anda.</p>
+        <button id="btn-hapus">Hapus Transaksi Dummy</button>
+    </div>
+    <div id="log"></div>
+    <script>
+        function log(msg) {
+            const l = document.getElementById('log');
+            l.innerHTML += msg + '<br>';
+        }
+        document.getElementById('btn-hapus').addEventListener('click', function() {
+            log('Mencari data dummy di db_pemasukan...');
+            let data = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+            let initialLength = data.length;
+            
+            // Filter out dummy IDs
+            const dummyIDs = ['MJL-0826-111', 'MJL-0826-110'];
+            let newData = data.filter(trx => !dummyIDs.includes(trx.id));
+            
+            let deletedCount = initialLength - newData.length;
+            
+            if (deletedCount > 0) {
+                localStorage.setItem('db_pemasukan', JSON.stringify(newData));
+                log('Berhasil menghapus ' + deletedCount + ' transaksi dummy dari db_pemasukan.');
+                
+                // Jika ingin menghapus semua database untuk reset bersih (hapus komentar di bawah ini):
+                // localStorage.removeItem('db_pemasukan');
+                // localStorage.removeItem('db_pengeluaran');
+                // log('Semua data pemasukan dan pengeluaran telah direset total!');
+                
+                log('<br><b style="color:green;">Selesai! Silakan buka kembali aplikasi (index.html) dan periksa laporan Anda.</b>');
+            } else {
+                log('Tidak ditemukan transaksi dummy tersebut di db_pemasukan. (Mungkin sudah terhapus atau ID-nya berbeda).');
+                log('<br>Jika Anda ingin mereset/menghapus <b>SELURUH</b> transaksi, Anda bisa mengedit file ini (hapus_dummy.html) dan menjalankan baris reset total.');
+            }
+        });
+    </script>
+</body>
+</html>

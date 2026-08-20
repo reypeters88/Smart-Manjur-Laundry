@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html><body>
+<script>
+    let db = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+    let now = new Date();
+    db.push({
+        id: 'MJL-' + (now.getMonth() + 1).toString().padStart(2, '0') + now.getFullYear().toString().slice(2) + '-999',
+        date: now.toISOString(),
+        dibayar: 150000,
+        nama: 'TEST AGUSTUS'
+    });
+    localStorage.setItem('db_pemasukan', JSON.stringify(db));
+    document.write('Data injected!');
+</script>
+</body></html>

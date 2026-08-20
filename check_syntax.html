@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="err"></div>
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            document.getElementById('err').innerHTML += "Error: " + msg + " line " + line + "<br>";
+        };
+    </script>
+    <script src="laporan.js"></script>
+    <script>document.getElementById('err').innerHTML += "Success!";</script>
+</body>
+</html>

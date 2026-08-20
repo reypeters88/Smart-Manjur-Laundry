@@ -2,10 +2,36 @@
 // Handles data fetching and rendering for all Laporan layouts
 
 (function() {
-    window.globalApiData = {
+    window.formatRupiah = function(angka) {
+        if (angka === undefined || angka === null || isNaN(angka)) return '0';
+        return Number(angka).toLocaleString('id-ID');
+    };
+    const formatRupiah = window.formatRupiah;window.globalApiData = {
         pemasukan: [],
         pengeluaran: [],
         isLoaded: false
+    };
+
+    window.getDB = function(key) {
+        const activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+        const finalKey = activeOutlet === 'PUSAT' ? key : key + '_' + activeOutlet;
+        return JSON.parse(localStorage.getItem(finalKey) || '[]');
+    };
+
+    window.getMergedPemasukan = function() {
+        const localPem = window.getDB('db_pemasukan');
+        const dbPemMap = new Map();
+        (window.globalApiData.pemasukan || []).forEach(x => { if(x.id) dbPemMap.set(x.id, x); });
+        localPem.forEach(x => { if(x.id) dbPemMap.set(x.id, x); });
+        return Array.from(dbPemMap.values());
+    };
+
+    window.getMergedPengeluaran = function() {
+        const localPeng = window.getDB('db_pengeluaran');
+        const dbPengMap = new Map();
+        (window.globalApiData.pengeluaran || []).forEach(x => { if(x.id) dbPengMap.set(x.id, x); });
+        localPeng.forEach(x => { if(x.id) dbPengMap.set(x.id, x); });
+        return Array.from(dbPengMap.values());
     };
 
     const API_URL = 'https://script.google.com/macros/s/AKfycbyUtbsr0GX4NfEZxtHCzPvonj3qHIjLpZhHtuMmrEDjVieMoWVTJPu94997FP-HQGtw/exec';
@@ -42,21 +68,6 @@
                     });
                 };
                 fixDateData(result.data.pemasukan);
-                fixDateData(result.data.pengeluaran);
-                // -------------------------------------------------------------------
-
-                window.globalApiData.pemasukan = result.data.pemasukan || [];
-                window.globalApiData.pengeluaran = result.data.pengeluaran || [];
-                window.globalApiData.isLoaded = true;
-                if (typeof window.showToast === 'function') window.showToast('Data berhasil dimuat!');
-                // Re-render current reports if any are active
-                if(window.renderLaporanTransaksiAccordion) window.renderLaporanTransaksiAccordion();
-                // Omzet relies on localStorage now
-                if(window.renderLaporanArusKeuangan) window.renderLaporanArusKeuangan();
-                if(window.renderLaporanPendapatan) {
-                    window.renderLaporanPendapatan('hari-ini', 'transaksi');
-                    window.renderLaporanPendapatan('hari-ini', 'lainnya');
-                }
                 if(window.renderLaporanPengeluaran) window.renderLaporanPengeluaran();
                 if(window.renderLaporanLabaRugi) window.renderLaporanLabaRugi();
             }
@@ -69,8 +80,8 @@
 
     // Utilities
     window.isDateInRange = function(dateObj, filterVal, startStr = null, endStr = null) {
-        if (!dateObj || isNaN(dateObj)) return false;
         if (!filterVal || filterVal === 'semua') return true;
+        if (!dateObj || isNaN(dateObj)) return false;
 
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -112,33 +123,44 @@
     window.parseDateString = function(dateStr, notaId) {
         if (!dateStr) return null;
         let d;
-        if (typeof dateStr === 'string' && dateStr.includes('T') && dateStr.endsWith('Z')) {
-            d = new Date(dateStr);
-        } else {
-            const parts = dateStr.split(' ');
-            const dateParts = parts[0].split(/[/-]/);
-            if (dateParts.length >= 3) {
-                let day = parseInt(dateParts[0], 10);
-                let month = parseInt(dateParts[1], 10) - 1;
-                let year = parseInt(dateParts[2], 10);
-                if (year < 100) year += 2000;
-                else if (dateParts[0].length === 4) {
-                    year = parseInt(dateParts[0], 10);
-                    month = parseInt(dateParts[1], 10) - 1;
-                    day = parseInt(dateParts[2], 10);
-                }
-                let hours = 0, minutes = 0;
-                if (parts.length > 1) {
-                    const timeParts = parts[1].split(':');
-                    if (timeParts.length >= 2) {
-                        hours = parseInt(timeParts[0], 10);
-                        minutes = parseInt(timeParts[1], 10);
-                    }
-                }
-                d = new Date(year, month, day, hours, minutes, 0);
-            } else {
-                d = new Date(dateStr);
+        try {
+            if (typeof dateStr === 'number') {
+                return new Date(dateStr);
             }
+            if (dateStr instanceof Date) {
+                return dateStr;
+            }
+            dateStr = String(dateStr).trim();
+            if (dateStr.includes('T')) {
+                d = new Date(dateStr);
+            } else {
+                const parts = dateStr.split(' ');
+                const dateParts = parts[0].split(/[/-]/);
+                if (dateParts.length >= 3) {
+                    let day = parseInt(dateParts[0], 10);
+                    let month = parseInt(dateParts[1], 10) - 1;
+                    let year = parseInt(dateParts[2], 10);
+                    if (year < 100) year += 2000;
+                    else if (dateParts[0].length === 4) {
+                        year = parseInt(dateParts[0], 10);
+                        month = parseInt(dateParts[1], 10) - 1;
+                        day = parseInt(dateParts[2], 10);
+                    }
+                    let hours = 0, minutes = 0;
+                    if (parts.length > 1) {
+                        const timeParts = parts[1].split(':');
+                        if (timeParts.length >= 2) {
+                            hours = parseInt(timeParts[0], 10);
+                            minutes = parseInt(timeParts[1], 10);
+                        }
+                    }
+                    d = new Date(year, month, day, hours, minutes, 0);
+                } else {
+                    d = new Date(dateStr);
+                }
+            }
+        } catch (err) {
+            d = new Date(dateStr);
         }
         
         let valid = d && !isNaN(d);
@@ -175,6 +197,7 @@
         if (!dateObj || isNaN(dateObj)) return '-';
         return dateObj.toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'});
     }
+    window.formatDateDisplay = formatDateDisplay;
 
     function formatTimeDisplay(dateObj) {
         const pad = (n) => n.toString().padStart(2, '0');
@@ -256,7 +279,7 @@
 
         if (!container) return;
 
-        let dbPemasukan = getDB('db_pemasukan');
+        let dbPemasukan = window.getMergedPemasukan();
         const type = window.currentLaporanTransaksiType || 'Semua Transaksi';
         
         let filterVal = filterSel ? filterSel.value : '';
@@ -371,247 +394,6 @@
         return html;
     }
 
-    function formatTimeDisplay(dateObj) {
-        const pad = (n) => n.toString().padStart(2, '0');
-        return `${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}`;
-    }
-
-    function hookFilterEvents(prefix, renderFn) {
-        const filterSel = document.getElementById(prefix + '-date-filter');
-        const dateTxt = document.getElementById(prefix + '-date-text');
-        const cashboxSel = document.getElementById(prefix + '-cashbox-filter');
-
-        if (cashboxSel) {
-            const cloneCb = cashboxSel.cloneNode(true);
-            cashboxSel.parentNode.replaceChild(cloneCb, cashboxSel);
-            const newCashboxSel = document.getElementById(prefix + '-cashbox-filter');
-            const cbTxt = document.getElementById(prefix + '-cashbox-text');
-            if (newCashboxSel && cbTxt) {
-                newCashboxSel.addEventListener('change', (e) => {
-                    cbTxt.innerText = e.target.value;
-                    if (typeof renderFn === 'function') {
-                        renderFn(document.getElementById(prefix + '-date-filter').value);
-                    }
-                });
-            }
-        }
-
-        if (filterSel && dateTxt) {
-            const clone = filterSel.cloneNode(true);
-            filterSel.parentNode.replaceChild(clone, filterSel);
-            const newFilterSel = document.getElementById(prefix + '-date-filter');
-            newFilterSel.addEventListener('change', (e) => {
-                const val = e.target.value;
-                if (val === 'per-tanggal') {
-                    const datePickerModal = document.getElementById('custom-date-picker-modal');
-                    if (datePickerModal) {
-                        datePickerModal.style.display = 'flex';
-                        window.activeCustomDatePickerFilter = newFilterSel;
-                        window.activeCustomDatePickerText = dateTxt;
-                        window.activeCustomDatePickerRender = renderFn;
-                    }
-                } else if (val === 'per-bulan') {
-                    if (typeof window.openMonthPicker === 'function') {
-                        window.openMonthPicker(e.target);
-                    }
-                    return;
-                } else if (val) {
-                    if (val === 'hari-ini') dateTxt.innerText = formatDateDisplay(new Date());
-                    else if (val === 'kemarin') {
-                        let d = new Date(); d.setDate(d.getDate() - 1);
-                        dateTxt.innerText = formatDateDisplay(d);
-                    }
-                    else if (val === '7-hari') dateTxt.innerText = '7 Hari Terakhir';
-                    else if (val === '30-hari') dateTxt.innerText = '30 Hari Terakhir';
-                    else if (val === 'bulan-ini') {
-                        let d = new Date();
-                        dateTxt.innerText = `01/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()} - ${new Date(d.getFullYear(), d.getMonth()+1, 0).getDate()}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
-                    }
-                    else if (val.startsWith('CUSTOM_MONTH_')) {
-                        const parts = val.split('_')[2].split('-');
-                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-                        dateTxt.innerText = `${monthNames[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
-                    }
-
-                    if (typeof window.showToast === 'function') window.showToast('Memperbarui data laporan...');
-                    if (renderFn) renderFn(val);
-                }
-            });
-        }
-    }
-
-    // --- 1. LAPORAN TRANSAKSI ---
-    window.renderLaporanTransaksiAccordion = function () {
-        const container = document.getElementById('lap-transaksi-accordion-container');
-        const emptyState = document.getElementById('lap-transaksi-empty-state');
-        const dataState = document.getElementById('lap-transaksi-data-state');
-        const totalCount = document.getElementById('lap-transaksi-total-count');
-        const totalSub = document.getElementById('lap-transaksi-total-sub');
-        const filterSel = document.getElementById('lap-transaksi-date-filter');
-
-        if (!container) return;
-
-        let dbPemasukan = getDB('db_pemasukan');
-        const type = window.currentLaporanTransaksiType || 'Semua Transaksi';
-        
-        let filterVal = filterSel ? filterSel.value : '';
-        if (filterVal === 'per-bulan') filterVal = 'bulan-ini';
-
-        let filtered = dbPemasukan.filter(item => {
-            if (item.type) return false; // Exclude pendapatan manual
-            const dateObj = parseDateString(item.date);
-            if (!dateObj) return false;
-
-            if (filterVal && filterVal !== 'semua') {
-                if (filterVal === 'per-tanggal') {
-                    const start = filterSel ? filterSel.getAttribute('data-start') : null;
-                    const end = filterSel ? filterSel.getAttribute('data-end') : null;
-                    if (!window.isDateInRange(dateObj, filterVal, start, end)) return false;
-                } else {
-                    if (!window.isDateInRange(dateObj, filterVal)) return false;
-                }
-            }
-            if (type === 'Transaksi Belum Lunas') {
-                return (item.dibayar || 0) < (item.total || 0) && item.status !== 'batal';
-            } else if (type === 'Transaksi Batal') {
-                return item.status === 'batal' || item.status === 'Batal';
-            } else {
-                const secondaryFilterSel = document.getElementById('lap-transaksi-filter-select');
-                const secondaryFilterVal = secondaryFilterSel ? secondaryFilterSel.value : 'Semua';
-                const isBatal = item.status === 'batal' || item.status === 'Batal';
-                const isLunas = (item.dibayar || 0) >= (item.total || 0);
-                
-                if (secondaryFilterVal === 'Lunas') return !isBatal && isLunas;
-                if (secondaryFilterVal === 'Belum Lunas') return !isBatal && !isLunas;
-                if (secondaryFilterVal === 'Batal') return isBatal;
-                return !isBatal;
-            }
-        });
-
-        if (filtered.length === 0) {
-            if(dataState) dataState.style.display = 'flex';
-            if(emptyState) emptyState.style.display = 'flex';
-            if(container) container.style.display = 'none';
-            if(totalCount) totalCount.innerText = '0';
-            if(totalSub) totalSub.innerText = '(0 Total Qty)';
-            return;
-        }
-
-        if(emptyState) emptyState.style.display = 'none';
-        if(container) container.style.display = 'flex';
-        if(dataState) dataState.style.display = 'flex';
-
-        const grouped = {};
-        filtered.forEach(trx => {
-            const d = parseDateString(trx.date);
-            const dStr = formatDateDisplay(d);
-            if (!grouped[dStr]) grouped[dStr] = [];
-            grouped[dStr].push(trx);
-        });
-
-        let html = '';
-        let totalQty = 0;
-        let totalItems = 0;
-
-        Object.keys(grouped).sort((a, b) => parseDateString(b) - parseDateString(a)).forEach((dateStr, index) => {
-            let rowHtml = '';
-            grouped[dateStr].forEach(trx => {
-                totalItems++;
-                const isLunas = (trx.dibayar || 0) >= (trx.total || 0);
-                const statusStr = trx.status === 'batal' ? 'Batal' : (isLunas ? 'Lunas' : 'Belum Lunas');
-                const pillStyle = statusStr === 'Lunas' ? 'background:#dcfce7; color:#16a34a;' : (statusStr === 'Batal' ? 'background:#fee2e2; color:#ef4444;' : 'background:#fee2e2; color:#991b1b;');
-                const icon = trx.items && trx.items.length > 0 && trx.items[0].category === 'Satuan' ? 'https://cdn-icons-png.flaticon.com/512/3133/3133391.png' : 'https://cdn-icons-png.flaticon.com/512/8205/8205166.png';
-                
-                trx.items && trx.items.forEach(it => {
-                    totalQty += (parseFloat(it.qty) || 0);
-                });
-
-                rowHtml += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f1f5f9;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="width:45px; height:45px; border:1px solid #e2e8f0; border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fafc;">
-                                <img src="${icon}" style="width:30px; object-fit:contain;" alt="item">
-                            </div>
-                            <div style="display:flex; flex-direction:column; gap:3px;">
-                                <div style="font-size:0.95rem; color:#1e293b; font-weight:600;">${trx.id}</div>
-                                <div style="font-size:0.75rem; color:#64748b;">Pelanggan : ${trx.customerName || trx.customer || 'Guest'}</div>
-                                <div style="font-size:0.75rem; color:#64748b;">Status : <span style="color:#0ea5e9;">${trx.status || 'Baru'}</span></div>
-                            </div>
-                        </div>
-                        <div style="padding:4px 10px; border-radius:12px; font-size:0.65rem; font-weight:700; ${pillStyle}">
-                            ${statusStr}
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `
-                <div class="acc-item ${index === 0 ? 'active' : ''}" style="border-bottom:1px solid #f1f5f9; background:#fff; border-radius:0; border:none; margin:0;">
-                    <div class="acc-header" style="background:#f8fafc; padding:10px 20px; font-size:0.85rem; font-weight:600; color:#3b82f6; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-chevron-down acc-arrow" style="font-size:0.75rem; transition:transform 0.3s; transform:${index === 0 ? 'rotate(-180deg)' : 'rotate(0deg)'};"></i> ${dateStr}
-                        </div>
-                        <span style="color:#64748b; font-weight:500;">${grouped[dateStr].length} Transaksi</span>
-                    </div>
-                    <div class="acc-content" style="padding:0; max-height:none; overflow:visible; ${index === 0 ? 'display:block;' : 'display:none;'}">
-                        ${rowHtml}
-                    </div>
-                </div>
-            `;
-        });
-
-        if (container) container.innerHTML = html;
-        if (totalCount) totalCount.innerText = totalItems.toString();
-        if (totalSub) totalSub.innerText = '(' + totalQty + ' Total Qty)';
-
-        const accItems = container ? container.querySelectorAll('.acc-item') : [];
-        accItems.forEach(item => {
-            const header = item.querySelector('.acc-header');
-            if (header) {
-                header.addEventListener('click', () => {
-                    item.classList.toggle('active');
-                    const content = item.querySelector('.acc-content');
-                    const arrow = item.querySelector('.acc-arrow');
-                    const isActive = item.classList.contains('active');
-                    if (content) content.style.display = isActive ? 'block' : 'none';
-                    if (arrow) arrow.style.transform = isActive ? 'rotate(-180deg)' : 'rotate(0deg)';
-                });
-            }
-        });
-
-        // --- EXPAND ALL / COLLAPSE ALL LOGIC ---
-        const btnExpandAll = document.getElementById('btn-lap-transaksi-expand-all');
-        const btnCollapseAll = document.getElementById('btn-lap-transaksi-collapse-all');
-        
-        if (btnExpandAll) {
-            const newBtnE = btnExpandAll.cloneNode(true);
-            btnExpandAll.parentNode.replaceChild(newBtnE, btnExpandAll);
-            newBtnE.addEventListener('click', () => {
-                accItems.forEach(item => {
-                    item.classList.add('active');
-                    const content = item.querySelector('.acc-content');
-                    if (content) content.style.display = 'block';
-                    const arrow = item.querySelector('.acc-arrow');
-                    if (arrow) arrow.style.transform = 'rotate(-180deg)';
-                });
-            });
-        }
-        if (btnCollapseAll) {
-            const newBtnC = btnCollapseAll.cloneNode(true);
-            btnCollapseAll.parentNode.replaceChild(newBtnC, btnCollapseAll);
-            newBtnC.addEventListener('click', () => {
-                accItems.forEach(item => {
-                    item.classList.remove('active');
-                    const content = item.querySelector('.acc-content');
-                    if (content) content.style.display = 'none';
-                    const arrow = item.querySelector('.acc-arrow');
-                    if (arrow) arrow.style.transform = 'rotate(0deg)';
-                });
-            });
-        }
-    };
-
-    // --- 3. LAPORAN PENDAPATAN (OMZET) ---
     window.renderLaporanPendapatan = function (filterVal = 'hari-ini', type = 'transaksi') {
         const layout = document.getElementById(type === 'transaksi' ? 'layout-pendapatan-transaksi' : 'layout-pendapatan-lainnya');
         if (!layout) return;
@@ -620,7 +402,7 @@
         const dataState = document.getElementById(type === 'transaksi' ? 'pendapatan-data-state' : 'lainnya-data-state');
         const filterSel = document.getElementById(type === 'transaksi' ? 'pendapatan-date-filter' : 'lainnya-date-filter');
         
-        let dbPemasukan = getDB('db_pemasukan');
+        let dbPemasukan = window.getMergedPemasukan();
         let globalTotal = 0;
         let isTransaksi = (type === 'transaksi');
 
@@ -767,7 +549,7 @@
         const dataState = document.getElementById('pengeluaran-data-state');
         const filterSel = document.getElementById('pengeluaran-date-filter');
         
-        let db = getDB('db_pengeluaran');
+        let db = window.getMergedPengeluaran();
         let total = 0;
         let filtered = db.filter(item => {
             if (filterVal === 'per-tanggal') {
@@ -818,87 +600,8 @@
         const dataState = document.getElementById('laba-rugi-data-state');
         const filterSel = document.getElementById('laba-rugi-date-filter');
         
-        let dbPem = getDB('db_pemasukan');
-        let dbPeng = getDB('db_pengeluaran');
-
-        let totalPemasukan = 0;
-        let totalPengeluaran = 0;
-
-        let pemFilter = dbPem.filter(item => {
-            if (item.status === 'batal') return false;
-            if (filterVal === 'per-tanggal') {
-                const start = filterSel ? filterSel.getAttribute('data-start') : null;
-                const end = filterSel ? filterSel.getAttribute('data-end') : null;
-                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
-            }
-            return window.isDateInRange(parseDateString(item.date), filterVal);
-        });
-        let pengFilter = dbPeng.filter(item => {
-            if (filterVal === 'per-tanggal') {
-                const start = filterSel ? filterSel.getAttribute('data-start') : null;
-                const end = filterSel ? filterSel.getAttribute('data-end') : null;
-                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
-            }
-            return window.isDateInRange(parseDateString(item.date), filterVal);
-        });
-        pemFilter.forEach(x => totalPemasukan += (parseFloat(x.type ? x.nominal : x.dibayar) || 0));
-        pengFilter.forEach(x => totalPengeluaran += (parseFloat(x.nominal) || 0));
-
-        if (totalPemasukan === 0 && totalPengeluaran === 0) {
-            if(emptyState) emptyState.style.display = 'flex';
-            if(dataState) dataState.style.display = 'none';
-            return;
-        let filtered = db.filter(item => {
-            if (filterVal === 'per-tanggal') {
-                const start = filterSel ? filterSel.getAttribute('data-start') : null;
-                const end = filterSel ? filterSel.getAttribute('data-end') : null;
-                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
-            }
-            return window.isDateInRange(parseDateString(item.date), filterVal);
-        });
-        if (filtered.length === 0) {
-            if(emptyState) emptyState.style.display = 'flex';
-            if(dataState) dataState.style.display = 'none';
-            return;
-        }
-
-        if(emptyState) emptyState.style.display = 'none';
-        if(dataState) dataState.style.display = 'flex';
-
-        filtered.forEach(item => total += (parseFloat(item.nominal) || 0));
-
-        const spanTotal = layout.querySelector('span[style*="1.8rem"]');
-        if (spanTotal) spanTotal.innerText = formatRupiah(total);
-        
-        const container = document.getElementById('pengeluaran-accordion-container');
-        if (container) {
-            let html = '';
-            filtered.forEach(item => {
-                html += `
-                    <div style="padding:15px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:600; color:#1e293b;">${item.category || 'Manual'}</div>
-                            <div style="font-size:0.8rem; color:#64748b;">${formatDateDisplay(parseDateString(item.date))} - ${item.keterangan || '-'}</div>
-                        </div>
-                        <div style="font-weight:700; color:#ef4444;">Rp ${formatRupiah(item.nominal)}</div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-    };
-
-    // --- 6. LABA RUGI ---
-    window.renderLaporanLabaRugi = function (filterVal = 'hari-ini') {
-        const layout = document.getElementById('layout-laba-rugi');
-        if (!layout) return;
-
-        const emptyState = document.getElementById('laba-rugi-empty-state');
-        const dataState = document.getElementById('laba-rugi-data-state');
-        const filterSel = document.getElementById('laba-rugi-date-filter');
-        
-        let dbPem = getDB('db_pemasukan');
-        let dbPeng = getDB('db_pengeluaran');
+        let dbPem = window.getMergedPemasukan();
+        let dbPeng = window.getMergedPengeluaran();
 
         let totalPemasukan = 0;
         let totalPengeluaran = 0;
@@ -933,11 +636,12 @@
         if(dataState) dataState.style.display = 'flex';
 
         const lPendapatan = document.getElementById('lr-total-pendapatan');
-        if (lPendapatan) lPendapatan.innerText = window.formatRupiah(totalPemasukan);
-        
         const lPengeluaran = document.getElementById('lr-total-pengeluaran');
+        if (lPendapatan) lPendapatan.innerText = window.formatRupiah(totalPemasukan);
         if (lPengeluaran) lPengeluaran.innerText = window.formatRupiah(totalPengeluaran);
 
+        // Find Laba Bersih ID, currently missing ID in index, but we can do a selector
+        // The Laba Bersih is the last massive span with 1.8rem
         const spans = layout.querySelectorAll('span[style*="1.8rem"]');
         if (spans.length > 0) {
             const laba = totalPemasukan - totalPengeluaran;
@@ -945,36 +649,110 @@
         }
     };
 
-        // hookFilterEvents('omzet', window.renderLaporanOmzet); - handled in index.html
-        hookFilterEvents('arus', window.renderLaporanArusKeuangan);
-        hookFilterEvents('pendapatan', (val) => window.renderLaporanPendapatan(val, 'transaksi'));
-        hookFilterEvents('lainnya', (val) => window.renderLaporanPendapatan(val, 'lainnya'));
-        hookFilterEvents('pengeluaran', window.renderLaporanPengeluaran);
-        hookFilterEvents('laba-rugi', window.renderLaporanLabaRugi);
-        hookFilterEvents('lap-transaksi', (val) => { window.renderLaporanTransaksiAccordion(val); });
-        
-        const lapSecondaryFilter = document.getElementById('lap-transaksi-filter-select');
-        if (lapSecondaryFilter) {
-            lapSecondaryFilter.addEventListener('change', (e) => {
-                const textEl = document.getElementById('lap-transaksi-filter-text');
-                if (textEl) textEl.innerText = e.target.options[e.target.selectedIndex].text;
-                if (typeof window.renderLaporanTransaksiAccordion === 'function') window.renderLaporanTransaksiAccordion();
-            });
-        }
-        
-        // Initial Fetch which triggers renders
-        fetchApiData();
-})();
-        // hook events already handled
+    window.omzetChartInstance = null;
+    window.renderLaporanOmzet = function(filterVal = 'hari-ini') {
+        const layout = document.getElementById('layout-omzet');
+        if (!layout) return;
 
-    // Omzet handling moved to index.html
+        const dbPem = window.getMergedPemasukan();
+        const emptyState = document.getElementById('omzet-empty-state');
+        const dataState = document.getElementById('omzet-data-state');
+        
+        let startStr = null, endStr = null;
+        const filterSel = document.getElementById('omzet-date-filter');
+        if (filterVal === 'per-tanggal' && filterSel) {
+            startStr = filterSel.getAttribute('data-start');
+            endStr = filterSel.getAttribute('data-end');
+        }
+
+        const filtered = dbPem.filter(item => {
+            if (item.type) return false;
+            return window.isDateInRange(window.parseDateString(item.date), filterVal, startStr, endStr);
+        });
+
+        if (filtered.length === 0) {
+            if(emptyState) emptyState.style.display = 'flex';
+            if(dataState) dataState.style.display = 'none';
+            return;
+        }
+
+        if(emptyState) emptyState.style.display = 'none';
+        if(dataState) dataState.style.display = 'flex';
+
+        let totalOmzet = 0;
+        filtered.forEach(x => totalOmzet += (parseFloat(x.dibayar) || 0));
+
+        const spans = layout.querySelectorAll('span[style*="1.8rem"]');
+        if (spans.length > 0) {
+            spans[0].innerText = window.formatRupiah(totalOmzet);
+        }
+
+        const chartData = { labels: [], data: [] };
+        const grouped = {};
+        filtered.forEach(item => {
+            const d = window.parseDateString(item.date);
+            const dStr = window.formatDateDisplay(d);
+            if (!grouped[dStr]) grouped[dStr] = { nominal: 0, count: 0 };
+            grouped[dStr].nominal += (parseFloat(item.dibayar) || 0);
+            grouped[dStr].count += 1;
+        });
+
+        const tbody = document.getElementById('omzet-tbody');
+        if (tbody) {
+            let html = '';
+            Object.keys(grouped).sort((a,b) => window.parseDateString(b) - window.parseDateString(a)).forEach(dStr => {
+                const g = grouped[dStr];
+                html += `
+                <tr>
+                    <td style="padding-bottom:15px; border-bottom:1px solid #f1f5f9; padding-top:10px;">${dStr}</td>
+                    <td style="padding-bottom:15px; border-bottom:1px solid #f1f5f9; padding-top:10px; text-align:center;">${g.count}</td>
+                    <td style="padding-bottom:15px; border-bottom:1px solid #f1f5f9; padding-top:10px; text-align:right;">${window.formatRupiah(g.nominal)}</td>
+                </tr>`;
+                chartData.labels.unshift(dStr);
+                chartData.data.unshift(g.nominal);
+            });
+            tbody.innerHTML = html;
+        }
+
+        const ctx = document.getElementById('omzetChart');
+        if (ctx) {
+            if (window.omzetChartInstance) {
+                window.omzetChartInstance.destroy();
+            }
+            if (window.Chart) {
+                window.omzetChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Omzet',
+                            data: chartData.data,
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+    };
 
     window.renderLaporanArusKeuangan = function(filterVal = 'hari-ini') {
         const layout = document.getElementById('layout-arus-keuangan');
         if (!layout) return;
 
-        const dbPem = window.globalApiData.pemasukan || [];
-        const dbPeng = window.globalApiData.pengeluaran || [];
+        const dbPem = window.getMergedPemasukan();
+        const dbPeng = window.getMergedPengeluaran();
         const emptyState = document.getElementById('arus-empty-state');
         const dataState = document.getElementById('arus-data-state');
         
@@ -985,8 +763,25 @@
             endStr = filterSel.getAttribute('data-end');
         }
 
-        const filteredPem = dbPem.filter(item => window.isDateInRange(window.parseDateString(item.date), filterVal, startStr, endStr));
-        const filteredPeng = dbPeng.filter(item => window.isDateInRange(window.parseDateString(item.date), filterVal, startStr, endStr));
+        const cashboxSel = document.getElementById('arus-cashbox-filter');
+        const cashboxVal = cashboxSel ? cashboxSel.value : 'Semua';
+
+        const filteredPem = dbPem.filter(item => {
+            if (!window.isDateInRange(window.parseDateString(item.date), filterVal, startStr, endStr)) return false;
+            if (cashboxVal !== 'Semua') {
+                const cat = item.category || 'Tunai';
+                return cat.toUpperCase().includes(cashboxVal.toUpperCase());
+            }
+            return true;
+        });
+        const filteredPeng = dbPeng.filter(item => {
+            if (!window.isDateInRange(window.parseDateString(item.date), filterVal, startStr, endStr)) return false;
+            if (cashboxVal !== 'Semua') {
+                const cat = item.category || 'Tunai';
+                return cat.toUpperCase().includes(cashboxVal.toUpperCase());
+            }
+            return true;
+        });
 
         if (filteredPem.length === 0 && filteredPeng.length === 0) {
             if(emptyState) emptyState.style.display = 'flex';
@@ -1003,24 +798,28 @@
 
         filteredPem.forEach(x => {
             const nom = parseFloat(x.type ? x.nominal : x.dibayar) || 0;
-            totalMasuk += nom;
-            combined.push({
-                date: window.parseDateString(x.date),
-                ket: x.type ? (x.category || 'Pendapatan Lain') : 'Pendapatan Transaksi',
-                debit: nom,
-                kredit: 0
-            });
+            if (nom > 0) {
+                totalMasuk += nom;
+                combined.push({
+                    date: window.parseDateString(x.date),
+                    ket: x.type ? (x.category || 'Pendapatan Lain') : 'Pendapatan Transaksi',
+                    debit: nom,
+                    kredit: 0
+                });
+            }
         });
 
         filteredPeng.forEach(x => {
             const nom = parseFloat(x.nominal) || 0;
-            totalKeluar += nom;
-            combined.push({
-                date: window.parseDateString(x.date),
-                ket: (x.category || 'Pengeluaran') + (x.keterangan ? '<br><span style="color:#94a3b8;">'+x.keterangan+'</span>' : ''),
-                debit: 0,
-                kredit: nom
-            });
+            if (nom > 0) {
+                totalKeluar += nom;
+                combined.push({
+                    date: window.parseDateString(x.date),
+                    ket: (x.category || 'Pengeluaran') + (x.keterangan ? '<br><span style="color:#94a3b8;">'+x.keterangan+'</span>' : ''),
+                    debit: 0,
+                    kredit: nom
+                });
+            }
         });
 
         const masukSpan = layout.querySelector('div[style*="eab308"]')?.parentElement?.nextElementSibling?.querySelector('span');
@@ -1043,6 +842,13 @@
             });
             tbody.innerHTML = html;
         }
+        
+        const elTotalKas = document.getElementById('arus-total-kas-text');
+        if (elTotalKas) {
+            elTotalKas.innerText = (totalMasuk - totalKeluar).toLocaleString('id-ID');
+        }
+        
+        window.currentArusData = combined;
     };
 
     // --- BIND EVENT LISTENERS ---
@@ -1051,27 +857,34 @@
         const btnModalOkeGlobal = document.getElementById('btn-modal-oke');
         if (btnModalOkeGlobal) {
             btnModalOkeGlobal.addEventListener('click', () => {
-                if (window.activeCustomDatePickerFilter) {
-                    setTimeout(() => {
-                        const txt = window.activeCustomDatePickerText ? window.activeCustomDatePickerText.innerText : '';
-                        const filterSel = window.activeCustomDatePickerFilter;
-                        if (txt.includes('-')) {
-                            const parts = txt.split('-');
-                            filterSel.setAttribute('data-start', parts[0].trim());
-                            filterSel.setAttribute('data-end', parts[1].trim());
-                        } else {
-                            filterSel.setAttribute('data-start', txt.trim());
-                            filterSel.setAttribute('data-end', txt.trim());
+            if (window.activeCustomDatePickerFilter) {
+                setTimeout(() => {
+                    const filterSel = window.activeCustomDatePickerFilter;
+                    const txtEl = window.activeCustomDatePickerText;
+                    
+                    if (window.calStartDay !== undefined && window.calStartDay !== null) {
+                        const pad = (n) => String(n).padStart(2, '0');
+                        let startStr = `${pad(window.calStartDay)}/${pad(window.calStartMonth + 1)}/${window.calStartYear}`;
+                        let endStr = startStr;
+                        if (window.calEndDay !== undefined && window.calEndDay !== null) {
+                            endStr = `${pad(window.calEndDay)}/${pad(window.calEndMonth + 1)}/${window.calEndYear}`;
                         }
-                        if (typeof window.activeCustomDatePickerRender === 'function') {
-                            window.activeCustomDatePickerRender('per-tanggal');
-                        }
-                    }, 50);
-                }
-            });
+                        const finalTxt = startStr === endStr ? startStr : `${startStr} - ${endStr}`;
+                        if (txtEl) txtEl.innerText = finalTxt;
+                        
+                        filterSel.setAttribute('data-start', startStr);
+                        filterSel.setAttribute('data-end', endStr);
+                    }
+
+                    if (typeof window.activeCustomDatePickerRender === 'function') {
+                        window.activeCustomDatePickerRender('per-tanggal');
+                    }
+                }, 50);
+            }
+        });
         }
 
-        // hookFilterEvents('omzet', window.renderLaporanOmzet); - handled in index.html
+        hookFilterEvents('omzet', window.renderLaporanOmzet);
         hookFilterEvents('arus', window.renderLaporanArusKeuangan);
         hookFilterEvents('pendapatan', (val) => window.renderLaporanPendapatan(val, 'transaksi'));
         hookFilterEvents('lainnya', (val) => window.renderLaporanPendapatan(val, 'lainnya'));
@@ -1093,7 +906,6 @@
     }, 1000);
 
 })();
-
 
 
 
