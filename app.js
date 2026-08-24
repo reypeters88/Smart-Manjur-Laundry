@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(keuanganStats) keuanganStats.style.display = 'none';
                 }
 
-                // Toggle Header Actions (QR vs PDF)
-                const btnQr = document.getElementById('btn-qr');
+                // Toggle Header Actions (Excel vs PDF)
+                const btnQr = document.getElementById('btn-export-excel');
                 const btnExportPdf = document.getElementById('btn-export-pdf');
                 if (targetTab === 'keuangan') {
                     if (btnQr) btnQr.style.display = 'none';
@@ -292,42 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- DASHBOARD DETAIL MENU NAVIGATION ---
-    const clickableMenus = document.querySelectorAll('.clickable-menu');
-    const layoutDetail = document.getElementById('layout-detail');
-    const btnBackDetail = document.getElementById('btn-back-detail');
-    const detailTitle = document.getElementById('detail-title');
-    const detailSubtitle = document.getElementById('detail-subtitle');
-
-    if (layoutDetail && btnBackDetail) {
-        clickableMenus.forEach(menu => {
-            menu.addEventListener('click', () => {
-                const title = menu.getAttribute('data-title');
-                if (title) {
-                    detailTitle.innerText = title;
-                    detailSubtitle.innerText = title;
-                }
-                
-                // Animasi transisi masuk
-                layoutMain.classList.remove('active');
-                setTimeout(() => {
-                    layoutMain.style.display = 'none';
-                    layoutDetail.style.display = 'flex';
-                    setTimeout(() => layoutDetail.classList.add('active'), 10);
-                }, 300);
-            });
-        });
-
-        // Tombol Back
-        btnBackDetail.addEventListener('click', () => {
-            layoutDetail.classList.remove('active');
-            setTimeout(() => {
-                layoutDetail.style.display = 'none';
-                layoutMain.style.display = 'flex';
-                setTimeout(() => layoutMain.classList.add('active'), 10);
-            }, 300);
-        });
-    }
+    // DASHBOARD DETAIL MENU NAVIGATION removed (now handled in index.html)
 
     // --- PWA SERVICE WORKER REGISTRATION ---
     if ('serviceWorker' in navigator) {

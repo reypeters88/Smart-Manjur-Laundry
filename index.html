@@ -253,8 +253,8 @@
                         style="color:#3b82f6;">
                         <i class="fa-solid fa-rotate-right"></i>
                     </button>
-                    <button class="btn-icon" id="btn-qr">
-                        <i class="fa-solid fa-qrcode"></i>
+                    <button class="btn-icon" id="btn-export-excel" title="Export Excel" style="color:#10b981;">
+                        <i class="fa-solid fa-file-excel"></i>
                     </button>
                     <button class="btn-icon" id="btn-export-pdf" title="Export PDF" style="display: none;">
                         <i class="fa-solid fa-file-pdf"></i>
@@ -712,9 +712,10 @@
                                 style="border: none; background: transparent; font-size: 1.2rem;">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
                             </button>
-                            <button class="btn-icon" style="border: none; background: transparent; font-size: 1.2rem;">
-                                <i class="fa-solid fa-qrcode"></i>
-                            </button>
+                              <button class="btn-icon" onclick="document.getElementById('btn-export-excel').click()" title="Export Excel"
+                                  style="border: none; background: transparent; font-size: 1.2rem; color: #10b981;">
+                                  <i class="fa-solid fa-file-excel"></i>
+                              </button>
                         </div>
                     </header>
 
@@ -2775,6 +2776,11 @@
                     </div>
                 </div>
 
+                <div style="display:flex; gap:10px; margin-bottom:15px; margin-top:15px; padding: 0 20px; justify-content: flex-end;">
+                    <button id="btn-pendapatan-expand-all" style="background:#e0f2fe; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#0369a1; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-down"></i> Buka Semua</button>
+                    <button id="btn-pendapatan-collapse-all" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#475569; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-up"></i> Tutup Semua</button>
+                </div>
+
                 <!-- Accordion List Container -->
                 <div id="pendapatan-accordion-container" style="display:flex; flex-direction:column;">
                     <!-- Data will be injected here via JS -->
@@ -3103,6 +3109,11 @@
                                     </select>
                                 </div>
                             </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; margin-bottom:15px; margin-top:15px; padding: 0 20px; justify-content: flex-end;">
+                            <button id="btn-pengeluaran-expand-all" style="background:#e0f2fe; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#0369a1; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-down"></i> Buka Semua</button>
+                            <button id="btn-pengeluaran-collapse-all" style="background:#f1f5f9; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; color:#475569; cursor:pointer; font-weight:600; transition:all 0.2s;"><i class="fa-solid fa-angle-up"></i> Tutup Semua</button>
                         </div>
 
                         <!-- Accordion List Container -->
@@ -4694,8 +4705,8 @@
                             window.renderKepegawaian();
                         }
 
-                        // Toggle Header Actions (QR vs PDF)
-                        const btnQr = document.getElementById('btn-qr');
+                        // Toggle Header Actions (Excel vs PDF)
+                        const btnQr = document.getElementById('btn-export-excel');
                         const btnExportPdf = document.getElementById('btn-export-pdf');
                         if (targetTab === 'keuangan') {
                             if (btnQr) btnQr.style.display = 'none';
@@ -4798,6 +4809,16 @@
                 const keyword = keywordInput ? keywordInput.value.toLowerCase() : '';
                 const currentRows = document.querySelectorAll('.pesanan-row');
 
+                const tabsScroll = document.querySelector('.pesanan-tabs-scroll');
+                if (tabsScroll) {
+                    if (['masuk', 'harus-selesai', 'terlambat'].includes(filterValue)) {
+                        tabsScroll.style.display = 'none';
+                    } else {
+                        tabsScroll.style.display = 'flex';
+                    }
+                }
+
+                let visibleCount = 0;
                 currentRows.forEach(row => {
                     const statusMatch = (filterValue === 'semua' && row.getAttribute('data-status') !== 'selesai') || 
                                         (filterValue === 'terlambat' && row.getAttribute('data-terlambat') === 'true') || 
@@ -4808,10 +4829,30 @@
 
                     if (statusMatch && textMatch) {
                         row.style.display = 'flex';
+                        visibleCount++;
                     } else {
                         row.style.display = 'none';
                     }
                 });
+
+                const dashContainer = document.getElementById('dashboard-pesanan-list');
+                if (dashContainer) {
+                    let emptyMsg = document.getElementById('pesanan-empty-msg');
+                    if (visibleCount === 0) {
+                        if (!emptyMsg) {
+                            emptyMsg = document.createElement('p');
+                            emptyMsg.id = 'pesanan-empty-msg';
+                            emptyMsg.style = 'padding:20px; text-align:center; color:var(--text-muted);';
+                            dashContainer.appendChild(emptyMsg);
+                        }
+                        emptyMsg.innerText = 'Tidak ada pesanan untuk kategori ini.';
+                        emptyMsg.style.display = 'block';
+                    } else {
+                        if (emptyMsg) {
+                            emptyMsg.style.display = 'none';
+                        }
+                    }
+                }
             }
 
             // Chip Click Events
@@ -6591,18 +6632,26 @@
                         };
 
                         if (pesananMap[title]) {
-                            // Pindah ke tab pesanan
-                            const pesananBtn = document.querySelector('.b-nav-btn[data-bnav="pesanan"]');
-                            if (pesananBtn) pesananBtn.click();
+                            try {
+                                // Pindah ke tab pesanan
+                                const pesananBtn = document.querySelector('.b-nav-btn[data-bnav="pesanan"]');
+                                if (pesananBtn) pesananBtn.click();
+                            } catch (e) {
+                                console.error('Error clicking pesanan btn:', e);
+                            }
 
                             // Klik filter yang sesuai
                             setTimeout(() => {
-                                const filterBtn = document.querySelector(`.p-tab-btn[data-filter="${pesananMap[title]}"]`);
-                                if (filterBtn) {
-                                    filterBtn.click();
-                                } else {
-                                    document.querySelectorAll('.p-tab-btn').forEach(b => b.classList.remove('active'));
-                                    filterPesanan(pesananMap[title]);
+                                try {
+                                    const filterBtn = document.querySelector(`.p-tab-btn[data-filter="${pesananMap[title]}"]`);
+                                    if (filterBtn) {
+                                        filterBtn.click();
+                                    } else {
+                                        document.querySelectorAll('.p-tab-btn').forEach(b => b.classList.remove('active'));
+                                        filterPesanan(pesananMap[title]);
+                                    }
+                                } catch(e) {
+                                    console.error('Error in filter timeout:', e);
                                 }
                             }, 50);
                             return; // Selesai
@@ -6654,6 +6703,19 @@
                             if (lLapTransaksi) {
                                 if (lapTitle) lapTitle.innerText = title === 'Semua Transaksi' ? 'Transaksi Semua' : title;
                                 window.currentLaporanTransaksiType = title;
+
+                                const secondaryFilterSel = document.getElementById('lap-transaksi-filter-select');
+                                const textEl = document.getElementById('lap-transaksi-filter-text');
+                                if (secondaryFilterSel && textEl) {
+                                    if (title === 'Transaksi Belum Lunas') {
+                                        secondaryFilterSel.value = 'Belum Lunas';
+                                    } else if (title === 'Transaksi Batal') {
+                                        secondaryFilterSel.value = 'Batal';
+                                    } else {
+                                        secondaryFilterSel.value = 'Semua';
+                                    }
+                                    textEl.innerText = secondaryFilterSel.options[secondaryFilterSel.selectedIndex].text;
+                                }
 
                                 allLayouts.forEach(l => { if (l) l.classList.remove('active'); });
                                 setTimeout(() => {
@@ -8752,33 +8814,36 @@
                     row.style.padding = '0'; // padding dipindah ke inner row
 
                     row.innerHTML = `
-              <div style="display:grid; grid-template-columns: 140px 140px 130px 90px 120px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
-                <!-- Col 1: ID & Date -->
+              <div style="display:grid; grid-template-columns: 100px 100px 140px 130px 90px 120px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
+                <!-- Col 1: ID -->
                 <div class="p-col" style="overflow: hidden;">
-                    <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.id}">${order.id}</div>
-                    <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
+                    <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:700; color:#1e293b;" title="${order.id}">${order.id}</div>
                 </div>
                 
-                <!-- Col 2: Customer & Note -->
+                <!-- Col 2: Date -->
                 <div class="p-col" style="overflow: hidden;">
-                    <div class="p-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${cName}">${cName}</div>
-                    <div class="p-note">-</div>
+                    <div class="p-date" style="font-size:0.85rem; color:#64748b;">${order.date.split('T')[0].split(' ')[0]}</div>
                 </div>
                 
-                <!-- Col 3: Service & Qty -->
+                <!-- Col 3: Customer -->
+                <div class="p-col" style="overflow: hidden;">
+                    <div class="p-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:600; color:#3b82f6;" title="${cName}">${cName}</div>
+                </div>
+                
+                <!-- Col 4: Service & Qty -->
                 <div class="p-col">
-                    <div class="p-service">${mainService}</div>
+                    <div class="p-service" style="font-size:0.85rem; font-weight:600; color:#334155;">${mainService}</div>
                     <div class="p-qty-group">
-                        <span class="p-badge highlight">${mainQty}</span>
+                        <span class="p-badge highlight" style="font-size:0.75rem; background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; font-weight:700;">${mainQty}</span>
                     </div>
                 </div>
                 
-                <!-- Col 4: Price -->
+                <!-- Col 5: Price -->
                 <div class="p-col">
-                    <div class="p-price">${(order.total / 1000)}k</div>
+                    <div class="p-price" style="font-weight:700; color:#10b981;">${(order.total / 1000)}k</div>
                 </div>
                 
-                <!-- Col 5: Status -->
+                <!-- Col 6: Status -->
                 <div class="p-col">
                     <select class="status-bayar-dropdown" style="width: 100%; padding:6px 12px; border-radius:12px; border:1px solid #e2e8f0; font-size:0.75rem; font-weight:700; background-color:${isLunas ? '#dcfce7' : '#fee2e2'}; color:${isLunas ? '#166534' : '#991b1b'}; cursor:pointer; outline:none; text-align:center;">
                         <option value="belum" ${!isLunas ? 'selected' : ''}>BELUM BAYAR</option>
@@ -8786,14 +8851,14 @@
                     </select>
                 </div>
                 
-                <!-- Col 6: Payment Method -->
+                <!-- Col 7: Payment Method -->
                 <div class="p-col" style="font-size: 0.85rem; font-weight:600; color:#475569;">
-                    ${order.metodeBayar || '-'}
+                    ${((order.dibayar || 0) > 0) ? (order.metodeBayar || order.cashbox || 'Tunai') : '-'}
                 </div>
                 
-                <!-- Col 7: Status Dropdown -->
+                <!-- Col 8: Status Dropdown -->
                 <div class="p-col">
-                    <select class="status-dropdown" style="width: 100%;">
+                    <select class="status-dropdown" style="width: 100%; border-radius:8px; border:1px solid #cbd5e1; padding:6px 8px; font-size:0.8rem; background:#f8fafc; color:#1e293b; outline:none;">
                         <option value="validasi" ${order.status === 'validasi' ? 'selected' : ''}>Validasi</option>
                         <option value="antrian" ${order.status === 'antrian' ? 'selected' : ''}>Antrian</option>
                         <option value="cuci-jemur" ${order.status === 'cuci-jemur' ? 'selected' : ''}>cuci/Jemur</option>
@@ -8802,7 +8867,7 @@
                     </select>
                 </div>
                 
-                <!-- Col 8: Actions -->
+                <!-- Col 9: Actions -->
                 <div class="p-col p-actions" style="display:flex; flex-direction:row; justify-content:flex-end; gap:8px;">
                     <button class="btn-action-icon print print-dash" title="Nota" style="color: #3b82f6; border-color: #3b82f6;"><i class="fa-solid fa-receipt"></i></button>
                     <button class="btn-action-icon wa wa-dash" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
@@ -8940,12 +9005,41 @@
                     if (el) el.innerText = val;
                 };
 
+                let topupPaketCount = 0;
+                let topupDepositCount = 0;
+                let penjualanCount = 0;
+                
+                try {
+                    const dbPem = typeof window.getMergedPemasukan === 'function' ? window.getMergedPemasukan() : JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+                    dbPem.forEach(item => {
+                        if (item.date && typeof item.date === 'string') {
+                            let parts = item.date.split(' ')[0].split(/[\/-]/);
+                            if (parts.length >= 3) {
+                                let y = parts[0].length === 4 ? parseInt(parts[0]) : parseInt(parts[2]);
+                                if (y < 100) y += 2000;
+                                let m = parseInt(parts[1]);
+                                let d = parts[0].length === 4 ? parseInt(parts[2]) : parseInt(parts[0]);
+                                let itemDate = new Date(y, m - 1, d);
+                                itemDate.setHours(0,0,0,0);
+                                if (itemDate.getTime() === today.getTime()) {
+                                    let cat = (item.category || item.kategori || '').toLowerCase();
+                                    if (cat.includes('topup paket') || cat.includes('top up paket')) topupPaketCount++;
+                                    else if (cat.includes('topup deposit') || cat.includes('top up deposit')) topupDepositCount++;
+                                    else if (cat.includes('penjualan') || cat.includes('jual produk')) penjualanCount++;
+                                }
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error calculating dashboard counts:', e);
+                }
+
                 updateEl('count-masuk', masukCount);
                 updateEl('count-harus-selesai', harusSelesaiCount);
                 updateEl('count-terlambat', terlambatCount);
-                updateEl('count-topup-paket', 0); // Belum diimplementasi
-                updateEl('count-topup-deposit', 0); // Belum diimplementasi
-                updateEl('count-penjualan', 0); // Belum diimplementasi
+                updateEl('count-topup-paket', topupPaketCount);
+                updateEl('count-topup-deposit', topupDepositCount);
+                updateEl('count-penjualan', penjualanCount);
 
                 updateEl('badge-semua', semuaCount);
                 updateEl('badge-validasi', validasiCount);

@@ -68,8 +68,13 @@
                     });
                 };
                 fixDateData(result.data.pemasukan);
+                window.globalApiData = result.data;
+                window.globalApiData.isLoaded = true;
+                
+                if(window.renderLaporanPendapatan) window.renderLaporanPendapatan();
                 if(window.renderLaporanPengeluaran) window.renderLaporanPengeluaran();
                 if(window.renderLaporanLabaRugi) window.renderLaporanLabaRugi();
+                if(window.renderLaporanTransaksiAccordion) window.renderLaporanTransaksiAccordion();
             }
 
         } catch (err) {
@@ -108,7 +113,7 @@
             const year = parseInt(parts[0], 10);
             const month = parseInt(parts[1], 10) - 1;
             return dateObj.getFullYear() === year && dateObj.getMonth() === month;
-        } else if (filterVal === 'per-tanggal') {
+        } else if (filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') {
             if (!startStr) return true;
             const startD = window.parseDateString(startStr);
             if (startD) startD.setHours(0,0,0,0);
@@ -291,7 +296,7 @@
             if (!dateObj) return false;
 
             if (filterVal && filterVal !== 'semua') {
-                if (filterVal === 'per-tanggal') {
+                if (filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') {
                     const start = filterSel ? filterSel.getAttribute('data-start') : null;
                     const end = filterSel ? filterSel.getAttribute('data-end') : null;
                     if (!window.isDateInRange(dateObj, filterVal, start, end)) return false;
@@ -299,21 +304,17 @@
                     if (!window.isDateInRange(dateObj, filterVal)) return false;
                 }
             }
-            if (type === 'Transaksi Belum Lunas') {
-                return (item.dibayar || 0) < (item.total || 0) && item.status !== 'batal';
-            } else if (type === 'Transaksi Batal') {
-                return item.status === 'batal' || item.status === 'Batal';
-            } else {
-                const secondaryFilterSel = document.getElementById('lap-transaksi-filter-select');
-                const secondaryFilterVal = secondaryFilterSel ? secondaryFilterSel.value : 'Semua';
-                const isBatal = item.status === 'batal' || item.status === 'Batal';
-                const isLunas = (item.dibayar || 0) >= (item.total || 0);
-                
-                if (secondaryFilterVal === 'Lunas') return !isBatal && isLunas;
-                if (secondaryFilterVal === 'Belum Lunas') return !isBatal && !isLunas;
-                if (secondaryFilterVal === 'Batal') return isBatal;
-                return !isBatal;
-            }
+            const secondaryFilterSel = document.getElementById('lap-transaksi-filter-select');
+            const secondaryFilterVal = secondaryFilterSel ? secondaryFilterSel.value : 'Semua';
+            const isBatal = item.status === 'batal' || item.status === 'Batal';
+            const dibayar = parseFloat(item.dibayar) || 0;
+            const total = parseFloat(item.total) || 0;
+            const isLunas = dibayar >= total;
+            
+            if (secondaryFilterVal === 'Lunas') return !isBatal && isLunas;
+            if (secondaryFilterVal === 'Belum Lunas') return !isBatal && !isLunas;
+            if (secondaryFilterVal === 'Batal') return isBatal;
+            return !isBatal;
         });
 
         if (filtered.length === 0) {
@@ -358,7 +359,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f1f5f9;">
                         <div style="display:flex; align-items:center; gap:12px;">
                             <div style="width:45px; height:45px; border:1px solid #e2e8f0; border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fafc;">
-                                <img src="$icon" style="width:30px; object-fit:contain;" alt="item">
+                                <img src="${icon}" style="width:30px; object-fit:contain;" alt="item">
                             </div>
                             <div style="display:flex; flex-direction:column; gap:3px;">
                                 <div style="font-size:0.95rem; color:#1e293b; font-weight:600;">${trx.id}</div>
@@ -391,7 +392,52 @@
         if (totalCount) totalCount.innerText = totalItems.toString();
         if (totalSub) totalSub.innerText = '(' + totalQty + ' Total Qty)';
 
-        return html;
+        container.innerHTML = html;
+
+        const accItems = container.querySelectorAll('.acc-item');
+        accItems.forEach(item => {
+            const header = item.querySelector('.acc-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                    const content = item.querySelector('.acc-content');
+                    const arrow = item.querySelector('.acc-arrow');
+                    const isActive = item.classList.contains('active');
+                    if (content) content.style.display = isActive ? 'block' : 'none';
+                    if (arrow) arrow.style.transform = isActive ? 'rotate(-180deg)' : 'rotate(0deg)';
+                });
+            }
+        });
+
+        const btnExpandAll = document.getElementById('btn-lap-transaksi-expand-all');
+        const btnCollapseAll = document.getElementById('btn-lap-transaksi-collapse-all');
+        
+        if (btnExpandAll) {
+            const newBtnE = btnExpandAll.cloneNode(true);
+            btnExpandAll.parentNode.replaceChild(newBtnE, btnExpandAll);
+            newBtnE.addEventListener('click', () => {
+                accItems.forEach(item => {
+                    item.classList.add('active');
+                    const content = item.querySelector('.acc-content');
+                    if (content) content.style.display = 'block';
+                    const arrow = item.querySelector('.acc-arrow');
+                    if (arrow) arrow.style.transform = 'rotate(-180deg)';
+                });
+            });
+        }
+        if (btnCollapseAll) {
+            const newBtnC = btnCollapseAll.cloneNode(true);
+            btnCollapseAll.parentNode.replaceChild(newBtnC, btnCollapseAll);
+            newBtnC.addEventListener('click', () => {
+                accItems.forEach(item => {
+                    item.classList.remove('active');
+                    const content = item.querySelector('.acc-content');
+                    if (content) content.style.display = 'none';
+                    const arrow = item.querySelector('.acc-arrow');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                });
+            });
+        }
     }
 
     window.renderLaporanPendapatan = function (filterVal = 'hari-ini', type = 'transaksi') {
@@ -413,12 +459,23 @@
                 } else {
                     if (!item.type) return false;
                 }
-                if (filterVal === 'per-tanggal') {
+                if (filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') {
                     const start = filterSel ? filterSel.getAttribute('data-start') : null;
                     const end = filterSel ? filterSel.getAttribute('data-end') : null;
-                    return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+                    if (!window.isDateInRange(parseDateString(item.date), filterVal, start, end)) return false;
+                } else {
+                    if (!window.isDateInRange(parseDateString(item.date), filterVal)) return false;
                 }
-                return window.isDateInRange(parseDateString(item.date), filterVal);
+                
+                // Check Cashbox filter
+                const cashboxFilterEl = document.getElementById(isTransaksi ? 'pendapatan-cashbox-filter' : 'lainnya-cashbox-filter');
+                const cashboxVal = cashboxFilterEl ? cashboxFilterEl.value : 'Semua';
+                if (cashboxVal !== 'Semua') {
+                    const metode = item.metode_pembayaran || item.cashbox || 'Tunai';
+                    if (metode.toUpperCase() !== cashboxVal.toUpperCase()) return false;
+                }
+                
+                return true;
             });
 
             if (filtered.length === 0) {
@@ -433,7 +490,8 @@
             globalTotal = 0;
             const grouped = {};
             filtered.forEach(item => {
-                globalTotal += (parseFloat(item.nominal) || 0);
+                const itemNominal = isTransaksi ? (parseFloat(item.dibayar) || parseFloat(item.total) || 0) : (parseFloat(item.nominal) || 0);
+                globalTotal += itemNominal;
                 const d = parseDateString(item.date);
                 const dStr = formatDateDisplay(d);
                 if (!grouped[dStr]) grouped[dStr] = [];
@@ -448,14 +506,15 @@
                 let rowHtml = '';
                 let dailyTotal = 0;
                 grouped[dateStr].forEach(item => {
-                    dailyTotal += (parseFloat(item.nominal) || 0);
+                    const itemNominal = isTransaksi ? (parseFloat(item.dibayar) || parseFloat(item.total) || 0) : (parseFloat(item.nominal) || 0);
+                    dailyTotal += itemNominal;
                     rowHtml += `
                         <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f1f5f9;">
-                            <div>
-                                <div style="font-weight:600; color:#1e293b;">${item.id}</div>
-                                <div style="font-size:0.8rem; color:#64748b;">${typeof formatTimeDisplay === 'function' ? formatTimeDisplay(parseDateString(item.date)) : (item.date ? item.date.substring(11,16) : '')} - ${item.customerName || item.customer || 'Guest'}</div>
+                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                <span style="font-weight:600; color:#1e293b;">${item.id}</span>
+                                <span style="font-size:0.8rem; color:#64748b;">- ${typeof formatTimeDisplay === 'function' ? formatTimeDisplay(parseDateString(item.date)) : (item.date ? item.date.substring(11,16) : '')} - ${item.customerName || item.customer || 'Guest'}</span>
                             </div>
-                            <div style="font-weight:700; color:#10b981;">Rp ${formatRupiah(item.nominal)}</div>
+                            <div style="font-weight:700; color:#10b981;">Rp ${formatRupiah(itemNominal)}</div>
                         </div>
                     `;
                 });
@@ -540,7 +599,6 @@
         }
     };
 
-    // --- 5. PENGELUARAN ---
     window.renderLaporanPengeluaran = function (filterVal = 'hari-ini') {
         const layout = document.getElementById('layout-pengeluaran');
         if (!layout) return;
@@ -552,13 +610,25 @@
         let db = window.getMergedPengeluaran();
         let total = 0;
         let filtered = db.filter(item => {
-            if (filterVal === 'per-tanggal') {
+            if (filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') {
                 const start = filterSel ? filterSel.getAttribute('data-start') : null;
                 const end = filterSel ? filterSel.getAttribute('data-end') : null;
-                return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
+                if (!window.isDateInRange(parseDateString(item.date), filterVal, start, end)) return false;
+            } else {
+                if (!window.isDateInRange(parseDateString(item.date), filterVal)) return false;
             }
-            return window.isDateInRange(parseDateString(item.date), filterVal);
+            
+            // Check Cashbox filter
+            const cashboxFilterEl = document.getElementById('pengeluaran-cashbox-filter');
+            const cashboxVal = cashboxFilterEl ? cashboxFilterEl.value : 'Semua';
+            if (cashboxVal !== 'Semua') {
+                const metode = item.cashbox || item.payment_method || 'Tunai';
+                if (metode.toUpperCase() !== cashboxVal.toUpperCase()) return false;
+            }
+            
+            return true;
         });
+
         if (filtered.length === 0) {
             if(emptyState) emptyState.style.display = 'flex';
             if(dataState) dataState.style.display = 'none';
@@ -568,7 +638,16 @@
         if(emptyState) emptyState.style.display = 'none';
         if(dataState) dataState.style.display = 'flex';
 
-        filtered.forEach(item => total += (parseFloat(item.nominal) || 0));
+        total = 0;
+        const grouped = {};
+        filtered.forEach(item => {
+            const itemNominal = parseFloat(item.nominal) || 0;
+            total += itemNominal;
+            const d = parseDateString(item.date);
+            const dStr = formatDateDisplay(d);
+            if (!grouped[dStr]) grouped[dStr] = [];
+            grouped[dStr].push({ ...item, itemNominal });
+        });
 
         const spanTotal = layout.querySelector('span[style*="1.8rem"]');
         if (spanTotal) spanTotal.innerText = formatRupiah(total);
@@ -576,18 +655,84 @@
         const container = document.getElementById('pengeluaran-accordion-container');
         if (container) {
             let html = '';
-            filtered.forEach(item => {
-                html += `
-                    <div style="padding:15px 20px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight:600; color:#1e293b;">${item.category || 'Manual'}</div>
-                            <div style="font-size:0.8rem; color:#64748b;">${formatDateDisplay(parseDateString(item.date))} - ${item.keterangan || '-'}</div>
+            Object.keys(grouped).forEach((dateStr, index) => {
+                let dailyTotal = 0;
+                let rowHtml = '';
+                grouped[dateStr].forEach(item => {
+                    dailyTotal += item.itemNominal;
+                    rowHtml += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f1f5f9;">
+                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                <span style="font-weight:600; color:#1e293b;">${item.category || 'Manual'}</span>
+                                <span style="font-size:0.8rem; color:#64748b;">- ${typeof formatTimeDisplay === 'function' ? formatTimeDisplay(parseDateString(item.date)) : (item.date ? item.date.substring(11,16) : '')} - ${item.keterangan || '-'}</span>
+                            </div>
+                            <div style="font-weight:700; color:#ef4444;">Rp ${formatRupiah(item.itemNominal)}</div>
                         </div>
-                        <div style="font-weight:700; color:#ef4444;">Rp ${formatRupiah(item.nominal)}</div>
+                    `;
+                });
+
+                html += `
+                    <div class="acc-item ${index === 0 ? 'active' : ''}" style="border-bottom:1px solid #f1f5f9; background:#fff; margin-bottom:10px; border-radius:12px; border:1px solid #e2e8f0; overflow:hidden;">
+                        <div class="acc-header" style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#f8fafc;">
+                            <div style="font-weight:600; color:#0f172a; display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-chevron-down acc-arrow" style="font-size:0.75rem; transition:transform 0.3s;"></i> ${dateStr}
+                            </div>
+                            <div style="font-weight:700; color:#ef4444;">Rp ${formatRupiah(dailyTotal)}</div>
+                        </div>
+                        <div class="acc-content" style="padding:0; max-height:none; overflow:visible; ${index === 0 ? 'display:block;' : 'display:none;'}">
+                            ${rowHtml}
+                        </div>
                     </div>
                 `;
             });
+
             container.innerHTML = html;
+
+            const accItems = container.querySelectorAll('.acc-item');
+            accItems.forEach(item => {
+                const header = item.querySelector('.acc-header');
+                if (header) {
+                    header.addEventListener('click', () => {
+                        item.classList.toggle('active');
+                        const content = item.querySelector('.acc-content');
+                        const arrow = item.querySelector('.acc-arrow');
+                        const isActive = item.classList.contains('active');
+                        if (content) content.style.display = isActive ? 'block' : 'none';
+                        if (arrow) arrow.style.transform = isActive ? 'rotate(-180deg)' : 'rotate(0deg)';
+                    });
+                }
+            });
+
+            // --- EXPAND ALL / COLLAPSE ALL LOGIC ---
+            const btnExpandAll = document.getElementById('btn-pengeluaran-expand-all');
+            const btnCollapseAll = document.getElementById('btn-pengeluaran-collapse-all');
+            
+            if (btnExpandAll) {
+                const newBtnE = btnExpandAll.cloneNode(true);
+                btnExpandAll.parentNode.replaceChild(newBtnE, btnExpandAll);
+                newBtnE.addEventListener('click', () => {
+                    accItems.forEach(item => {
+                        item.classList.add('active');
+                        const content = item.querySelector('.acc-content');
+                        if (content) content.style.display = 'block';
+                        const arrow = item.querySelector('.acc-arrow');
+                        if (arrow) arrow.style.transform = 'rotate(-180deg)';
+                    });
+                });
+            }
+            if (btnCollapseAll) {
+                const newBtnC = btnCollapseAll.cloneNode(true);
+                btnCollapseAll.parentNode.replaceChild(newBtnC, btnCollapseAll);
+                newBtnC.addEventListener('click', () => {
+                    accItems.forEach(item => {
+                        item.classList.remove('active');
+                        const content = item.querySelector('.acc-content');
+                        if (content) content.style.display = 'none';
+                        const arrow = item.querySelector('.acc-arrow');
+                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                    });
+                });
+            }
         }
     };
 
@@ -608,7 +753,7 @@
 
         let pemFilter = dbPem.filter(item => {
             if (item.status === 'batal') return false;
-            if (filterVal === 'per-tanggal') {
+            if (filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') {
                 const start = filterSel ? filterSel.getAttribute('data-start') : null;
                 const end = filterSel ? filterSel.getAttribute('data-end') : null;
                 return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
@@ -616,7 +761,7 @@
             return window.isDateInRange(parseDateString(item.date), filterVal);
         });
         let pengFilter = dbPeng.filter(item => {
-            if (filterVal === 'per-tanggal') {
+            if (filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') {
                 const start = filterSel ? filterSel.getAttribute('data-start') : null;
                 const end = filterSel ? filterSel.getAttribute('data-end') : null;
                 return window.isDateInRange(parseDateString(item.date), filterVal, start, end);
@@ -660,7 +805,7 @@
         
         let startStr = null, endStr = null;
         const filterSel = document.getElementById('omzet-date-filter');
-        if (filterVal === 'per-tanggal' && filterSel) {
+        if ((filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') && filterSel) {
             startStr = filterSel.getAttribute('data-start');
             endStr = filterSel.getAttribute('data-end');
         }
@@ -758,7 +903,7 @@
         
         let startStr = null, endStr = null;
         const filterSel = document.getElementById('arus-date-filter');
-        if (filterVal === 'per-tanggal' && filterSel) {
+        if ((filterVal === 'per-tanggal' || filterVal === 'CUSTOM_DATE_RANGE') && filterSel) {
             startStr = filterSel.getAttribute('data-start');
             endStr = filterSel.getAttribute('data-end');
         }
