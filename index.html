@@ -758,7 +758,7 @@
                         <div class="pesanan-table-container">
 
                             <!-- Header Row (Topline) -->
-                            <div class="pesanan-header-row" style="display: grid; grid-template-columns: 100px 100px 140px 130px 90px 120px 110px 120px 1fr; align-items: center; padding: 15px 20px; gap: 15px;">
+                            <div class="pesanan-header-row" style="display: grid; grid-template-columns: 100px 100px 140px 130px 90px 135px 110px 120px 1fr; align-items: center; padding: 15px 20px; gap: 15px;">
                                 <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('id')">ID <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('date')">TANGGAL <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('customerName')">PELANGGAN <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
@@ -1249,7 +1249,7 @@
                         <div class="kp-chip">Online</div>
                         <div class="kp-chip">By Grup</div>
                     </div>
-                    <div class="kp-sort">
+                    <div class="kp-sort" onclick="window.toggleSortPelanggan()" style="cursor: pointer;" title="Urutkan Pelanggan">
                         A<i class="fa-solid fa-arrow-down-a-z"></i>Z
                     </div>
                 </div>
@@ -2230,7 +2230,7 @@
                         <div id="dt-tagihan" style="font-size: 1.4rem; font-weight: 700;">18,500</div>
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <button style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">DETAIL</button>
+                        <button id="btn-dt-tagihan-detail" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">DETAIL</button>
                         <button id="dt-btn-bayar" style="background: #f59e0b; border: none; color: #ffffff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">BAYAR</button>
                     </div>
                 </div>
@@ -3396,10 +3396,6 @@
                     </button>
                     <button class="nota-btn nota-btn-secondary" id="btn-cetak-nota">
                         <i class="fa-solid fa-print"></i> CETAK NOTA (BLUETOOTH)
-                    </button>
-                    <button class="nota-btn nota-btn-secondary" id="btn-cetak-browser"
-                        style="margin-top:10px; background: #94a3b8; color: #fff;">
-                        <i class="fa-solid fa-print"></i> CETAK NOTA (BROWSER)
                     </button>
                 </div>
             </div>
@@ -4803,6 +4799,41 @@
 
             const pesananChips = document.querySelectorAll('.p-tab-btn');
 
+            // Sort Logic
+            window.currentSortColumn = 'date';
+            window.currentSortDirection = 'desc';
+
+            window.sortPesanan = function(column) {
+                if (window.currentSortColumn === column) {
+                    window.currentSortDirection = window.currentSortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    window.currentSortColumn = column;
+                    window.currentSortDirection = 'asc';
+                }
+                
+                orderHistory.sort((a, b) => {
+                    let valA = a[column];
+                    let valB = b[column];
+                    
+                    if (column === 'id') {
+                        valA = parseInt((valA || '').toString().replace(/\D/g, '')) || 0;
+                        valB = parseInt((valB || '').toString().replace(/\D/g, '')) || 0;
+                    } else if (column === 'date') {
+                        valA = new Date(valA || 0).getTime();
+                        valB = new Date(valB || 0).getTime();
+                    } else {
+                        valA = (valA || '').toString().toLowerCase();
+                        valB = (valB || '').toString().toLowerCase();
+                    }
+                    
+                    if (valA < valB) return window.currentSortDirection === 'asc' ? -1 : 1;
+                    if (valA > valB) return window.currentSortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+                
+                renderDashboardPesanan();
+            };
+
             // Filter Function
             function filterPesanan(filterValue) {
                 const keywordInput = document.getElementById('input-search-pesanan');
@@ -4951,6 +4982,14 @@
 
             const layoutPos = document.getElementById('layout-pos');
             const btnBackPos = document.getElementById('btn-back-pos');
+
+            window.currentSortPelanggan = 'asc';
+            window.toggleSortPelanggan = function() {
+                window.currentSortPelanggan = window.currentSortPelanggan === 'asc' ? 'desc' : 'asc';
+                if (typeof window.renderKelolaPelanggan === 'function') {
+                    window.renderKelolaPelanggan();
+                }
+            };
 
             window.renderKelolaPelanggan = function () {
                 const title = document.getElementById('kelola-pelanggan-title');
@@ -5105,34 +5144,37 @@
             }
 
             const btnTrxReceipt = document.getElementById('btn-trx-receipt');
-            if (btnTrxReceipt) {
-                btnTrxReceipt.addEventListener('click', () => {
-                    if (currentDetailTrxObj && typeof renderNota === 'function') {
-                        renderNota(currentDetailTrxObj);
-                        const layoutNota = document.getElementById('layout-nota');
-                        if (layoutNota) {
-                            document.getElementById('layout-detail-trx').style.display = 'none';
-                            layoutNota.style.display = 'block';
-                            setTimeout(() => layoutNota.classList.add('active'), 10);
-                            
-                            // Override back button behavior temporarily
-                            const btnBackNota = document.getElementById('btn-back-nota');
-                            if (btnBackNota) {
-                                const oldBack = btnBackNota.onclick;
-                                btnBackNota.onclick = (e) => {
-                                    if(e) e.stopPropagation();
-                                    layoutNota.classList.remove('active');
-                                    setTimeout(() => {
-                                        layoutNota.style.display = 'none';
-                                        document.getElementById('layout-detail-trx').style.display = 'block';
-                                    }, 300);
-                                    btnBackNota.onclick = oldBack; // restore
-                                };
-                            }
+            const btnDtTagihanDetail = document.getElementById('btn-dt-tagihan-detail');
+            
+            const openNotaHandler = () => {
+                if (currentDetailTrxObj && typeof renderNota === 'function') {
+                    renderNota(currentDetailTrxObj);
+                    const layoutNota = document.getElementById('layout-nota');
+                    if (layoutNota) {
+                        document.getElementById('layout-detail-trx').style.display = 'none';
+                        layoutNota.style.display = 'block';
+                        setTimeout(() => layoutNota.classList.add('active'), 10);
+                        
+                        // Override back button behavior temporarily
+                        const btnBackNota = document.getElementById('btn-back-nota');
+                        if (btnBackNota) {
+                            const oldBack = btnBackNota.onclick;
+                            btnBackNota.onclick = (e) => {
+                                if(e) e.stopPropagation();
+                                layoutNota.classList.remove('active');
+                                setTimeout(() => {
+                                    layoutNota.style.display = 'none';
+                                    document.getElementById('layout-detail-trx').style.display = 'block';
+                                }, 300);
+                                btnBackNota.onclick = oldBack; // restore
+                            };
                         }
                     }
-                });
-            }
+                }
+            };
+            
+            if (btnTrxReceipt) btnTrxReceipt.addEventListener('click', openNotaHandler);
+            if (btnDtTagihanDetail) btnDtTagihanDetail.addEventListener('click', openNotaHandler);
 
             const btnTrxPrint = document.getElementById('btn-trx-print');
             if (btnTrxPrint) {
@@ -5250,8 +5292,8 @@
                                 '<div style="font-weight: 500; color: #1e293b; margin-bottom: 2px;">' + s.title + '</div>' +
                                 '<div style="color: #64748b; font-size: 0.75rem;">' + s.desc + '</div>' +
                             '</div>' +
-                            '<div style="color: #94a3b8; font-size: 0.75rem; text-align: right; width: 70px;">' +
-                                s.time.split(' ').join('<br>') +
+                            '<div style="color: #94a3b8; font-size: 0.75rem; text-align: right; white-space: nowrap;">' +
+                                s.time +
                             '</div>' +
                         '</div>';
                 });
@@ -5486,12 +5528,14 @@
                 if (globalCustomers.length === 0) {
                     cpListContainer.innerHTML = '<p style="text-align:center; color:#94a3b8;">Belum ada data pelanggan.</p>';
                 } else {
+                    const orderHistory = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
                     globalCustomers.forEach(c => {
+                        const totalTrx = orderHistory.filter(o => o.customerName === c.nama || o.customerName === c.nama + ' (' + (c.telepon || c.hp || 'Tanpa nomor') + ')' || o.customerName === c.nama + ' (Tanpa nomor)').length;
                         let card = document.createElement('div');
                         card.className = 'cp-card';
                         card.innerHTML = `
                     <div class="cp-card-info">
-                        <h4>${c.nama}</h4>
+                        <h4 style="display: flex; align-items: center; gap: 8px;">${c.nama} <span style="font-size:0.7rem; background:#e0f2fe; color:#0284c7; padding:2px 8px; border-radius:12px; font-weight:600;">${totalTrx} Trx</span></h4>
                         <p>${c.telepon || '-'}</p>
                     </div>
                     <button class="cp-btn-pilih">Pilih</button>
@@ -8404,6 +8448,21 @@
                 let estDate = new Date(currentDate);
                 estDate.setDate(estDate.getDate() + 1);
 
+                let dibayar = parseFloat(inputUang.value) || 0;
+                let cashbox = document.querySelector('.btn-pay-method.active') ? document.querySelector('.btn-pay-method.active').getAttribute('data-method') : 'Tunai';
+
+                let paymentHistory = [];
+                if (dibayar > 0) {
+                    paymentHistory.push({
+                        date: new Date().toISOString(),
+                        amount: dibayar,
+                        method: cashbox
+                    });
+                }
+
+                // Jika sedang edit order dan order sebelumnya punya riwayat, pertahankan (hanya jika riwayat belum diubah lewat menu cicilan). Tapi ini mode POS kasir, jadi kita timpa dengan pembayaran baru jika dibayar diisi, atau kita biarkan. 
+                // Untuk amannya, karena ini Kasir (biasanya buat order baru atau replace total), kita pakai paymentHistory baru.
+
                 let newOrder = {
                     id: window.editingOrderId ? window.editingOrderId : (posNotaBadgeId ? posNotaBadgeId.innerText : 'TRX/123'),
                     customerName: posCustomerSelect.value,
@@ -8412,9 +8471,10 @@
                     estDate: formatDate(estDate),
                     items: JSON.parse(JSON.stringify(cartData)), // clone
                     total: finalTotal,
-                    cashbox: document.querySelector('.btn-pay-method.active') ? document.querySelector('.btn-pay-method.active').getAttribute('data-method') : 'Tunai',
-                    dibayar: parseFloat(inputUang.value) || 0,
-                    status: window.editingOrderId ? window.editingOrderStatus : 'validasi'
+                    cashbox: cashbox,
+                    dibayar: dibayar,
+                    status: window.editingOrderId ? window.editingOrderStatus : 'validasi',
+                    paymentHistory: paymentHistory
                 };
 
                 // Hindari double-click bug
@@ -8646,14 +8706,25 @@
 
             window.payCicilan = function (orderId) {
                 const input = document.getElementById('cicilan-' + orderId);
+                const methodSelect = document.getElementById('cicilan-method-' + orderId);
                 if (!input || !input.value) return alert('Masukkan nominal cicilan!');
                 let nominal = parseFloat(input.value) || 0;
                 if (nominal <= 0) return alert('Nominal tidak valid!');
+                let method = methodSelect ? methodSelect.value : 'Tunai';
 
-                if (confirm('Simpan pembayaran sejumlah Rp ' + nominal.toLocaleString('id-ID') + '?')) {
+                if (confirm('Simpan pembayaran sejumlah Rp ' + nominal.toLocaleString('id-ID') + ' (' + method + ')?')) {
                     const orderIdx = orderHistory.findIndex(o => o.id === orderId);
                     if (orderIdx > -1) {
-                        orderHistory[orderIdx].dibayar = (orderHistory[orderIdx].dibayar || 0) + nominal;
+                        let order = orderHistory[orderIdx];
+                        order.dibayar = (order.dibayar || 0) + nominal;
+                        
+                        if (!order.paymentHistory) order.paymentHistory = [];
+                        order.paymentHistory.push({
+                            date: new Date().toISOString(),
+                            amount: nominal,
+                            method: method
+                        });
+
                         localStorage.setItem('db_pemasukan', JSON.stringify(orderHistory));
                         renderDashboardPesanan();
                         if (window.Swal) Swal.fire('Berhasil', 'Pembayaran tersimpan!', 'success');
@@ -8665,8 +8736,20 @@
                 if (confirm('Tandai transaksi ' + orderId + ' sebagai LUNAS (' + method + ')?')) {
                     const orderIdx = orderHistory.findIndex(o => o.id === orderId);
                     if (orderIdx > -1) {
-                        orderHistory[orderIdx].dibayar = orderHistory[orderIdx].total;
-                        orderHistory[orderIdx].metodeBayar = method;
+                        let order = orderHistory[orderIdx];
+                        let sisa = order.total - (order.dibayar || 0);
+                        
+                        if (sisa > 0) {
+                            if (!order.paymentHistory) order.paymentHistory = [];
+                            order.paymentHistory.push({
+                                date: new Date().toISOString(),
+                                amount: sisa,
+                                method: method
+                            });
+                        }
+
+                        order.dibayar = order.total;
+                        order.metodeBayar = method;
                         localStorage.setItem('db_pemasukan', JSON.stringify(orderHistory));
                         renderDashboardPesanan();
                         if (window.Swal) Swal.fire('Berhasil', 'Pesanan ditandai LUNAS!', 'success');
@@ -8675,23 +8758,13 @@
             };
 
             window.deleteTransaction = function (orderId) {
-                if (confirm('Yakin ingin menghapus transaksi ' + orderId + '? Data pemasukan juga akan dihapus.')) {
-                    // Hapus dari orderHistory
+                if (confirm('Yakin ingin menghapus pesanan ' + orderId + '? Data tidak bisa dikembalikan.')) {
                     const orderIdx = orderHistory.findIndex(o => o.id === orderId);
                     if (orderIdx !== -1) {
-                        const total = orderHistory[orderIdx].total;
                         orderHistory.splice(orderIdx, 1);
-                        localStorage.setItem('db_orders', JSON.stringify(orderHistory));
+                        localStorage.setItem('db_pemasukan', JSON.stringify(orderHistory));
 
-                        // Hapus dari db_pemasukan
-                        let pemasukan = JSON.parse(localStorage.getItem('db_pemasukan')) || [];
-                        const pemIdx = pemasukan.findIndex(p => p.desc.includes(orderId));
-                        if (pemIdx !== -1) {
-                            pemasukan.splice(pemIdx, 1);
-                            localStorage.setItem('db_pemasukan', JSON.stringify(pemasukan));
-                        }
-
-                        window.showToast('Transaksi berhasil dihapus');
+                        window.showToast('Pesanan berhasil dihapus');
                         renderDashboardPesanan();
                         if (typeof initFinanceChart === 'function') initFinanceChart();
                         if (typeof initOmzetChart === 'function') initOmzetChart();
@@ -8806,7 +8879,7 @@
                     let mainQty = order.items.length > 0 ? order.items[0].qty + (order.items[0].satuan || order.items[0].unit ? ' ' + (order.items[0].satuan || order.items[0].unit) : '') : '-';
 
                     // Cek lunas berdasarkan uang yang dibayar
-                    let isLunas = (order.dibayar || 0) >= order.total;
+                let isLunas = (order.dibayar || 0) >= order.total;
 
                     // Ubah row menjadi column flex agar accordion bisa ditaruh di bawahnya
                     row.style.flexDirection = 'column';
@@ -8814,7 +8887,7 @@
                     row.style.padding = '0'; // padding dipindah ke inner row
 
                     row.innerHTML = `
-              <div style="display:grid; grid-template-columns: 100px 100px 140px 130px 90px 120px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
+              <div style="display:grid; grid-template-columns: 100px 100px 140px 130px 90px 135px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
                 <!-- Col 1: ID -->
                 <div class="p-col" style="overflow: hidden;">
                     <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:700; color:#1e293b;" title="${order.id}">${order.id}</div>
@@ -8853,7 +8926,7 @@
                 
                 <!-- Col 7: Payment Method -->
                 <div class="p-col" style="font-size: 0.85rem; font-weight:600; color:#475569;">
-                    ${((order.dibayar || 0) > 0) ? (order.metodeBayar || order.cashbox || 'Tunai') : '-'}
+                    ${((order.dibayar || 0) > 0) ? (order.metodeBayar || order.cashbox || 'Tunai') : `<span onclick="event.stopPropagation(); togglePaymentPanel('${order.id}')" style="cursor:pointer; background:#fee2e2; color:#ef4444; padding:3px 8px; border-radius:12px; font-size:0.75rem;" title="Klik untuk bayar">- Bayar</span>`}
                 </div>
                 
                 <!-- Col 8: Status Dropdown -->
@@ -8877,15 +8950,37 @@
               </div>
               
               <!-- Accordion Payment Panel -->
-              <div id="payment-panel-${order.id}" class="payment-accordion" style="display:none; padding:15px 20px; background:#f8fafc; border-top:1px solid #e2e8f0; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
-                 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                    <span style="font-size:0.9rem; font-weight:600; color:#334155;">Pelunasan:</span>
-                    <button onclick="markAsPaid('${order.id}', 'Tunai')" style="padding:6px 12px; background:#3b82f6; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-money-bill"></i> Lunas (Tunai)</button>
-                    <button onclick="markAsPaid('${order.id}', 'QRIS')" style="padding:6px 12px; background:#0ea5e9; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-qrcode"></i> Lunas (QRIS)</button>
-                    <div style="margin-left:auto; display:flex; gap:8px;">
-                       <input type="number" id="cicilan-${order.id}" placeholder="DP / Cicil..." style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; width:120px; font-size:0.85rem; outline:none;">
+              <div id="payment-panel-${order.id}" class="payment-accordion" style="display:none; padding:15px 20px; box-sizing: border-box; background:#f8fafc; border-top:1px solid #e2e8f0; border-bottom-left-radius:12px; border-bottom-right-radius:12px;">
+                 <div style="display:flex; flex-direction:column; gap:12px; margin-bottom: 15px;">
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <span style="font-size:0.9rem; font-weight:600; color:#334155;">Pelunasan:</span>
+                        <button onclick="markAsPaid('${order.id}', 'Tunai')" style="padding:6px 12px; background:#3b82f6; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-money-bill"></i> Lunas (Tunai)</button>
+                        <button onclick="markAsPaid('${order.id}', 'QRIS')" style="padding:6px 12px; background:#0ea5e9; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-qrcode"></i> Lunas (QRIS)</button>
+                    </div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; border-top:1px dashed #cbd5e1; padding-top:10px;">
+                       <span style="font-size:0.85rem; font-weight:600; color:#64748b; margin-right: 5px;">Cicilan/DP:</span>
+                       <select id="cicilan-method-${order.id}" style="padding:6px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:0.85rem; outline:none;">
+                           <option value="Tunai">Tunai</option>
+                           <option value="QRIS">QRIS</option>
+                           <option value="Transfer">Transfer</option>
+                       </select>
+                       <input type="number" id="cicilan-${order.id}" placeholder="Nominal Rp..." style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; width:130px; font-size:0.85rem; outline:none;">
                        <button onclick="payCicilan('${order.id}')" style="padding:6px 15px; background:#f59e0b; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;">Simpan</button>
                     </div>
+                 </div>
+                 
+                 <!-- Riwayat Pembayaran -->
+                 <div class="payment-history-container" style="border-top:1px dashed #cbd5e1; padding-top:10px;">
+                    <div style="font-size:0.85rem; font-weight:700; color:#475569; margin-bottom:8px;"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Pembayaran</div>
+                    ${(order.paymentHistory && order.paymentHistory.length > 0) ? 
+                        order.paymentHistory.map(ph => `
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#64748b; margin-bottom:4px; background:#fff; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0;">
+                            <span><i class="fa-regular fa-calendar" style="margin-right:4px;"></i> ${ph.date.split('T')[0]} ${ph.date.split('T')[1].substring(0,5)}</span>
+                            <span style="background:#e0e7ff; color:#4f46e5; padding:2px 8px; border-radius:12px; font-weight:600; font-size:0.75rem;">${ph.method || 'Tunai'}</span>
+                            <span style="font-weight:700; color:#10b981;">Rp ${(ph.amount).toLocaleString('id-ID')}</span>
+                        </div>
+                        `).join('') 
+                    : '<div style="font-size:0.8rem; color:#94a3b8; font-style:italic;">Belum ada riwayat pembayaran.</div>'}
                  </div>
               </div>
             `;
@@ -9321,12 +9416,6 @@
             document.getElementById('btn-cetak-nota')?.addEventListener('click', () => {
                 if (currentActiveOrder && typeof btPrinter !== 'undefined') {
                     btPrinter.print(currentActiveOrder);
-                }
-            });
-
-            document.getElementById('btn-cetak-browser')?.addEventListener('click', () => {
-                if (currentActiveOrder && typeof window.printReceiptBrowser === 'function') {
-                    window.printReceiptBrowser(currentActiveOrder);
                 }
             });
 

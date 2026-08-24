@@ -1928,10 +1928,12 @@ body {
 
 .nota-action-btns {
     position: relative;
-    margin-top: 30px; margin-bottom: 30px;
+    margin: 30px auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    width: 100%;
+    max-width: 320px;
 }
 .nota-btn {
     padding: 15px;
