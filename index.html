@@ -20,6 +20,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="logo_manjur.png" type="image/png">
     <meta name="theme-color" content="#0284c7">
+    <link rel="apple-touch-icon" href="logo_manjur.png">
     <!-- Global Error Catcher (Temporary for Debugging) -->
     <script>
         // --- MULTI-OUTLET LOCALSTORAGE INTERCEPTOR ---
@@ -408,19 +409,7 @@
                         </div>
                     </div>
 
-                    <!-- Info dan Promo -->
-                    <div class="section-container promo-section">
-                        <div class="section-header">
-                            <h3 class="section-title">Info dan Promo</h3>
-                            <a href="#" class="link-semua">Lihat Semua</a>
-                        </div>
-                        <div class="promo-card">
-                            <div class="promo-content">
-                                <h4>Promo Kemerdekaan!</h4>
-                                <p>Diskon 17% untuk cuci karpet selama bulan Agustus.</p>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div style="height: 100px;"></div> <!-- Spacer for bottom nav -->
                 </div>
@@ -3401,6 +3390,27 @@
             </div>
         </div>
 
+        <!-- LAYOUT TOP PELANGGAN -->
+        <div id="layout-top-pelanggan" class="layout"
+            style="display: none; background: #ffffff; min-height: 100vh; position:relative;">
+            <header class="cd-header" style="box-shadow: none; border-bottom: none; background: #ffffff;">
+                <button class="btn-icon" id="btn-back-top-pelanggan" style="color: #64748b;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="cd-header-center">
+                    <span style="font-weight: 600; font-size: 1.1rem; color: #1e293b;">Top 20 Pelanggan</span>
+                </div>
+                <div style="width: 40px;"></div>
+            </header>
+
+            <div class="content-area" style="padding: 10px 20px 80px; background: #f8fafc; min-height: 100vh;">
+                <!-- Daftar Pelanggan -->
+                <div id="top-pelanggan-list" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Diisi via JS -->
+                </div>
+            </div>
+        </div>
+
         <!-- LAYOUT DETAIL MENU (Generik untuk Semua Laporan/Menu) -->
         <!-- LAYOUT LAPORAN TRANSAKSI -->
         <div id="layout-laporan-transaksi" class="layout"
@@ -5101,7 +5111,12 @@
             if (btnBackRiwayat) {
                 btnBackRiwayat.addEventListener('click', () => {
                     document.getElementById('layout-riwayat-pelanggan').style.display = 'none';
-                    document.getElementById('layout-detail-pelanggan').style.display = 'block';
+                    if (window.riwayatOrigin === 'top-pelanggan') {
+                        document.getElementById('layout-top-pelanggan').style.display = 'block';
+                        window.riwayatOrigin = null;
+                    } else {
+                        document.getElementById('layout-detail-pelanggan').style.display = 'block';
+                    }
                 });
             }
 
@@ -5517,7 +5532,12 @@
             if (btnBackCd) {
                 btnBackCd.addEventListener('click', () => {
                     document.getElementById('layout-detail-pelanggan').style.display = 'none';
-                    document.getElementById('layout-main').style.display = 'block';
+                    if (window.customerDetailOrigin === 'top-pelanggan') {
+                        document.getElementById('layout-top-pelanggan').style.display = 'block';
+                        window.customerDetailOrigin = null;
+                    } else {
+                        document.getElementById('layout-main').style.display = 'block';
+                    }
                 });
             }
 
@@ -6729,7 +6749,8 @@
                             document.getElementById('layout-pengeluaran'),
                             document.getElementById('layout-hutang'),
                             document.getElementById('layout-pesanan-hari-ini'),
-                            document.getElementById('layout-detail')
+                            document.getElementById('layout-detail'),
+                            document.getElementById('layout-top-pelanggan')
                         ];
 
                         function hideAllLayouts() {
@@ -6740,6 +6761,20 @@
                                 }
                             });
                         }
+
+                        if (title === 'Top Pelanggan') {
+                            hideAllLayouts();
+                            const topPl = document.getElementById('layout-top-pelanggan');
+                            if (topPl) {
+                                topPl.style.display = 'block';
+                                setTimeout(() => topPl.classList.add('active'), 10);
+                            }
+                            if (typeof window.renderTopPelanggan === 'function') {
+                                window.renderTopPelanggan();
+                            }
+                            return;
+                        }
+
                         // Untuk Laporan Transaksi
                         if (title === 'Semua Transaksi' || title === 'Transaksi Belum Lunas' || title === 'Transaksi Batal') {
                             const lLapTransaksi = document.getElementById('layout-laporan-transaksi');
@@ -9438,6 +9473,102 @@
 
             // PWA Service Worker telah dinonaktifkan untuk mendukung mode Online-Only
 
+            // --- TOP PELANGGAN SCRIPT ---
+            const btnBackTopPelanggan = document.getElementById('btn-back-top-pelanggan');
+            if (btnBackTopPelanggan) {
+                btnBackTopPelanggan.addEventListener('click', () => {
+                    const lTop = document.getElementById('layout-top-pelanggan');
+                    if (lTop) {
+                        lTop.classList.remove('active');
+                        lTop.style.display = 'none';
+                    }
+                    const main = document.getElementById('layout-main');
+                    if (main) {
+                        main.classList.add('active');
+                        main.style.display = 'flex';
+                    }
+                });
+            }
+
+            window.renderTopPelanggan = function() {
+                const listContainer = document.getElementById('top-pelanggan-list');
+                if (!listContainer) return;
+                listContainer.innerHTML = '';
+
+                let activeOutlet = localStorage.getItem('active_outlet_id') || 'PUSAT';
+                let dataPelanggan = JSON.parse(localStorage.getItem('db_pelanggan_' + activeOutlet) || '[]');
+                if (activeOutlet === 'PUSAT') {
+                    dataPelanggan = JSON.parse(localStorage.getItem('db_pelanggan') || '[]');
+                }
+
+                // Kalkulasi trx
+                let orderHistory = [];
+                try {
+                    const dbPemasukanStr = localStorage.getItem(activeOutlet === 'PUSAT' ? 'db_pemasukan' : 'db_pemasukan_' + activeOutlet);
+                    if (dbPemasukanStr) orderHistory = JSON.parse(dbPemasukanStr);
+                } catch(e){}
+
+                dataPelanggan.forEach(p => {
+                    const phone = p.telepon || p.hp || 'Tanpa nomor';
+                    const totalTrx = orderHistory.filter(o => o.customerName === p.nama || o.customerName === p.nama + ' (' + phone + ')' || o.customerName === p.nama + ' (Tanpa nomor)').length;
+                    p.trxCount = totalTrx;
+                });
+
+                // Sort by trxCount desc, then nama asc
+                dataPelanggan.sort((a, b) => {
+                    if (b.trxCount !== a.trxCount) return b.trxCount - a.trxCount;
+                    return a.nama.localeCompare(b.nama);
+                });
+
+                // Take top 20
+                const top20 = dataPelanggan.slice(0, 20);
+
+                if (top20.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align:center; padding: 20px; color: #64748b;">Belum ada data pelanggan.</p>';
+                    return;
+                }
+
+                top20.forEach((p, index) => {
+                    let card = document.createElement('div');
+                    card.style.background = '#ffffff';
+                    card.style.borderRadius = '12px';
+                    card.style.padding = '15px';
+                    card.style.border = '1px solid #e2e8f0';
+                    card.style.display = 'flex';
+                    card.style.alignItems = 'center';
+                    card.style.gap = '15px';
+                    card.style.boxShadow = '0 1px 3px rgba(0,0,0,0.02)';
+
+                    // Rank Badge
+                    let rankColor = '#94a3b8'; // Default grey
+                    if (index === 0) rankColor = '#f59e0b'; // Gold
+                    else if (index === 1) rankColor = '#94a3b8'; // Silver
+                    else if (index === 2) rankColor = '#b45309'; // Bronze
+
+                    card.innerHTML = `
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: ${rankColor}20; color: ${rankColor}; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1rem;">
+                            #${index + 1}
+                        </div>
+                        <div style="flex: 1; cursor: pointer;" onclick="
+                            window.riwayatOrigin = 'top-pelanggan';
+                            document.getElementById('layout-top-pelanggan').style.display = 'none';
+                            document.getElementById('layout-riwayat-pelanggan').style.display = 'block';
+                            if (typeof window.renderRiwayatPelanggan === 'function') {
+                                window.renderRiwayatPelanggan('${p.nama}', '${p.telepon || p.hp || ''}');
+                            }
+                        ">
+                            <h4 style="margin: 0; font-size: 1rem; color: #1e293b; font-weight: 600;">${p.nama}</h4>
+                            <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;"><i class="fa-solid fa-phone" style="font-size:0.75rem; color:#94a3b8; margin-right:3px;"></i> ${p.telp || '-'}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="display: block; font-size: 1.2rem; font-weight: 700; color: #0ea5e9;">${p.trxCount}</span>
+                            <span style="font-size: 0.7rem; color: #64748b;">Transaksi</span>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            };
+
             // --- KELOLA PELANGGAN LAYOUT SCRIPT ---
             const btnBackKelolaPelanggan = document.getElementById('btn-back-kelola-pelanggan');
             if (btnBackKelolaPelanggan) {
@@ -11513,18 +11644,14 @@
             });
     </script>
     <script>
-        // Paksa hapus cache total
+        // Register Service Worker for PWA (Installable on Mobile/Tablet)
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (registrations) {
-                for (let registration of registrations) {
-                    registration.unregister();
-                }
-            });
-        }
-        if ('caches' in window) {
-            caches.keys().then(function (names) {
-                for (let name of names)
-                    caches.delete(name);
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                    console.log('ServiceWorker registered successfully.');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
             });
         }
     </script>
