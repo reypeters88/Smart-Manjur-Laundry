@@ -60,9 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     resetBottomNav(null); // Clear bottom nav highlight if looking at keuangan/kepegawaian
                 }
 
-                // Init chart if Keuangan is clicked and chart not rendered yet
-                if(targetTab === 'keuangan' && !financeChartInstance) {
-                    initFinanceChart();
+                // Update data and chart every time Keuangan is clicked
+                if (targetTab === 'keuangan') {
+                    let currentFilter = '7-hari';
+                    const activeFilterOpt = document.querySelector('#date-filter-options .filter-opt.active');
+                    if (activeFilterOpt) {
+                        currentFilter = activeFilterOpt.getAttribute('data-val') || '7-hari';
+                    }
+                    if (typeof window.initFinanceChart === 'function') window.initFinanceChart(currentFilter);
                 }
             }
         });
@@ -178,101 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- CHART.JS UNTUK KEUANGAN ---
-    let financeChartInstance = null;
-
-    function initFinanceChart() {
-        const ctx = document.getElementById('financeChart').getContext('2d');
-        
-        // Dummy data for line chart
-        const data = {
-            labels: ['06-07', '09-10', '12-13', '15-16', '18-19', 'Jam'],
-            datasets: [
-                {
-                    label: 'Omzet',
-                    data: [15000, 12000, 0, 0, 0, 0],
-                    borderColor: '#38bdf8', // light blue
-                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
-                    borderWidth: 2,
-                    tension: 0, 
-                    fill: true
-                },
-                {
-                    label: 'Pendapatan',
-                    data: [0, 32000, 0, 0, 0, 0],
-                    borderColor: '#34d399', // emerald light
-                    backgroundColor: 'rgba(52, 211, 153, 0.2)',
-                    borderWidth: 2,
-                    tension: 0,
-                    fill: true
-                },
-                {
-                    label: 'Pengeluaran',
-                    data: [0, 0, 0, 0, 0, 0],
-                    borderColor: '#ef4444', 
-                    backgroundColor: '#ef4444',
-                    borderWidth: 2,
-                    tension: 0,
-                    fill: false
-                },
-                {
-                    label: 'Self Service',
-                    data: [0, 0, 0, 0, 0, 0],
-                    borderColor: '#0284c7', 
-                    backgroundColor: '#0284c7',
-                    borderWidth: 2,
-                    tension: 0,
-                    fill: false
-                }
-            ]
-        };
-
-        const config = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            boxWidth: 8,
-                            font: {
-                                family: "'Poppins', sans-serif",
-                                size: 10
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                if (value === 0) return '';
-                                return (value / 1000) + 'rb';
-                            },
-                            font: { size: 10 }
-                        },
-                        grid: { drawBorder: false }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 10 } }
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 0 // Hide points on lines unless hovered
-                    }
-                }
-            }
-        };
-
-        financeChartInstance = new Chart(ctx, config);
-    }
 
     // --- PESANAN STATUS FILTER (OLD) ---
     const statusBtns = document.querySelectorAll('.status-btn');
