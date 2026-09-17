@@ -430,27 +430,20 @@
                             style="font-size:0.8rem; color:#94a3b8; display:none; margin-left: 10px;"></div>
                     </div>
                     
-                    <!-- MODAL DATE FILTER ACTION SHEET -->
-                    <div id="modal-date-filter" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 100000; justify-content: center; align-items: flex-end;">
-                        <div style="background: white; width: 100%; max-width: 600px; border-radius: 20px 20px 0 0; padding: 20px; box-sizing: border-box; animation: slideUp 0.3s ease-out;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
-                                <h3 style="font-size: 1.1rem; color: #1e293b;">Pilih Periode</h3>
-                                <i class="fa-solid fa-xmark" id="close-date-filter" style="font-size: 1.2rem; color: #94a3b8; cursor: pointer;"></i>
-                            </div>
-                            <div id="date-filter-options" style="display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;">
-                                <div class="filter-opt" data-val="hari-ini" style="padding: 12px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500;">Hari Ini</div>
-                                <div class="filter-opt" data-val="kemarin" style="padding: 12px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500;">Kemarin</div>
-                                <div class="filter-opt active" data-val="7-hari" style="padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500; background: #e0f2fe; color: #0ea5e9;">7 Hari Terakhir</div>
-                                <div class="filter-opt" data-val="30-hari" style="padding: 12px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500;">30 Hari Terakhir</div>
-                                <div class="filter-opt" data-val="bulan-ini" style="padding: 12px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500;">Bulan Ini</div>
-                                <div class="filter-opt" data-val="per-bulan" style="padding: 12px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500;">Pilih Bulan</div>
-                                <div class="filter-opt" data-val="per-tanggal" style="padding: 12px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500;">Per Tanggal</div>
-                            </div>
+                    <!-- ACCORDION DATE FILTER OPTIONS -->
+                    <div id="modal-date-filter" style="display: none; padding: 15px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; animation: fadeInDown 0.2s ease-out;">
+                        <div id="date-filter-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div class="filter-opt" data-val="hari-ini" style="padding: 10px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500; text-align: center; background: #fff; border: 1px solid #cbd5e1; font-size: 0.85rem;">Hari Ini</div>
+                            <div class="filter-opt" data-val="kemarin" style="padding: 10px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500; text-align: center; background: #fff; border: 1px solid #cbd5e1; font-size: 0.85rem;">Kemarin</div>
+                            <div class="filter-opt active" data-val="7-hari" style="padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 500; text-align: center; background: #e0f2fe; color: #0ea5e9; border: 1px solid #bae6fd; font-size: 0.85rem;">7 Hari</div>
+                            <div class="filter-opt" data-val="30-hari" style="padding: 10px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500; text-align: center; background: #fff; border: 1px solid #cbd5e1; font-size: 0.85rem;">30 Hari</div>
+                            <div class="filter-opt" data-val="bulan-ini" style="padding: 10px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500; text-align: center; background: #fff; border: 1px solid #cbd5e1; font-size: 0.85rem;">Bulan Ini</div>
+                            <div class="filter-opt" data-val="per-bulan" style="padding: 10px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500; text-align: center; background: #fff; border: 1px solid #cbd5e1; font-size: 0.85rem;">Pilih Bulan</div>
+                            <div class="filter-opt" data-val="per-tanggal" style="grid-column: span 2; padding: 10px; border-radius: 8px; cursor: pointer; color: #334155; font-weight: 500; text-align: center; background: #fff; border: 1px solid #cbd5e1; font-size: 0.85rem;">Per Tanggal</div>
                         </div>
                     </div>
                     <style>
-                        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-                        .filter-opt:hover { background: #f1f5f9; }
+                        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
                     </style>
 
                     <div class="chart-container">
@@ -5841,17 +5834,9 @@
 
             if (btnRingkasanFilter && modalDateFilter) {
                 btnRingkasanFilter.addEventListener('click', () => {
-                    modalDateFilter.style.display = 'flex';
-                });
-                
-                if (closeDateFilter) {
-                    closeDateFilter.addEventListener('click', () => {
-                        modalDateFilter.style.display = 'none';
-                    });
-                }
-                
-                modalDateFilter.addEventListener('click', (e) => {
-                    if (e.target === modalDateFilter) {
+                    if (modalDateFilter.style.display === 'none') {
+                        modalDateFilter.style.display = 'block';
+                    } else {
                         modalDateFilter.style.display = 'none';
                     }
                 });
@@ -5863,12 +5848,14 @@
                         
                         // Update active state UI
                         filterOpts.forEach(o => {
-                            o.style.background = 'transparent';
+                            o.style.background = '#fff';
                             o.style.color = '#334155';
+                            o.style.borderColor = '#cbd5e1';
                             o.classList.remove('active');
                         });
                         opt.style.background = '#e0f2fe';
                         opt.style.color = '#0ea5e9';
+                        opt.style.borderColor = '#bae6fd';
                         opt.classList.add('active');
                         
                         textRingkasanFilter.innerText = label;
