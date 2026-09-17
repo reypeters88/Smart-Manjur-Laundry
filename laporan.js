@@ -478,6 +478,10 @@
                 return true;
             });
 
+            if (isTransaksi) {
+                window.currentPendapatanTransaksiExportData = [];
+            }
+
             if (filtered.length === 0) {
                 if (emptyState) emptyState.style.display = 'flex';
                 if (dataState) dataState.style.display = 'none';
@@ -489,6 +493,7 @@
 
             globalTotal = 0;
             const grouped = {};
+            let exportData = [];
             filtered.forEach(item => {
                 const itemNominal = isTransaksi ? (parseFloat(item.dibayar) || parseFloat(item.total) || 0) : (parseFloat(item.nominal) || 0);
                 globalTotal += itemNominal;
@@ -496,7 +501,21 @@
                 const dStr = formatDateDisplay(d);
                 if (!grouped[dStr]) grouped[dStr] = [];
                 grouped[dStr].push(item);
+                
+                if (isTransaksi) {
+                    exportData.push({
+                        'Tanggal': item.date ? item.date.substring(0, 10) : dStr,
+                        'No. Nota': item.id || '-',
+                        'Nama': item.customerName || item.customer || 'Guest',
+                        'Metode': item.metode_pembayaran || item.cashbox || 'Tunai',
+                        'Nominal': itemNominal
+                    });
+                }
             });
+
+            if (isTransaksi) {
+                window.currentPendapatanTransaksiExportData = exportData;
+            }
 
             const container = document.getElementById(isTransaksi ? 'pendapatan-accordion-container' : 'lainnya-accordion-container');
             if (!container) return;

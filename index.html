@@ -5768,12 +5768,13 @@
             const prosesFilterKeuangan = (val) => {
                 if (val === 'per-tanggal') {
                     if (typeof window.openDatePicker === 'function') {
-                        // Dummy element biar fungsi bisa terima object dengan id
-                        window.openDatePicker({ id: 'ringkasan-date-filter' });
+                        let fElem = document.getElementById('ringkasan-date-filter');
+                        window.openDatePicker(fElem || { id: 'ringkasan-date-filter' });
                     }
                 } else if (val === 'per-bulan') {
                     if (typeof window.openMonthPicker === 'function') {
-                        window.openMonthPicker({ id: 'ringkasan-date-filter' });
+                        let fElem = document.getElementById('ringkasan-date-filter');
+                        window.openMonthPicker(fElem || { id: 'ringkasan-date-filter' });
                     }
                 } else if (val) {
                     const today = new Date();
@@ -7407,6 +7408,7 @@
 
                 let html = '';
                 let globalTotal = 0;
+                let exportData = [];
 
                 groupedDataRaw.forEach((group) => {
                     let filteredItems = group.items;
@@ -7418,6 +7420,13 @@
                         let groupTotal = 0;
                         let itemsHtml = '';
                         filteredItems.forEach(item => {
+                            exportData.push({
+                                Tanggal: group.dateText,
+                                Nama: item.nama,
+                                Kode: item.kode,
+                                Metode: item.metode,
+                                Nominal: item.nominal
+                            });
                             const isQris = item.metode === 'QRIS';
                             const nominalVal = parseInt(item.nominal.replace(/,/g, ''));
                             groupTotal += nominalVal;
@@ -7467,6 +7476,8 @@
                 if (totalTextElement) {
                     totalTextElement.innerText = globalTotal.toLocaleString('en-US');
                 }
+                
+                window.currentPendapatanTransaksiExportData = exportData;
             }
 
             if (pendapatanDateFilter && pendapatanDateText && btnRefreshPendapatan && pendapatanEmptyState && pendapatanDataState) {
