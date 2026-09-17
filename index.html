@@ -5067,7 +5067,7 @@
                 
                 const searchKw = inputSearchKp ? inputSearchKp.value.toLowerCase() : '';
                 if (searchKw) {
-                    displayCustomers = displayCustomers.filter(c => (c.nama || '').toLowerCase().includes(searchKw) || (c.telepon || c.hp || '').toLowerCase().includes(searchKw));
+                    displayCustomers = displayCustomers.filter(c => String(c.nama || '').toLowerCase().includes(searchKw) || String(c.telepon || c.hp || '').toLowerCase().includes(searchKw));
                 }
 
                 // Sorting
