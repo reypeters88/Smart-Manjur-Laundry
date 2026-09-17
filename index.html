@@ -1234,8 +1234,16 @@
                 <!-- SEARCH BAR -->
                 <div class="kp-search-bar">
                     <div class="kp-search-title" id="kelola-pelanggan-title">Pelanggan (0)</div>
-                    <div class="kp-search-input-wrap">
+                    <div class="kp-search-input-wrap" id="btn-search-kp">
                         <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+
+                <!-- HIDDEN SEARCH INPUT -->
+                <div id="kp-search-container" style="display: none; padding: 0 20px 15px 20px;">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+                        <input type="text" id="input-search-kp" placeholder="Cari nama atau telepon..." style="width: 100%; padding: 12px 15px 12px 40px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; box-sizing: border-box; background: #fff;">
                     </div>
                 </div>
 
@@ -5017,6 +5025,31 @@
                 }
             };
 
+            // Search logic for Kelola Pelanggan
+            const btnSearchKp = document.getElementById('btn-search-kp');
+            const containerSearchKp = document.getElementById('kp-search-container');
+            const inputSearchKp = document.getElementById('input-search-kp');
+
+            if (btnSearchKp && containerSearchKp) {
+                btnSearchKp.addEventListener('click', () => {
+                    if (containerSearchKp.style.display === 'none') {
+                        containerSearchKp.style.display = 'block';
+                        if (inputSearchKp) inputSearchKp.focus();
+                    } else {
+                        containerSearchKp.style.display = 'none';
+                        if (inputSearchKp) {
+                            inputSearchKp.value = '';
+                            if (typeof window.renderKelolaPelanggan === 'function') window.renderKelolaPelanggan();
+                        }
+                    }
+                });
+            }
+            if (inputSearchKp) {
+                inputSearchKp.addEventListener('input', () => {
+                    if (typeof window.renderKelolaPelanggan === 'function') window.renderKelolaPelanggan();
+                });
+            }
+
             window.renderKelolaPelanggan = function () {
                 const title = document.getElementById('kelola-pelanggan-title');
                 if (title) title.innerText = 'Pelanggan (' + globalCustomers.length + ')';
@@ -5030,9 +5063,16 @@
                     return;
                 }
 
+                let displayCustomers = [...globalCustomers];
+                
+                const searchKw = inputSearchKp ? inputSearchKp.value.toLowerCase() : '';
+                if (searchKw) {
+                    displayCustomers = displayCustomers.filter(c => (c.nama || '').toLowerCase().includes(searchKw) || (c.telepon || c.hp || '').toLowerCase().includes(searchKw));
+                }
+
                 // Sorting
                 if (typeof currentSortPelanggan !== 'undefined') {
-                    globalCustomers.sort((a, b) => {
+                    displayCustomers.sort((a, b) => {
                         let nameA = (a.nama || '').toUpperCase();
                         let nameB = (b.nama || '').toUpperCase();
                         if (currentSortPelanggan === 'asc') {
@@ -5043,9 +5083,16 @@
                     });
                 }
 
+                if (displayCustomers.length === 0) {
+                    listContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#94a3b8;">Tidak ada pelanggan yang cocok</div>';
+                    return;
+                }
+
                 const orderHistory = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
                 const colors = ['#f59e0b', '#f97316', '#3b82f6', '#10b981', '#8b5cf6'];
-                globalCustomers.forEach((cust, idx) => {
+                
+                displayCustomers.forEach((cust, loopIdx) => {
+                    const idx = globalCustomers.indexOf(cust);
                     const initial = cust.nama.substring(0, 2).charAt(0).toUpperCase() + (cust.nama.substring(1, 2) || '');
                     const phone = cust.telepon || cust.hp || 'Tanpa nomor';
                     const color = colors[idx % colors.length];
