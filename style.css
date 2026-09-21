@@ -516,19 +516,24 @@ body {
     display: none;
 }
 .p-tab-btn {
-    background: transparent;
-    border: none;
-    padding: 15px 25px;
-    font-size: 0.85rem;
+    padding: 8px 16px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-white);
+    border-radius: 20px;
     color: var(--text-muted);
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
+    font-size: 0.85rem;
     cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
     font-family: inherit;
 }
+.p-tab-btn:hover {
+    background: #f8fafc;
+}
 .p-tab-btn.active {
-    color: var(--primary-blue);
-    border-bottom-color: var(--primary-blue);
+    background: linear-gradient(135deg, var(--primary-blue), var(--emerald-green));
+    color: white;
+    border-color: transparent;
     font-weight: 500;
 }
 
@@ -794,21 +799,6 @@ body {
 }
 .pesanan-tabs-scroll::-webkit-scrollbar {
     display: none;
-}
-.p-tab-btn {
-    padding: 8px 16px;
-    border: 1px solid var(--border-light);
-    background: var(--bg-white);
-    border-radius: 20px;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.p-tab-btn.active {
-    background: linear-gradient(135deg, var(--primary-blue), var(--emerald-green));
-    color: white;
-    border-color: var(--primary-blue);
 }
 
 /* Order Cards */

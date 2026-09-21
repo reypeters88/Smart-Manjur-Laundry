@@ -250,11 +250,11 @@
                         <i class="fa-solid fa-user-circle" style="font-size: 0.9rem;"></i> <span
                             id="active-user-badge">Kasir</span>
                     </div>
-                    <button class="btn-icon" onclick="location.reload()" title="Refresh Aplikasi"
+                    <button class="btn-icon" onclick="window.handleAppRefresh()" title="Refresh Aplikasi"
                         style="color:#3b82f6;">
                         <i class="fa-solid fa-rotate-right"></i>
                     </button>
-                    <button class="btn-icon" id="btn-export-excel" title="Export Excel" style="color:#10b981;">
+                    <button class="btn-icon" id="btn-export-excel" title="Export Excel" style="color:#10b981;" onclick="if(window.handleHeaderExportExcel) window.handleHeaderExportExcel(); else { document.getElementById('layout-export').style.display='block'; setTimeout(() => document.getElementById('layout-export').classList.add('active'), 10); }">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                     <button class="btn-icon" id="btn-export-pdf" title="Export PDF" style="display: none;">
@@ -735,9 +735,18 @@
                                     <option value="bulan-ini">Bulan Ini</option>
                                     <option value="bulan-lalu">Bulan Lalu</option>
                                     <option value="tahun-ini">Tahun Ini</option>
-                                    <option value="per-tanggal">Per Tanggal...</option>
+                            </div>
+                            <div id="container-payment-filter" style="display:none; align-items:center; gap:8px; color:#334155; font-weight:600; font-size:0.9rem; background: #f8fafc; padding: 10px 15px; border: 1px solid var(--border-light); border-radius: 8px;">
+                                <i class="fa-solid fa-money-bill-wave" style="color:#10b981;"></i>
+                                <select id="pesanan-payment-filter" onchange="const activeChip = document.querySelector('.p-tab-btn.active'); if(activeChip) window.filterPesanan ? window.filterPesanan(activeChip.getAttribute('data-filter')) : (typeof filterPesanan === 'function' && filterPesanan(activeChip.getAttribute('data-filter')))" style="appearance:none; -webkit-appearance:none; border:none; background:transparent; font-family:inherit; font-size:inherit; font-weight:inherit; color:inherit; padding-right:15px; cursor:pointer; outline:none;">
+                                    <option value="semua">Semua Status Bayar</option>
+                                    <option value="lunas">Sudah Bayar</option>
+                                    <option value="belum">Belum Bayar</option>
                                 </select>
                             </div>
+                            <button class="btn-icon" id="btn-export-pesanan" onclick="if(window.exportPesananKeExcel) window.exportPesananKeExcel()" title="Export Pesanan" style="color:#10b981; background: #f8fafc; border: 1px solid var(--border-light); padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -762,7 +771,7 @@
                                 <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('customerName')">PELANGGAN <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col">LAYANAN & QTY</div>
                                 <div class="h-col">TOTAL</div>
-                                <div class="h-col">STATUS BAYAR</div>
+                                <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('paymentStatus')">STATUS BAYAR <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col">METODE</div>
                                 <div class="h-col">PROGRES</div>
                                 <div class="h-col" style="text-align: right; padding-right: 5px;">AKSI & NOTA</div>
@@ -1169,6 +1178,29 @@
                                     <div style="flex-grow: 1;">
                                         <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">Manajemen
                                             Pengguna (Admin)</div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
+                                </div>
+                                <div onclick="if(window.exportBackupData) window.exportBackupData()"
+                                    style="padding: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9;">
+                                    <div
+                                        style="width: 35px; height: 35px; background: #fdf4ff; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+                                        <i class="fa-solid fa-download" style="color: #d946ef;"></i></div>
+                                    <div style="flex-grow: 1;">
+                                        <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">Backup Data
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
+                                </div>
+                                <input type="file" id="input-restore-backup" accept=".json" style="display:none;" onchange="if(window.importBackupData) window.importBackupData(event)">
+                                <div onclick="document.getElementById('input-restore-backup').click()"
+                                    style="padding: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9;">
+                                    <div
+                                        style="width: 35px; height: 35px; background: #fffbeb; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+                                        <i class="fa-solid fa-upload" style="color: #d97706;"></i></div>
+                                    <div style="flex-grow: 1;">
+                                        <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">Upload Data Backup
+                                        </div>
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                                 </div>
@@ -4917,6 +4949,13 @@
                     } else if (column === 'date') {
                         valA = new Date(valA || 0).getTime();
                         valB = new Date(valB || 0).getTime();
+                    } else if (column === 'paymentStatus') {
+                        let aDibayar = parseInt((a.dibayar || '').toString().replace(/[^0-9-]/g, '')) || 0;
+                        let aTotal = parseInt((a.total || '').toString().replace(/[^0-9-]/g, '')) || 0;
+                        let bDibayar = parseInt((b.dibayar || '').toString().replace(/[^0-9-]/g, '')) || 0;
+                        let bTotal = parseInt((b.total || '').toString().replace(/[^0-9-]/g, '')) || 0;
+                        valA = (aDibayar >= aTotal) ? 1 : 0;
+                        valB = (bDibayar >= bTotal) ? 1 : 0;
                     } else {
                         valA = (valA || '').toString().toLowerCase();
                         valB = (valB || '').toString().toLowerCase();
@@ -4935,6 +4974,13 @@
                 const keywordInput = document.getElementById('input-search-pesanan');
                 const keyword = keywordInput ? keywordInput.value.toLowerCase() : '';
                 const currentRows = document.querySelectorAll('.pesanan-row');
+                const paymentFilterContainer = document.getElementById('container-payment-filter');
+                const paymentFilterInput = document.getElementById('pesanan-payment-filter');
+                
+                if (paymentFilterContainer) {
+                    paymentFilterContainer.style.display = (filterValue === 'selesai') ? 'flex' : 'none';
+                }
+                const paymentVal = (filterValue === 'selesai' && paymentFilterInput) ? paymentFilterInput.value : 'semua';
 
                 const tabsScroll = document.querySelector('.pesanan-tabs-scroll');
                 if (tabsScroll) {
@@ -4953,8 +4999,11 @@
                                         (filterValue === 'harus-selesai' && row.getAttribute('data-harus-selesai') === 'true') ||
                                         row.getAttribute('data-status') === filterValue;
                     const textMatch = row.textContent.toLowerCase().includes(keyword);
+                    
+                    const paymentStatus = row.getAttribute('data-payment-status');
+                    const paymentMatch = (paymentVal === 'semua' || paymentStatus === paymentVal);
 
-                    if (statusMatch && textMatch) {
+                    if (statusMatch && textMatch && paymentMatch) {
                         row.style.display = 'flex';
                         visibleCount++;
                     } else {
@@ -6333,6 +6382,7 @@
 
                 const labels = [];
                 const dataPemasukan = [];
+                const dataPendapatan = [];
                 const dataPengeluaran = [];
 
                 let globalOmzet = 0;
@@ -6379,6 +6429,7 @@
                     labels.push(dayStr);
 
                     let pSum = 0;
+                    let dSum = 0;
                     pemasukan.forEach(trx => {
                         let trxDate = null;
                         if (window.parseDateString) trxDate = window.parseDateString(trx.date);
@@ -6395,6 +6446,7 @@
                                 // Jika trx.type tidak ada, asumsikan cucian reguler
                                 if (!trx.type) {
                                     pSum += total;
+                                    dSum += dibayar;
                                     globalOmzet += total;
                                     globalPendapatan += dibayar;
                                     countTransaksi++;
@@ -6416,28 +6468,29 @@
                                     if(typeLower.includes('paket')) {
                                         rpTopupPaket += dibayar;
                                         countTopupPaket++;
-                                        pSum += total; globalOmzet += total; globalPendapatan += dibayar;
+                                        pSum += total; dSum += dibayar; globalOmzet += total; globalPendapatan += dibayar;
                                     } else if(typeLower.includes('deposit')) {
                                         rpTopupDeposit += dibayar;
                                         countTopupDeposit++;
-                                        pSum += total; globalOmzet += total; globalPendapatan += dibayar;
+                                        pSum += total; dSum += dibayar; globalOmzet += total; globalPendapatan += dibayar;
                                     } else if(typeLower.includes('produk') || typeLower.includes('barang')) {
                                         rpJualProduk += dibayar;
                                         countJualProduk++;
-                                        pSum += total; globalOmzet += total; globalPendapatan += dibayar;
+                                        pSum += total; dSum += dibayar; globalOmzet += total; globalPendapatan += dibayar;
                                     } else if(typeLower.includes('self')) {
                                         rpSelfService += dibayar;
                                         countSelfService++;
-                                        pSum += total; globalOmzet += total; globalPendapatan += dibayar;
+                                        pSum += total; dSum += dibayar; globalOmzet += total; globalPendapatan += dibayar;
                                     } else {
                                         rpPendapatanLain += dibayar;
-                                        pSum += total; globalOmzet += total; globalPendapatan += dibayar;
+                                        pSum += total; dSum += dibayar; globalOmzet += total; globalPendapatan += dibayar;
                                     }
                                 }
                             }
                         }
                     });
                     dataPemasukan.push(pSum);
+                    dataPendapatan.push(dSum);
 
                     let eSum = 0;
                     pengeluaran.forEach(trx => {
@@ -6511,7 +6564,7 @@
                 if(document.getElementById('vol-satuan')) document.getElementById('vol-satuan').innerText = volSatuan + ' Satuan';
                 if(document.getElementById('vol-meter')) document.getElementById('vol-meter').innerText = volMeter.toFixed(1) + ' m²';
 
-                return { labels, dataPemasukan, dataPengeluaran };
+                return { labels, dataPemasukan, dataPendapatan, dataPengeluaran };
             }
 
             // --- FUNGSI DETAIL RINGKASAN ---
@@ -7067,6 +7120,20 @@
                             fill: true,
                             pointBackgroundColor: '#ffffff',
                             pointBorderColor: '#38bdf8',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Pendapatan Transaksi',
+                            data: chartData.dataPendapatan,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#10b981',
                             pointBorderWidth: 2,
                             pointRadius: 4,
                             pointHoverRadius: 6
@@ -9386,6 +9453,10 @@
                     row.className = 'pesanan-row';
                     const currentStatus = order.status || 'validasi';
                     row.setAttribute('data-status', currentStatus);
+                    
+                    let dibayarNum = parseInt((order.dibayar || '').toString().replace(/[^0-9-]/g, '')) || 0;
+                    let totalNum = parseInt((order.total || '').toString().replace(/[^0-9-]/g, '')) || 0;
+                    row.setAttribute('data-payment-status', dibayarNum >= totalNum ? 'lunas' : 'belum');
 
                     let isTerlambat = false;
                     let isMasuk = false;
@@ -12286,6 +12357,179 @@
                 setTimeout(() => window.syncData(), 2000);
             }
         }
+        
+        window.exportBackupData = function() {
+            try {
+                let backupData = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    backupData[key] = localStorage.getItem(key);
+                }
+                const jsonStr = JSON.stringify(backupData, null, 2);
+                const blob = new Blob([jsonStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                
+                a.href = url;
+                a.download = `Backup_Manjur_Laundry_${year}${month}${day}_${hours}${minutes}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                if (typeof window.showToast === 'function') window.showToast('Backup berhasil diunduh!');
+            } catch(e) {
+                console.error(e);
+                if (typeof window.showToast === 'function') window.showToast('Gagal melakukan backup.');
+            }
+        };
+
+        window.importBackupData = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!confirm('Peringatan: Data di aplikasi ini akan ditimpa dengan data dari file backup. Apakah Anda yakin ingin melanjutkan?')) {
+                event.target.value = ''; // Reset input
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    // Hapus localStorage saat ini
+                    localStorage.clear();
+                    // Masukkan data baru
+                    for (const key in importedData) {
+                        if (importedData.hasOwnProperty(key)) {
+                            localStorage.setItem(key, importedData[key]);
+                        }
+                    }
+                    if (typeof window.showToast === 'function') window.showToast('Data berhasil direstore! Aplikasi akan dimuat ulang...');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } catch (err) {
+                    console.error(err);
+                    alert('Gagal membaca file backup. Pastikan format file benar (.json).');
+                }
+                event.target.value = ''; // Reset input
+            };
+            reader.readAsText(file);
+        };
+
+        window.exportPesananKeExcel = function() {
+            const currentRows = document.querySelectorAll('.pesanan-row');
+            let dataToExport = [];
+            
+            let orderHistory = [];
+            try {
+                orderHistory = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+            } catch(e) {}
+            
+            currentRows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    // Extract ID
+                    const idEl = row.querySelector('.p-id');
+                    const orderId = idEl ? idEl.innerText.trim() : null;
+                    if (!orderId) return;
+
+                    const order = orderHistory.find(o => o.id === orderId);
+                    if (!order) return;
+
+                    // Extract Customer
+                    let cName = String(order.customerName || 'Anonim');
+                    if (cName.includes(' (')) cName = cName.split(' (')[0];
+                    
+                    // Extract Service
+                    let mainService = order.items && order.items.length > 0 ? order.items[0].name : 'Layanan';
+                    let mainQty = order.items && order.items.length > 0 ? order.items[0].qty + (order.items[0].satuan || order.items[0].unit ? ' ' + (order.items[0].satuan || order.items[0].unit) : '') : '-';
+                    
+                    // Extract Status Bayar
+                    const statusBayar = row.getAttribute('data-payment-status') === 'lunas' ? 'Sudah Bayar' : 'Belum Bayar';
+                    
+                    dataToExport.push({
+                        "ID": order.id,
+                        "Tanggal": (order.date || '').split(' ')[0],
+                        "Pelanggan": cName,
+                        "Layanan": mainService,
+                        "Qty": mainQty,
+                        "Total": order.total || 0,
+                        "Dibayar": order.dibayar || 0,
+                        "Status Bayar": statusBayar
+                    });
+                }
+            });
+            
+            if (dataToExport.length === 0) {
+                if (typeof window.showToast === 'function') window.showToast('Tidak ada data pesanan yang tampil untuk diexport.');
+                return;
+            }
+            
+            if (typeof window.exportToExcel === 'function') {
+                window.exportToExcel(dataToExport, "Laporan_Pesanan_Selesai");
+            } else {
+                alert('Fungsi Export Excel tidak ditemukan!');
+            }
+        };
+
+        window.handleHeaderExportExcel = function() {
+            const tabPesanan = document.getElementById('tab-pesanan');
+            if (tabPesanan && tabPesanan.style.display !== 'none') {
+                const activeChip = document.querySelector('.p-tab-btn.active');
+                if (activeChip && activeChip.getAttribute('data-filter') === 'selesai') {
+                    if (window.exportPesananKeExcel) {
+                        window.exportPesananKeExcel();
+                        return;
+                    }
+                }
+            }
+            document.getElementById('layout-export').style.display = 'block'; 
+            setTimeout(() => document.getElementById('layout-export').classList.add('active'), 10);
+        };
+
+        window.handleAppRefresh = function() {
+            const activeBNav = document.querySelector('.b-nav-btn.active');
+            if (activeBNav) {
+                sessionStorage.setItem('restore_bnav', activeBNav.getAttribute('data-bnav'));
+            }
+            
+            const activePTab = document.querySelector('.p-tab-btn.active');
+            if (activePTab) {
+                sessionStorage.setItem('restore_ptab', activePTab.getAttribute('data-filter'));
+            }
+            
+            location.reload();
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const restoreBNav = sessionStorage.getItem('restore_bnav');
+            if (restoreBNav) {
+                setTimeout(() => {
+                    const btn = document.querySelector(`.b-nav-btn[data-bnav="${restoreBNav}"]`);
+                    if (btn) btn.click();
+                    
+                    if (restoreBNav === 'pesanan') {
+                        const restorePTab = sessionStorage.getItem('restore_ptab');
+                        if (restorePTab) {
+                            setTimeout(() => {
+                                const pbtn = document.querySelector(`.p-tab-btn[data-filter="${restorePTab}"]`);
+                                if (pbtn) pbtn.click();
+                            }, 50);
+                        }
+                    }
+                    
+                    sessionStorage.removeItem('restore_bnav');
+                    sessionStorage.removeItem('restore_ptab');
+                }, 100);
+            }
+        });
     </script>
 </body>
 
