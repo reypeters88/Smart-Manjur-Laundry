@@ -88,13 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if(targetNav !== 'transaksi') {
                 topTabBtns.forEach(b => b.classList.remove('active'));
                 if(statsSlider) statsSlider.style.display = 'none';
-                document.querySelector('.app-header').style.display = 'none';
+                const mainAppHeaderNode = document.getElementById('main-app-header');
+                if (mainAppHeaderNode) mainAppHeaderNode.style.display = 'none';
                 const topNavCard = document.querySelector('.top-nav-card');
                 if(topNavCard) topNavCard.style.display = 'none';
             } else {
                 document.querySelector('.tab-btn[data-tab="transaksi"]').classList.add('active');
                 if(statsSlider) statsSlider.style.display = 'flex';
-                document.querySelector('.app-header').style.display = 'flex';
+                const mainAppHeaderNode = document.getElementById('main-app-header');
+                if (mainAppHeaderNode) mainAppHeaderNode.style.display = 'flex';
                 const topNavCard = document.querySelector('.top-nav-card');
                 if(topNavCard) topNavCard.style.display = 'block';
             }
