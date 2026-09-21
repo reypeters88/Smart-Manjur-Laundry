@@ -2282,7 +2282,7 @@
         </div>
 
         <!-- LAYOUT RIWAYAT PELANGGAN -->
-        <div id="layout-riwayat-pelanggan" class="layout" style="display: none; background: #ffffff; min-height: 100vh;">
+        <div id="layout-riwayat-pelanggan" class="layout" style="display: none; background: #ffffff; min-height: 100vh; position: relative; padding-bottom: 80px;">
             <header style="display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid #e2e8f0;">
                 <button class="btn-icon" id="btn-back-riwayat" style="color: #64748b; font-size: 1.2rem; cursor: pointer; border: none; background: transparent;">
                     <i class="fa-solid fa-arrow-left"></i>
@@ -2292,8 +2292,11 @@
                 </div>
                 <div style="width: 24px;"></div> <!-- placeholder -->
             </header>
-            <div style="padding: 20px;">
+            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <h2 style="margin: 0; font-size: 1.5rem; color: #1e293b; font-weight: 600;">Detail Transaksi</h2>
+                <button id="btn-toggle-faktur-mode" style="padding: 8px 15px; border-radius: 8px; background: #0ea5e9; color: white; border: none; font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 6px rgba(14,165,233,0.2); display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-file-invoice"></i> Buat Faktur
+                </button>
             </div>
             <div style="display: flex; border-bottom: 1px solid #e2e8f0;">
                 <div id="tab-riwayat-reguler" class="riwayat-tab active" style="flex: 1; text-align: center; padding: 15px 0; font-weight: 600; color: #0284c7; border-bottom: 2px solid #0284c7; cursor: pointer; font-size: 0.9rem;">REGULER</div>
@@ -2301,6 +2304,62 @@
             </div>
             <div id="riwayat-trx-list" style="padding: 15px 20px; display: flex; flex-direction: column; gap: 15px;">
                 <!-- List dynamically populated here -->
+            </div>
+            
+            <!-- Floating Bottom Bar for Faktur Selection -->
+            <div id="faktur-bottom-bar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); justify-content: space-between; align-items: center; z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px; max-width: 480px; margin: 0 auto;">
+                <div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Terpilih: <span id="faktur-selected-count" style="font-weight: 700; color: #0ea5e9;">0</span></div>
+                    <div id="faktur-selected-total" style="font-weight: 700; font-size: 1.2rem; color: #1e293b;">Rp 0</div>
+                </div>
+                <button id="btn-generate-faktur" style="background: #0ea5e9; color: white; padding: 12px 20px; border-radius: 12px; border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    Lanjut Faktur <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- LAYOUT FAKTUR / INVOICE -->
+        <div id="layout-faktur" class="layout" style="display: none; background: #f8fafc; min-height: 100vh;">
+            <header style="display: flex; align-items: center; padding: 15px 20px; background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
+                <button class="btn-icon" id="btn-back-faktur" style="color: #64748b; font-size: 1.2rem; cursor: pointer; border: none; background: transparent;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div style="flex-grow: 1; text-align: center;">
+                    <h2 style="margin: 0; font-size: 1.1rem; color: #1e293b; font-weight: 600;">Tagihan Faktur</h2>
+                </div>
+                <div style="width: 24px;"></div>
+            </header>
+            
+            <div id="faktur-print-area" style="padding: 20px; background: white; margin: 15px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                <div style="text-align: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 15px; margin-bottom: 15px;">
+                    <img src="logo_manjur.png" alt="Logo" class="dynamic-logo" style="height: 40px; margin-bottom: 10px;">
+                    <h3 style="margin: 0; color: #1e293b; font-size: 1.2rem;">INVOICE TAGIHAN</h3>
+                    <p id="faktur-date-display" style="margin: 5px 0 0; color: #64748b; font-size: 0.85rem;">Tanggal: -</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <p style="margin: 0 0 5px; color: #64748b; font-size: 0.85rem;">Kepada Yth,</p>
+                    <h4 id="faktur-cust-name" style="margin: 0 0 3px; color: #1e293b; font-size: 1.1rem;">-</h4>
+                    <p id="faktur-cust-phone" style="margin: 0; color: #64748b; font-size: 0.9rem;">-</p>
+                </div>
+                
+                <div id="faktur-items-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                    <!-- Items -->
+                </div>
+                
+                <div style="border-top: 2px dashed #e2e8f0; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600; color: #1e293b;">TOTAL KESELURUHAN</span>
+                    <span id="faktur-grand-total" style="font-weight: 700; font-size: 1.3rem; color: #0ea5e9;">Rp 0</span>
+                </div>
+            </div>
+            
+            <div style="padding: 0 15px 30px; display: flex; gap: 10px;">
+                <button id="btn-share-faktur" style="flex: 1; background: #22c55e; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                    <i class="fa-brands fa-whatsapp"></i> Bagikan WA
+                </button>
+                <button id="btn-print-faktur" style="flex: 1; background: #1e293b; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-print"></i> Cetak
+                </button>
             </div>
         </div>
         <!-- LAYOUT KASIR / POS (2 STEP REDESIGN) -->
@@ -4339,7 +4398,10 @@
                     const url = inputWebappUrl.value.trim();
                     if (url) {
                         localStorage.setItem('webapp_url', url);
-                        window.showToast('WebApp URL berhasil disimpan!');
+                        window.showToast('WebApp URL berhasil disimpan! Mengunduh data...');
+                        if (typeof window.autoPullFromCloud === 'function') {
+                            window.autoPullFromCloud();
+                        }
                     } else {
                         window.showToast('URL tidak boleh kosong!');
                     }
@@ -5073,8 +5135,8 @@
                 // Sorting
                 if (typeof currentSortPelanggan !== 'undefined') {
                     displayCustomers.sort((a, b) => {
-                        let nameA = (a.nama || '').toUpperCase();
-                        let nameB = (b.nama || '').toUpperCase();
+                        let nameA = String(a.nama || '').toUpperCase();
+                        let nameB = String(b.nama || '').toUpperCase();
                         if (currentSortPelanggan === 'asc') {
                             return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0);
                         } else {
@@ -5093,7 +5155,8 @@
                 
                 displayCustomers.forEach((cust, loopIdx) => {
                     const idx = globalCustomers.indexOf(cust);
-                    const initial = cust.nama.substring(0, 2).charAt(0).toUpperCase() + (cust.nama.substring(1, 2) || '');
+                    let cNamaStr = String(cust.nama || '');
+                    const initial = cNamaStr.substring(0, 2).charAt(0).toUpperCase() + (cNamaStr.substring(1, 2) || '');
                     const phone = cust.telepon || cust.hp || 'Tanpa nomor';
                     const color = colors[idx % colors.length];
                     
@@ -5174,12 +5237,150 @@
             if (btnBackRiwayat) {
                 btnBackRiwayat.addEventListener('click', () => {
                     document.getElementById('layout-riwayat-pelanggan').style.display = 'none';
+                    if (window.fakturModeActive) window.toggleFakturMode(); // Reset mode
                     if (window.riwayatOrigin === 'top-pelanggan') {
                         document.getElementById('layout-top-pelanggan').style.display = 'block';
                         window.riwayatOrigin = null;
                     } else {
                         document.getElementById('layout-detail-pelanggan').style.display = 'block';
                     }
+                });
+            }
+
+            const btnToggleFakturMode = document.getElementById('btn-toggle-faktur-mode');
+            if (btnToggleFakturMode) {
+                btnToggleFakturMode.addEventListener('click', () => {
+                    if (typeof window.toggleFakturMode === 'function') window.toggleFakturMode();
+                });
+            }
+
+            const btnGenerateFaktur = document.getElementById('btn-generate-faktur');
+            if (btnGenerateFaktur) {
+                btnGenerateFaktur.addEventListener('click', () => {
+                    if (window.fakturSelectedTrx.length === 0) {
+                        alert('Silakan pilih minimal 1 transaksi untuk dibuatkan faktur.');
+                        return;
+                    }
+                    
+                    const history = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+                    const dateNow = new Date();
+                    const dateStr = dateNow.getDate().toString().padStart(2, '0') + '-' + (dateNow.getMonth() + 1).toString().padStart(2, '0') + '-' + dateNow.getFullYear();
+                    
+                    document.getElementById('faktur-date-display').innerText = 'Tanggal: ' + dateStr;
+                    document.getElementById('faktur-cust-name').innerText = currentRiwayatCustomer || '-';
+                    document.getElementById('faktur-cust-phone').innerText = currentRiwayatPhone || '-';
+                    
+                    const container = document.getElementById('faktur-items-container');
+                    container.innerHTML = '';
+                    
+                    let grandTotal = 0;
+                    
+                    window.fakturSelectedTrx.forEach(id => {
+                        const trx = history.find(t => t.id === id);
+                        if (trx) {
+                            let amount = 0;
+                            if (trx.dibayar) amount = parseInt(trx.dibayar);
+                            else if (trx.total) amount = parseInt(trx.total);
+                            else if (trx.grandTotal) amount = parseInt(trx.grandTotal);
+                            
+                            grandTotal += amount;
+                            
+                            let trxDate = trx.date || '-';
+                            if (trx.timestamp) {
+                                const d = new Date(trx.timestamp);
+                                trxDate = d.getDate().toString().padStart(2,'0') + '-' + (d.getMonth()+1).toString().padStart(2,'0') + '-' + d.getFullYear();
+                            }
+                            
+                            container.innerHTML += `
+                                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.95rem; color: #1e293b;">${trx.id}</div>
+                                        <div style="font-size: 0.8rem; color: #64748b;">${trxDate}</div>
+                                    </div>
+                                    <div style="font-weight: 600; color: #1e293b;">Rp ${amount.toLocaleString('id-ID')}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    document.getElementById('faktur-grand-total').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+                    window.fakturCurrentGrandTotal = grandTotal;
+                    
+                    document.getElementById('layout-riwayat-pelanggan').style.display = 'none';
+                    document.getElementById('layout-faktur').style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
+            
+            const btnBackFaktur = document.getElementById('btn-back-faktur');
+            if (btnBackFaktur) {
+                btnBackFaktur.addEventListener('click', () => {
+                    document.getElementById('layout-faktur').style.display = 'none';
+                    document.getElementById('layout-riwayat-pelanggan').style.display = 'block';
+                });
+            }
+            
+            const btnShareFaktur = document.getElementById('btn-share-faktur');
+            if (btnShareFaktur) {
+                btnShareFaktur.addEventListener('click', () => {
+                    const shopName = localStorage.getItem('outlet_name') || 'Manjur Laundry';
+                    const dateStr = document.getElementById('faktur-date-display').innerText.replace('Tanggal: ', '');
+                    
+                    let text = `*FAKTUR TAGIHAN - ${shopName.toUpperCase()}*\n`;
+                    text += `Tanggal: ${dateStr}\n`;
+                    text += `Kepada: *${currentRiwayatCustomer}*\n\n`;
+                    text += `*Rincian Transaksi:*\n`;
+                    
+                    const history = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+                    window.fakturSelectedTrx.forEach(id => {
+                        const trx = history.find(t => t.id === id);
+                        if (trx) {
+                            let amount = 0;
+                            if (trx.dibayar) amount = parseInt(trx.dibayar);
+                            else if (trx.total) amount = parseInt(trx.total);
+                            else if (trx.grandTotal) amount = parseInt(trx.grandTotal);
+                            text += `- ${id} : Rp ${amount.toLocaleString('id-ID')}\n`;
+                        }
+                    });
+                    
+                    text += `\n*TOTAL KESELURUHAN: Rp ${window.fakturCurrentGrandTotal.toLocaleString('id-ID')}*\n\n`;
+                    text += `Terima kasih atas kepercayaannya menggunakan layanan kami.`;
+                    
+                    const encodedText = encodeURIComponent(text);
+                    let phone = currentRiwayatPhone ? currentRiwayatPhone.replace(/\D/g, '') : '';
+                    if (phone.startsWith('0')) phone = '62' + phone.substring(1);
+                    
+                    if (phone) {
+                        window.open(`https://wa.me/${phone}?text=${encodedText}`, '_blank');
+                    } else {
+                        window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+                    }
+                });
+            }
+            
+            const btnPrintFaktur = document.getElementById('btn-print-faktur');
+            if (btnPrintFaktur) {
+                btnPrintFaktur.addEventListener('click', () => {
+                    const area = document.getElementById('faktur-print-area');
+                    if (!area) return;
+                    
+                    const originalBody = document.body.innerHTML;
+                    const printContent = area.innerHTML;
+                    
+                    // Prepend standard print styling for invoice
+                    let printWindow = document.createElement('div');
+                    printWindow.id = 'print-container';
+                    printWindow.innerHTML = printContent;
+                    printWindow.style.padding = '20px';
+                    printWindow.style.color = '#000';
+                    printWindow.style.background = '#fff';
+                    printWindow.style.fontFamily = 'monospace';
+                    
+                    document.body.innerHTML = '';
+                    document.body.appendChild(printWindow);
+                    window.print();
+                    document.body.innerHTML = originalBody;
+                    window.location.reload(); // Quick restore of event listeners
                 });
             }
 
@@ -5293,7 +5494,7 @@
                 document.getElementById('dt-trx-date').innerText = trx.date || '';
                 
                 // Customer
-                let cName = trx.customerName || 'Anonim';
+                let cName = String(trx.customerName || 'Anonim');
                 let cPhone = 'Tanpa nomor';
                 if (cName.includes('(')) {
                     let parts = cName.split('(');
@@ -5382,6 +5583,54 @@
                 window.scrollTo(0,0);
             };
 
+            window.fakturModeActive = false;
+            window.fakturSelectedTrx = [];
+            
+            window.toggleFakturMode = function() {
+                window.fakturModeActive = !window.fakturModeActive;
+                if (!window.fakturModeActive) {
+                    window.fakturSelectedTrx = []; // reset if cancelled
+                    document.getElementById('faktur-bottom-bar').style.display = 'none';
+                    document.getElementById('btn-toggle-faktur-mode').innerHTML = '<i class="fa-solid fa-file-invoice"></i> Buat Faktur';
+                    document.getElementById('btn-toggle-faktur-mode').style.background = '#0ea5e9';
+                } else {
+                    document.getElementById('faktur-bottom-bar').style.display = 'flex';
+                    document.getElementById('btn-toggle-faktur-mode').innerHTML = '<i class="fa-solid fa-times"></i> Batal Faktur';
+                    document.getElementById('btn-toggle-faktur-mode').style.background = '#ef4444';
+                    window.updateFakturBottomBar();
+                }
+                if (typeof window.renderRiwayatPelanggan === 'function') {
+                    window.renderRiwayatPelanggan(currentRiwayatCustomer, currentRiwayatPhone);
+                }
+            };
+            
+            window.updateFakturBottomBar = function() {
+                document.getElementById('faktur-selected-count').innerText = window.fakturSelectedTrx.length;
+                let total = 0;
+                const history = JSON.parse(localStorage.getItem('db_pemasukan') || '[]');
+                window.fakturSelectedTrx.forEach(id => {
+                    const trx = history.find(t => t.id === id);
+                    if (trx) {
+                        let amount = 0;
+                        if (trx.dibayar) amount = parseInt(trx.dibayar);
+                        else if (trx.total) amount = parseInt(trx.total);
+                        else if (trx.grandTotal) amount = parseInt(trx.grandTotal);
+                        total += amount;
+                    }
+                });
+                document.getElementById('faktur-selected-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
+            };
+
+            window.toggleFakturTrx = function(trxId) {
+                if (window.fakturSelectedTrx.includes(trxId)) {
+                    window.fakturSelectedTrx = window.fakturSelectedTrx.filter(id => id !== trxId);
+                } else {
+                    window.fakturSelectedTrx.push(trxId);
+                }
+                window.updateFakturBottomBar();
+                window.renderRiwayatPelanggan(currentRiwayatCustomer, currentRiwayatPhone);
+            };
+
             window.renderRiwayatPelanggan = function(customerName, customerPhone) {
                 currentRiwayatCustomer = customerName;
                 currentRiwayatPhone = customerPhone;
@@ -5422,25 +5671,45 @@
                     if (currentRiwayatTab === 'produk' && !isProdukOnly) return;
 
                     count++;
-                    let totalStr = '0';
-                    if (o.dibayar) totalStr = parseInt(o.dibayar).toLocaleString('id-ID');
-                    else if (o.total) totalStr = parseInt(o.total).toLocaleString('id-ID');
-                    else if (o.grandTotal) totalStr = parseInt(o.grandTotal).toLocaleString('id-ID');
+                    let totalVal = 0;
+                    if (o.dibayar) totalVal = parseInt(o.dibayar);
+                    else if (o.total) totalVal = parseInt(o.total);
+                    else if (o.grandTotal) totalVal = parseInt(o.grandTotal);
+                    let totalStr = totalVal.toLocaleString('id-ID');
 
                     let status = o.status || 'Selesai';
+                    
+                    let isSelected = window.fakturSelectedTrx.includes(o.id);
+                    let checkboxHtml = '';
+                    let actionAttr = 'onclick="if(typeof window.openDetailTrx === `function`) window.openDetailTrx(`' + o.id + '`)"';
+                    
+                    let trxDateStr = o.date || '-';
+                    if (o.timestamp) {
+                        const d = new Date(o.timestamp);
+                        trxDateStr = d.getDate().toString().padStart(2,'0') + '/' + (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getFullYear();
+                    }
+                    
+                    if (window.fakturModeActive) {
+                        checkboxHtml = '<div style="margin-right: 15px; display: flex; align-items: center;">' +
+                            '<div style="width: 24px; height: 24px; border-radius: 6px; border: 2px solid ' + (isSelected ? '#0ea5e9' : '#cbd5e1') + '; background: ' + (isSelected ? '#0ea5e9' : 'transparent') + '; display: flex; justify-content: center; align-items: center;">' +
+                            (isSelected ? '<i class="fa-solid fa-check" style="color: white; font-size: 0.8rem;"></i>' : '') +
+                            '</div></div>';
+                        actionAttr = 'onclick="window.toggleFakturTrx(`' + o.id + '`)"';
+                    }
 
-                    listContainer.innerHTML += '<div onclick="if(typeof window.openDetailTrx === `function`) window.openDetailTrx(`' + o.id + '`)" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; cursor: pointer;">' +
-                        '<div style="display: flex; align-items: center; gap: 15px;">' +
-                            '<div style="width: 45px; height: 45px; background: #fdf4ff; border-radius: 12px; display: flex; justify-content: center; align-items: center; border: 1px solid #fae8ff;">' +
-                                '<i class="fa-solid fa-basket-shopping" style="color: #e879f9; font-size: 1.2rem;"></i>' +
+                    listContainer.innerHTML += '<div ' + actionAttr + ' style="display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; cursor: pointer;">' +
+                        checkboxHtml +
+                        '<div style="flex-grow: 1; display: flex; align-items: center; justify-content: space-between;">' +
+                            '<div style="display: flex; align-items: center; gap: 15px;">' +
+                                '<div style="width: 45px; height: 45px; background: #fdf4ff; border-radius: 12px; display: flex; justify-content: center; align-items: center; border: 1px solid #fae8ff;">' +
+                                    '<i class="fa-solid fa-basket-shopping" style="color: #e879f9; font-size: 1.2rem;"></i>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">' + o.id + ' <span style="font-weight:normal; font-size:0.75rem; color:#94a3b8; margin-left:6px;"><i class="fa-regular fa-calendar" style="margin-right:3px;"></i>' + trxDateStr + '</span></div>' +
+                                    '<div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Status : <span style="color: #0284c7; font-weight: 500;">' + status + '</span></div>' +
+                                '</div>' +
                             '</div>' +
-                            '<div>' +
-                                '<div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">' + o.id + '</div>' +
-                                '<div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Status : <span style="color: #0284c7; font-weight: 500;">' + status + '</span></div>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div style="font-weight: 600; color: #1e293b; font-size: 1rem;">' +
-                            totalStr +
+                            '<div style="font-weight: 600; color: #1e293b; font-size: 1rem;">' + totalStr + '</div>' +
                         '</div>' +
                     '</div>';
                 });
@@ -8437,7 +8706,7 @@
 
                 let html = '';
                 // Urutkan pelanggan secara alfabetis (A-Z)
-                let sortedCustomers = [...globalCustomers].sort((a, b) => a.nama.localeCompare(b.nama));
+                let sortedCustomers = [...globalCustomers].sort((a, b) => String(a.nama || '').localeCompare(String(b.nama || '')));
 
                 sortedCustomers.forEach(c => {
                     let phoneStr = c.telepon ? ' (' + c.telepon + ')' : '';
@@ -9151,7 +9420,7 @@
                     row.setAttribute('data-harus-selesai', isHarusSelesai ? 'true' : 'false');
 
                     // Format customer
-                    let cName = order.customerName;
+                    let cName = String(order.customerName || 'Anonim');
                     if (cName.includes(' (')) cName = cName.split(' (')[0];
 
                     // First item as main service
@@ -9443,7 +9712,7 @@
                     card.style.borderRadius = '12px';
                     card.style.border = '1px solid #e2e8f0';
 
-                    let cName = order.customerName;
+                    let cName = String(order.customerName || 'Anonim');
                     if (cName.includes(' (')) cName = cName.split(' (')[0];
                     let mainService = order.items.length > 0 ? order.items[0].name : 'Layanan';
                     let mainQty = order.items.length > 0 ? order.items[0].qty + (order.items[0].satuan || order.items[0].unit ? ' ' + (order.items[0].satuan || order.items[0].unit) : '') : '-';
@@ -9628,7 +9897,7 @@
                         left();
                         line();
 
-                        let cName = orderData.customerName;
+                        let cName = String(orderData.customerName || 'Anonim');
                         if (cName.includes(' (')) { cName = cName.split(' (')[0]; }
 
                         row('Order ID', orderData.id);
@@ -9762,7 +10031,7 @@
                 // Sort by trxCount desc, then nama asc
                 dataPelanggan.sort((a, b) => {
                     if (b.trxCount !== a.trxCount) return b.trxCount - a.trxCount;
-                    return a.nama.localeCompare(b.nama);
+                    return String(a.nama || '').localeCompare(String(b.nama || ''));
                 });
 
                 // Take top 20
@@ -10195,7 +10464,7 @@
                         originalDateStr: grouped[k][0].originalDateStr,
                         items: grouped[k]
                     };
-                }).sort((a, b) => b.originalDateStr.localeCompare(a.originalDateStr));
+                }).sort((a, b) => String(b.originalDateStr || '').localeCompare(String(a.originalDateStr || '')));
             }
 
             window.renderHutangAccordion = function (cashboxFilter = 'Semua') {
@@ -11948,9 +12217,8 @@
             });
         }
     </script>
-    <script src="script.js?v=2"></script>
-    <script src="app.js?v=2"></script>
-    <script src="laporan.js?v=2"></script>
+    <script src="app.js"></script>
+    <script src="laporan.js"></script>
     <script>
         // AUTO-FIX DATE SCRIPT (Run once to fix corrupted dates)
         window.cleanDatabaseDates = function() {

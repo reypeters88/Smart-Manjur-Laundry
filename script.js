@@ -23,19 +23,18 @@ const newCode =     window.renderKelolaPelanggan = function() {
             const initial = cust.nama.substring(0, 2).charAt(0).toUpperCase() + (cust.nama.substring(1, 2) || '');
             const phone = cust.hp || 'Tanpa nomor';
             const color = colors[idx % colors.length];
-            
-            listContainer.innerHTML += \
+            listContainer.innerHTML += `
                 <div class="kp-list-item">
-                    <div class="kp-avatar" style="\background: \;\"><div style="display:flex; justify-content:center; width:100%; height:100%; align-items:center;">\</div></div>
+                    <div class="kp-avatar" style="background: ${color};"><div style="display:flex; justify-content:center; width:100%; height:100%; align-items:center;">${initial}</div></div>
                     <div class="kp-info">
-                        <div class="kp-name">\</div>
-                        <div class="kp-phone">\</div>
+                        <div class="kp-name">${cust.nama}</div>
+                        <div class="kp-phone">${phone}</div>
                     </div>
                     <div class="kp-action">
                         <i class="fa-solid fa-chevron-right"></i>
                     </div>
                 </div>
-            \;
+            `;
         });
     };
 
