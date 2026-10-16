@@ -318,6 +318,7 @@
         });
 
         if (filtered.length === 0) {
+            window.currentLaporanTransaksiExportData = [];
             if(dataState) dataState.style.display = 'flex';
             if(emptyState) emptyState.style.display = 'flex';
             if(container) container.style.display = 'none';
@@ -325,6 +326,79 @@
             if(totalSub) totalSub.innerText = '(0 Total Qty)';
             return;
         }
+
+        let exportData = [];
+        const dbLayanan = JSON.parse(localStorage.getItem('db_layanan') || '[]');
+
+        filtered.forEach(trx => {
+            const isLunas = (trx.dibayar || 0) >= (trx.total || 0);
+            const statusStr = trx.status === 'batal' ? 'Batal' : (isLunas ? 'Lunas' : 'Belum Lunas');
+            
+            let d = new Date(trx.date);
+            const dateStr = (!isNaN(d.getTime())) ? `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}` : (trx.date || '').split('T')[0].split(' ')[0];
+            
+            const customerStr = trx.customerName || trx.customer || 'Guest';
+
+            let paymentMethod = trx.metode_pembayaran || trx.cashbox || trx.payment_method || trx.metode || 'Tunai';
+            let paymentDateRaw = trx.tanggalBayar || trx.paymentDate || trx.date || '';
+            let pd = new Date(paymentDateRaw);
+            let paymentDateStr = (!isNaN(pd.getTime())) ? `${String(pd.getDate()).padStart(2, '0')}-${String(pd.getMonth() + 1).padStart(2, '0')}-${pd.getFullYear()}` : (paymentDateRaw || '').split('T')[0].split(' ')[0];
+
+            if (statusStr === 'Belum Lunas' || (trx.dibayar || 0) === 0) {
+                paymentMethod = '-';
+                paymentDateStr = '-';
+            }
+
+            if (trx.items && trx.items.length > 0) {
+                trx.items.forEach(it => {
+                    const itemTotal = it.total !== undefined ? it.total : ((parseFloat(it.qty) || 0) * (parseFloat(it.price) || 0));
+                    
+                    let kategori = it.category || it.satuan || it.unit || '';
+                    if (!kategori || kategori === '-') {
+                        const matchedSvc = dbLayanan.find(svc => {
+                            const svcName = svc.Layanan || svc.NamaLayanan || svc.nama || svc.name || '';
+                            return svcName.toLowerCase() === (it.name || '').toLowerCase();
+                        });
+                        if (matchedSvc) {
+                            kategori = matchedSvc.Kategori || matchedSvc.kategori || matchedSvc.Satuan || matchedSvc.satuan || '-';
+                        } else {
+                            kategori = '-';
+                        }
+                    }
+
+                    exportData.push({
+                        "ID": trx.id,
+                        "Tanggal": dateStr,
+                        "Pelanggan": customerStr,
+                        "Layanan": it.name || '-',
+                        "Kategori": kategori,
+                        "Qty": parseFloat(it.qty) || 0,
+                        "Total": itemTotal,
+                        "Dibayar": trx.dibayar || 0,
+                        "Status Bayar": statusStr,
+                        "Tanggal Pembayaran": paymentDateStr,
+                        "Metode Pembayaran": paymentMethod,
+                        "Status Order": trx.status || 'Baru'
+                    });
+                });
+            } else {
+                exportData.push({
+                    "ID": trx.id,
+                    "Tanggal": dateStr,
+                    "Pelanggan": customerStr,
+                    "Layanan": '-',
+                    "Kategori": '-',
+                    "Qty": 0,
+                    "Total": trx.total || 0,
+                    "Dibayar": trx.dibayar || 0,
+                    "Status Bayar": statusStr,
+                    "Tanggal Pembayaran": paymentDateStr,
+                    "Metode Pembayaran": paymentMethod,
+                    "Status Order": trx.status || 'Baru'
+                });
+            }
+        });
+        window.currentLaporanTransaksiExportData = exportData;
 
         if(emptyState) emptyState.style.display = 'none';
         if(container) container.style.display = 'flex';
@@ -355,21 +429,43 @@
                     totalQty += (parseFloat(it.qty) || 0);
                 });
 
+                let detailsHtml = '';
+                if (trx.items && trx.items.length > 0) {
+                    detailsHtml += `<div style="margin-top: 12px; margin-left: 57px; background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 10px 12px; display:flex; flex-direction:column; gap:6px;">`;
+                    trx.items.forEach(it => {
+                        const itemTotal = it.total !== undefined ? it.total : ((parseFloat(it.qty) || 0) * (parseFloat(it.price) || 0));
+                        detailsHtml += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <div style="width:4px; height:4px; border-radius:50%; background:#94a3b8;"></div>
+                                    <span style="color:#334155; font-weight:500;">${it.name}</span>
+                                    <span style="color:#94a3b8; font-size:0.75rem;">(x${parseFloat(it.qty) || 0})</span>
+                                </div>
+                                <span style="font-weight:600; color:#0f172a;">Rp ${itemTotal.toLocaleString('id-ID')}</span>
+                            </div>
+                        `;
+                    });
+                    detailsHtml += `</div>`;
+                }
+
                 rowHtml += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f1f5f9;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="width:45px; height:45px; border:1px solid #e2e8f0; border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fafc;">
-                                <img src="${icon}" style="width:30px; object-fit:contain;" alt="item">
+                    <div style="display:flex; flex-direction:column; padding:15px; border-bottom:1px solid #f1f5f9;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="width:45px; height:45px; border:1px solid #e2e8f0; border-radius:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fafc; flex-shrink:0;">
+                                    <img src="${icon}" style="width:30px; object-fit:contain;" alt="item">
+                                </div>
+                                <div style="display:flex; flex-direction:column; gap:3px;">
+                                    <div style="font-size:0.95rem; color:#1e293b; font-weight:600;">${trx.id}</div>
+                                    <div style="font-size:0.75rem; color:#64748b;">Pelanggan : ${trx.customerName || trx.customer || 'Guest'}</div>
+                                    <div style="font-size:0.75rem; color:#64748b;">Status : <span style="color:#0ea5e9;">${trx.status || 'Baru'}</span></div>
+                                </div>
                             </div>
-                            <div style="display:flex; flex-direction:column; gap:3px;">
-                                <div style="font-size:0.95rem; color:#1e293b; font-weight:600;">${trx.id}</div>
-                                <div style="font-size:0.75rem; color:#64748b;">Pelanggan : ${trx.customerName || trx.customer || 'Guest'}</div>
-                                <div style="font-size:0.75rem; color:#64748b;">Status : <span style="color:#0ea5e9;">${trx.status || 'Baru'}</span></div>
+                            <div style="padding:4px 10px; border-radius:12px; font-size:0.65rem; font-weight:700; ${pillStyle}; white-space:nowrap;">
+                                ${statusStr}
                             </div>
                         </div>
-                        <div style="padding:4px 10px; border-radius:12px; font-size:0.65rem; font-weight:700; ${pillStyle}">
-                            ${statusStr}
-                        </div>
+                        ${detailsHtml}
                     </div>
                 `;
             });
@@ -390,7 +486,7 @@
         });
 
         if (totalCount) totalCount.innerText = totalItems.toString();
-        if (totalSub) totalSub.innerText = '(' + totalQty + ' Total Qty)';
+        if (totalSub) totalSub.innerText = '(' + (Math.round(totalQty * 100) / 100) + ' Total Qty)';
 
         container.innerHTML = html;
 
