@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -16,7 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="logo_manjur.png" type="image/png">
     <meta name="theme-color" content="#0284c7">
@@ -26,6 +26,49 @@
         window.addEventListener('error', function (e) {
             console.error("JS Error:\n" + e.message + "\nLine: " + e.lineno + "\nFile: " + e.filename);
         });
+
+        // --- MULTI-OUTLET LOCALSTORAGE INTERCEPTOR ---
+        var originalGetItem = localStorage.getItem.bind(localStorage);
+        var originalSetItem = localStorage.setItem.bind(localStorage);
+        window.originalGetItem = originalGetItem;
+        window.originalSetItem = originalSetItem;
+
+        const prefixKeys = ['db_pemasukan', 'db_pengeluaran', 'db_pelanggan'];
+
+        localStorage.getItem = function (key) {
+            const activeOutlet = originalGetItem('active_outlet_id') || 'PUSAT';
+
+            if (prefixKeys.includes(key)) {
+                if (activeOutlet !== 'PUSAT') {
+                    return originalGetItem(key + '_' + activeOutlet);
+                }
+            }
+
+            if (activeOutlet !== 'PUSAT') {
+                if (key === 'company_name' || key === 'company_address' || key === 'company_phone') {
+                    const dbOutlets = JSON.parse(originalGetItem('db_outlets') || '[]');
+                    const outlet = dbOutlets.find(o => o.id === activeOutlet);
+                    if (outlet) {
+                        if (key === 'company_name' && outlet.nama) return outlet.nama;
+                        if (key === 'company_address' && outlet.alamat) return outlet.alamat;
+                        if (key === 'company_phone' && outlet.telepon) return outlet.telepon;
+                    }
+                }
+            }
+
+            return originalGetItem(key);
+        };
+
+        localStorage.setItem = function (key, value) {
+            const activeOutlet = originalGetItem('active_outlet_id') || 'PUSAT';
+            if (prefixKeys.includes(key)) {
+                if (activeOutlet !== 'PUSAT') {
+                    return originalSetItem(key + '_' + activeOutlet, value);
+                }
+            }
+            return originalSetItem(key, value);
+        };
+        // ---------------------------------------------
     </script>
 </head>
 
@@ -183,17 +226,16 @@
                         <p class="text-sub">Selamat datang kembali</p>
                     </div>
                 </div>
-                <div class="header-actions" style="display: flex; align-items: center;">
-                    <div
-                        style="background: #e0e7ff; color: #4f46e5; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-right: 10px; border: 1px solid #c7d2fe; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div class="header-actions">
+                    <div class="user-role-badge"
+                        style="background: #e0e7ff; color: #4f46e5; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; border: 1px solid #c7d2fe; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                         <i class="fa-solid fa-user-circle" style="font-size: 0.9rem;"></i> <span
                             id="active-user-badge">Kasir</span>
                     </div>
-                    <button class="btn-icon" onclick="window.handleAppRefresh()" title="Refresh Aplikasi"
-                        style="color:#3b82f6;">
+                    <button class="btn-icon btn-refresh-header" onclick="window.handleAppRefresh()" title="Refresh Aplikasi">
                         <i class="fa-solid fa-rotate-right"></i>
                     </button>
-                    <button class="btn-icon" id="btn-export-excel" title="Export Excel" style="color:#10b981;" onclick="if(window.handleHeaderExportExcel) window.handleHeaderExportExcel(); else { document.getElementById('layout-export').style.display='block'; setTimeout(() => document.getElementById('layout-export').classList.add('active'), 10); }">
+                    <button class="btn-icon btn-excel-header" id="btn-export-excel" title="Export Excel" onclick="if(window.handleHeaderExportExcel) window.handleHeaderExportExcel(); else { document.getElementById('layout-export').style.display='block'; setTimeout(() => document.getElementById('layout-export').classList.add('active'), 10); }">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                     <button class="btn-icon" id="btn-export-pdf" title="Export PDF" style="display: none;">
@@ -635,24 +677,21 @@
                                 <p class="text-sub">Ini status orderan kamu</p>
                             </div>
                         </div>
-                        <div class="header-actions" style="display: flex; align-items: center;">
-                            <div
-                                style="background: #e0e7ff; color: #4f46e5; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-right: 10px; border: 1px solid #c7d2fe; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div class="header-actions">
+                            <div class="user-role-badge"
+                                style="background: #e0e7ff; color: #4f46e5; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px; border: 1px solid #c7d2fe; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
                                 <i class="fa-solid fa-user-circle" style="font-size: 0.9rem;"></i> <span
-                                    id="active-user-badge">Kasir</span>
+                                    class="active-user-badge">Kasir</span>
                             </div>
-                            <button class="btn-icon" id="btn-search-pesanan"
-                                style="border: none; background: transparent; font-size: 1.2rem;">
+                            <button class="btn-icon" id="btn-search-pesanan" title="Cari Pesanan">
                                 <i class="fa-solid fa-search"></i>
                             </button>
-                            <button class="btn-icon" id="btn-refresh-pesanan"
-                                style="border: none; background: transparent; font-size: 1.2rem;">
+                            <button class="btn-icon" id="btn-refresh-pesanan" title="Refresh Pesanan">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
                             </button>
-                              <button class="btn-icon" onclick="document.getElementById('btn-export-excel').click()" title="Export Excel"
-                                  style="border: none; background: transparent; font-size: 1.2rem; color: #10b981;">
-                                  <i class="fa-solid fa-file-excel"></i>
-                              </button>
+                            <button class="btn-icon btn-excel-header" onclick="document.getElementById('btn-export-excel').click()" title="Export Excel">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </button>
                         </div>
                     </header>
 
@@ -690,7 +729,7 @@
                     </div>
 
                     <!-- Filter Tabs (Chips) -->
-                    <div class="pesanan-tabs-scroll" style="justify-content: center;">
+                    <div class="pesanan-tabs-scroll">
                         <button class="p-tab-btn active" data-filter="semua">Semua</button>
                         <button class="p-tab-btn" data-filter="validasi">Validasi</button>
                         <button class="p-tab-btn" data-filter="antrian">Antrian</button>
@@ -704,8 +743,8 @@
                         <div class="pesanan-table-container">
 
                             <!-- Header Row (Topline) -->
-                            <div class="pesanan-header-row" style="display: grid; grid-template-columns: 100px 100px 140px 130px 90px 135px 110px 120px 1fr; align-items: center; padding: 15px 20px; gap: 15px;">
-                                <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('id')">ID <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
+                            <div class="pesanan-header-row" style="display: grid; grid-template-columns: 130px 100px 140px 130px 90px 135px 110px 120px 1fr; align-items: center; padding: 15px 20px; gap: 15px;">
+                                <div class="h-col" style="cursor: pointer; white-space: nowrap;" onclick="window.sortPesanan('id')">ID <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('date')">TANGGAL <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col" style="cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" onclick="window.sortPesanan('customerName')">PELANGGAN <i class="fa-solid fa-sort" style="color:#94a3b8; font-size:0.8rem; margin-left:3px;"></i></div>
                                 <div class="h-col">LAYANAN & QTY</div>
@@ -948,7 +987,7 @@
 
                 <!-- MENU: AKUN -->
                 <div id="tab-akun" class="tab-content"
-                    style="display: none; background: #f8fafc; min-height: 100vh; flex-direction: column; padding: 0; margin: 0; padding-bottom: 80px;">
+                    style="display: none; background: #f8fafc; min-height: 100%; flex-direction: column; padding: 0; margin: 0;">
                     <!-- PROFILE SUMMARY -->
                     <div
                         style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 25px 20px; border-bottom: 1px solid #bfdbfe; display: flex; align-items: center; gap: 15px;">
@@ -967,31 +1006,9 @@
                         </div>
                         <i class="fa-solid fa-chevron-right" style="color: #94a3b8; font-size: 1.2rem;"></i>
                     </div>
-                    <!-- WIDGET COINBLAZ -->
-                    <div style="padding: 15px 20px;">
-                        <div
-                            style="background: #ffffff; border-radius: 12px; padding: 15px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <div
-                                    style="width: 40px; height: 40px; background: #fef3c7; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
-                                    <i class="fa-solid fa-coins" style="color: #f59e0b; font-size: 1.2rem;"></i>
-                                </div>
-                                <div>
-                                    <div
-                                        style="font-size: 0.8rem; color: #64748b; font-weight: 500; margin-bottom: 2px;">
-                                        coinblaz Anda</div>
-                                    <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b;">0</div>
-                                </div>
-                            </div>
-                            <div
-                                style="border: 1.5px dashed #cbd5e1; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-plus"></i> Tambah
-                            </div>
-                        </div>
-                    </div>
                     <!-- MENU LIST (SCROLLABLE AREA) -->
                     <div
-                        style="flex-grow: 1; padding: 0 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto;">
+                        style="flex-grow: 1; padding: 16px 16px calc(110px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 20px;">
                         <!-- Section: Manajemen Laundry -->
                         <div>
                             <div
@@ -1006,7 +1023,7 @@
                                         <i class="fa-solid fa-users" style="color: #3b82f6;"></i></div>
                                     <div style="flex-grow: 1;">
                                         <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">Pelanggan
-                                            Saya</div>
+                                             Saya</div>
                                         <div style="font-size: 0.75rem; color: #64748b;">Kelola data pelanggan</div>
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
@@ -1050,7 +1067,7 @@
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                                 </div>
-                                <div
+                                <div id="btn-menu-kirim-wa" class="clickable-menu" data-title="Kirim WA & Notifikasi"
                                     style="padding: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer;">
                                     <div
                                         style="width: 35px; height: 35px; background: #fef2f2; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
@@ -1073,7 +1090,7 @@
                                 Pengaturan & Lainnya</div>
                             <div
                                 style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-                                <div
+                                <div id="btn-menu-pengaturan-printer" class="clickable-menu" data-title="Pengaturan Printer"
                                     style="padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
                                     <div
                                         style="width: 35px; height: 35px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
@@ -1084,7 +1101,7 @@
                                     </div>
                                     <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                                 </div>
-                                <div
+                                <div id="btn-menu-pengaturan-lainnya"
                                     style="padding: 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer;">
                                     <div
                                         style="width: 35px; height: 35px; background: #f8fafc; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
@@ -3961,7 +3978,7 @@
 
     <script>
         // Register Service Worker for PWA (Installable on Mobile/Tablet)
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('sw.js').then(function(registration) {
                     console.log('ServiceWorker registered successfully.');

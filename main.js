@@ -1,7 +1,7 @@
-﻿
+var originalGetItem = window.originalGetItem || localStorage.getItem.bind(localStorage);
+var originalSetItem = window.originalSetItem || localStorage.setItem.bind(localStorage);
 
-
-        window.parseDateString = function(dateStr, notaId) {
+window.parseDateString = function(dateStr, notaId) {
             if (!dateStr) return null;
             let d;
             if (typeof dateStr === 'string' && dateStr.includes('T') && dateStr.endsWith('Z')) {
@@ -5502,10 +5502,10 @@
                     row.style.padding = '0'; // padding dipindah ke inner row
 
                     row.innerHTML = `
-              <div style="display:grid; grid-template-columns: 100px 100px 140px 130px 90px 135px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
+              <div style="display:grid; grid-template-columns: 130px 100px 140px 130px 90px 135px 110px 120px 1fr; align-items:center; gap: 15px; width:100%; padding:15px 20px; box-sizing:border-box;">
                 <!-- Col 1: ID -->
-                <div class="p-col" style="overflow: hidden;">
-                    <div class="p-id" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:700; color:#1e293b;" title="${order.id}">${order.id}</div>
+                <div class="p-col">
+                    <div class="p-id" style="white-space: nowrap; font-weight:700; color:#1e293b; font-size:0.85rem;" title="${order.id}">${order.id}</div>
                 </div>
                 
                 <!-- Col 2: Date -->
@@ -5789,8 +5789,8 @@
 
                     card.innerHTML = `
                 <!-- Col 1: ID & Date -->
-                <div class="p-col" style="flex: 0 0 110px; width: 110px;">
-                    <div class="p-id">${order.id}</div>
+                <div class="p-col" style="flex: 0 0 130px; width: 130px;">
+                    <div class="p-id" style="white-space: nowrap;">${order.id}</div>
                     <div class="p-date">${order.date.split('T')[0].split(' ')[0]}</div>
                 </div>
                 
@@ -7227,18 +7227,25 @@
             applyCompanyProfile();
 
             // Bind click to "Pengaturan Lainnya" row
-            const btnMenuPengaturan = Array.from(document.querySelectorAll('.clickable-menu')).find(el => el.innerText.includes('Pengaturan Lainnya') || el.querySelector('div')?.innerText.includes('Pengaturan Lainnya'));
-            if (!btnMenuPengaturan) {
-                // Fallback if not found by class, find by text
-                document.querySelectorAll('div').forEach(el => {
-                    if (el.innerText === 'Pengaturan Lainnya' && el.parentElement.parentElement.style.cursor === 'pointer') {
-                        el.parentElement.parentElement.addEventListener('click', () => {
-                            initPengaturanLainnya();
-                            layoutMain.classList.remove('active');
-                            layoutMain.style.display = 'none';
-                            layoutPengaturan.style.display = 'block';
-                            setTimeout(() => layoutPengaturan.classList.add('active'), 10);
-                        });
+            const btnMenuPengaturan = document.getElementById('btn-menu-pengaturan-lainnya') || Array.from(document.querySelectorAll('.clickable-menu')).find(el => el.innerText.includes('Pengaturan Lainnya') || el.querySelector('div')?.innerText.includes('Pengaturan Lainnya'));
+            if (btnMenuPengaturan) {
+                btnMenuPengaturan.addEventListener('click', () => {
+                    initPengaturanLainnya();
+                    layoutMain.classList.remove('active');
+                    layoutMain.style.display = 'none';
+                    layoutPengaturan.style.display = 'block';
+                    setTimeout(() => layoutPengaturan.classList.add('active'), 10);
+                });
+            }
+
+            // Bind click to "Pengaturan Printer" row
+            const btnMenuPrinter = document.getElementById('btn-menu-pengaturan-printer');
+            if (btnMenuPrinter) {
+                btnMenuPrinter.addEventListener('click', () => {
+                    if (typeof btPrinter !== 'undefined' && btPrinter.connect) {
+                        btPrinter.connect();
+                    } else {
+                        alert('Menyiapkan koneksi Printer Bluetooth Thermal 58mm...');
                     }
                 });
             }
